@@ -4,55 +4,60 @@
 <meta charset="UTF-8"><!-- SIMPP APP v20260607 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#FFFFFF" id="theme-meta">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1E4A8A" id="theme-meta">
+<meta name="apple-mobile-web-app-title" content="Simpp">
+<link rel="apple-touch-icon" href="icon.png">
 <title>Simpp · APP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>document.documentElement.setAttribute('data-theme','light');</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;-webkit-tap-highlight-color:transparent;}
 body{height:100%;font-family:'Inter',sans-serif;font-size:14px;font-weight:300;overflow:hidden;-webkit-font-smoothing:antialiased;}
 :root[data-theme="dark"]{
-  --bg:#0A1220;--surface:#111928;--surface2:#172035;--surface3:#1E2C44;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
-  --accent:#5B8FD4;--accent-d:#3D6FB0;--accent-bg:rgba(91,143,212,0.15);--accent-t:#8AAFD6;
-  --green:#34D399;--green-bg:rgba(52,211,153,0.10);
-  --amber:#FBBF24;--amber-bg:rgba(251,191,36,0.10);
-  --red:#F87171;--red-bg:rgba(248,113,113,0.10);
-  --text:#EEF2F8;--text2:#94AABF;--text3:#4A6080;
-  --shadow:0 8px 32px rgba(0,0,0,0.55);--shadow-sm:0 2px 8px rgba(0,0,0,0.35);
-  --tab-bg:#111928;
+  --bg:#0D1A2E;--surface:#111C31;--surface2:#172540;--surface3:#1E2E4F;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --accent:#1E4A8A;--accent-d:#163970;--accent-bg:rgba(30,74,138,0.20);--accent-t:#6B9FD4;
+  --green:#22C55E;--green-bg:rgba(34,197,94,0.12);
+  --amber:#F59E0B;--amber-bg:rgba(245,158,11,0.12);
+  --red:#EF4444;--red-bg:rgba(239,68,68,0.12);
+  --text:#F8FAFC;--text2:rgba(255,255,255,0.65);--text3:#667085;
+  --shadow:0 8px 32px rgba(0,0,0,0.55);--shadow-sm:0 1px 2px rgba(16,24,40,0.08),0 4px 16px rgba(0,0,0,0.22);
+  --tab-bg:#0D1A2E;
 }
 :root[data-theme="light"]{
-  --bg:#F0F4F9;--surface:#FFFFFF;--surface2:#EDF1F7;--surface3:#DDE6F0;
-  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.13);
+  --bg:#F5F7FA;--surface:#FFFFFF;--surface2:#F0F4F8;--surface3:#E8EEF5;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.12);
   --accent:#1E4A8A;--accent-d:#163970;--accent-bg:rgba(30,74,138,0.08);--accent-t:#1E4A8A;
-  --green:#15803D;--green-bg:rgba(21,128,61,0.08);
-  --amber:#92400E;--amber-bg:rgba(146,64,14,0.08);
-  --red:#B91C1C;--red-bg:rgba(185,28,28,0.07);
-  --text:#0D1A2E;--text2:#3A4B5C;--text3:#7B8DA0;
-  --shadow:0 4px 20px rgba(13,26,46,0.10);--shadow-sm:0 1px 6px rgba(13,26,46,0.06);
+  --green:#16A34A;--green-bg:rgba(22,163,74,0.09);
+  --amber:#D97706;--amber-bg:rgba(217,119,6,0.09);
+  --red:#DC2626;--red-bg:rgba(220,38,38,0.08);
+  --text:#0D1A2E;--text2:#344054;--text3:#667085;
+  --shadow:0 1px 2px rgba(16,24,40,0.04),0 6px 18px rgba(16,24,40,0.03);
+  --shadow-sm:0 1px 2px rgba(16,24,40,0.04),0 3px 10px rgba(16,24,40,0.04);
   --tab-bg:#FFFFFF;
 }
 body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;}
-.app{display:flex;flex-direction:column;height:100dvh;height:100vh;overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100dvh;height:calc(var(--vh,1vh)*100);overflow:hidden;}
 .topbar{
-  background:var(--surface);border-bottom:1px solid var(--border);
-  padding:0 16px;padding-top:env(safe-area-inset-top);
+  background:linear-gradient(180deg,#1E4A8A 0%,#163B72 100%);
+  border-bottom:none;padding:0 16px;padding-top:env(safe-area-inset-top);
   display:flex;align-items:center;justify-content:space-between;
-  min-height:54px;flex-shrink:0;transition:background .3s,border-color .3s;z-index:20;
+  min-height:48px;flex-shrink:0;z-index:20;
 }
+:root[data-theme="dark"] .topbar{background:linear-gradient(180deg,#162236 0%,#0F1A2E 100%);}
 .tb-left{display:flex;align-items:center;gap:10px;}
-.tb-logo-name{font-size:17px;font-weight:300;color:var(--text);letter-spacing:-.5px;font-family:'Plus Jakarta Sans',sans-serif;}
+.tb-logo-name{font-size:17px;font-weight:300;color:#fff;letter-spacing:-.5px;font-family:'Plus Jakarta Sans',sans-serif;}
 .tb-title{font-size:16px;font-weight:300;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
 .tb-right{display:flex;align-items:center;gap:4px;}
-.icon-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--text2);cursor:pointer;transition:all .12s;}
-.icon-btn:active{background:var(--surface2);color:var(--text);}
+.icon-btn{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;border:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);cursor:pointer;transition:all .12s;}
+.icon-btn:active{background:rgba(255,255,255,0.18);}
 .icon-btn i{font-size:19px;}
-.topbar-back{display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--accent);font-size:15px;font-family:'Inter',sans-serif;cursor:pointer;padding:0;}
+.topbar-back{display:flex;align-items:center;gap:4px;background:none;border:none;color:rgba(255,255,255,0.92);font-size:15px;font-family:'Inter',sans-serif;cursor:pointer;padding:0;font-weight:500;}
 .topbar-back i{font-size:20px;}
 .screen{display:none;flex:1;flex-direction:column;overflow:hidden;}
 .screen.on{display:flex;}
@@ -61,19 +66,25 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 .botnav{
   background:var(--tab-bg);border-top:1px solid var(--border);
   display:flex;padding-bottom:env(safe-area-inset-bottom);
-  flex-shrink:0;transition:background .3s,border-color .3s;z-index:20;
+  flex-shrink:0;transition:background .25s;z-index:20;
+  box-shadow:0 -1px 0 var(--border);
 }
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 0 6px;cursor:pointer;position:relative;color:var(--text3);transition:color .15s;border:none;background:none;}
-.bnav-item i{font-size:22px;transition:transform .15s;}
-.bnav-item span{font-size:9px;letter-spacing:.04em;text-transform:uppercase;font-weight:300;}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;padding:10px 0 8px;cursor:pointer;position:relative;
+  color:var(--text3);transition:color .15s;border:none;background:none;min-height:56px;
+}
+.bnav-item i{font-size:22px;transition:all .15s;}
+.bnav-item span{font-size:10px;letter-spacing:.01em;font-weight:500;}
 .bnav-item.active{color:var(--accent);}
-.bnav-item.active i{transform:scale(1.08);}
-.bnav-dot{position:absolute;top:6px;right:calc(50% - 14px);width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--tab-bg);}
-.fab{position:fixed;right:20px;bottom:calc(env(safe-area-inset-bottom) + 66px);width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(30,74,138,0.35);cursor:pointer;z-index:30;transition:all .15s;}
+.bnav-item.active i{transform:scale(1.06);}
+.bnav-item.active span{font-weight:700;}
+.bnav-dot{position:absolute;top:7px;right:calc(50% - 15px);width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--tab-bg);}
+.fab{position:fixed;right:24px;bottom:calc(env(safe-area-inset-bottom) + 74px);width:52px;height:52px;border-radius:50%;background:#1E4A8A;color:#fff;border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 25px rgba(30,74,138,0.25);cursor:pointer;z-index:30;transition:all .15s;}
 .fab i{font-size:22px;}
-.fab:active{transform:scale(.93);}
-.card{background:var(--surface);border-radius:14px;overflow:hidden;border:1px solid var(--border);}
-.list-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s;}
+.fab:active{transform:scale(.92);}
+.card{background:var(--surface);border-radius:16px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-sm);}
+.list-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s;}
 .list-item:last-child{border-bottom:none;}
 .list-item:active{background:var(--surface2);}
 .av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:400;flex-shrink:0;}
@@ -82,27 +93,29 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 .bdg-a{background:var(--amber-bg);color:var(--amber);}
 .bdg-r{background:var(--red-bg);color:var(--red);}
 .bdg-b{background:var(--accent-bg);color:var(--accent-t);}
-.sec-head{padding:16px 16px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:300;}
+.sec-head{padding:14px 16px 8px;display:flex;align-items:center;}
+.sec-head-pill{display:inline-flex;align-items:center;gap:7px;background:var(--accent-bg);color:var(--accent);padding:6px 12px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:.01em;}
+:root[data-theme="dark"] .sec-head-pill{color:var(--accent-t);}
+.sec-head-pill i{font-size:14px;}
 .metric-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
-.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:opacity .1s;}
-.metric-card:active{opacity:.8;}
-.metric-card.accent-border{border-left:3px solid var(--accent);}
-.metric-card.green-border{border-left:3px solid var(--green);}
-.metric-card.amber-border{border-left:3px solid var(--amber);}
-.metric-card.red-border{border-left:3px solid var(--red);}
-.metric-card .mlabel{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;}
-.metric-card .mnum{font-size:28px;font-weight:300;color:var(--text);letter-spacing:-1px;line-height:1;font-family:'Inter',sans-serif;}
-.metric-card .msub{font-size:10px;color:var(--text3);}
-.searchbar{padding:10px 16px;position:relative;}
-.searchbar input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:10px 14px 10px 40px;font-size:14px;color:var(--text);outline:none;font-family:'Inter',sans-serif;font-weight:300;transition:border-color .15s;}
-.searchbar input::placeholder{color:var(--text3);}
-.searchbar input:focus{border-color:var(--accent);}
-.searchbar i{position:absolute;left:28px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text3);pointer-events:none;}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 14px 14px;display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
+.metric-card::before{content:'';position:absolute;top:0;left:16px;right:16px;height:2px;background:#1E4A8A;border-radius:0 0 3px 3px;opacity:.7;}
+.metric-card:active{transform:scale(.97);}
+.metric-card .mico{width:32px;height:32px;border-radius:9px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;margin-bottom:2px;}
+.metric-card .mico i{font-size:16px;color:var(--accent-t);}
+.metric-card .mlabel{font-size:12px;color:var(--text2);font-weight:600;letter-spacing:.01em;}
+.metric-card .mnum{font-size:34px;font-weight:300;color:var(--text);letter-spacing:-2px;line-height:1;font-family:'Inter',sans-serif;}
+.metric-card .msub{font-size:11px;color:var(--text3);font-weight:400;}
+.searchbar{padding:8px 16px 12px;position:relative;}
+.searchbar input{width:100%;background:var(--surface);border:1.5px solid var(--border2);border-radius:14px;padding:12px 42px;font-size:15px;color:var(--text);outline:none;font-family:'Inter',sans-serif;font-weight:400;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 4px rgba(16,24,40,0.06);}
+.searchbar input::placeholder{color:var(--text3);font-weight:400;}
+.searchbar input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.searchbar i{position:absolute;left:28px;top:50%;transform:translateY(-50%);font-size:17px;color:var(--text3);pointer-events:none;}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;gap:10px;color:var(--text3);text-align:center;}
 .empty i{font-size:40px;opacity:.35;}
 .empty p{font-size:13px;opacity:.65;line-height:1.5;}
 .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
-.form-group label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:300;}
+.form-group label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
 .form-input,.form-select{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:11px 13px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:all .2s;width:100%;font-weight:300;}
 .form-input::placeholder{color:var(--text3);}
 .form-input:focus,.form-select:focus{border-color:var(--accent);background:var(--surface);}
@@ -120,22 +133,22 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 .toast i{font-size:17px;color:var(--green);}
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;}
 .sheet-overlay.on{opacity:1;pointer-events:all;}
-.sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-height:93dvh;max-height:93vh;display:flex;flex-direction:column;overflow:hidden;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);padding-bottom:env(safe-area-inset-bottom);}
+.sheet{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-height:93dvh;max-height:93vh;display:flex;flex-direction:column;overflow:hidden;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);padding-bottom:env(safe-area-inset-bottom);}
 .sheet-overlay.on .sheet{transform:translateY(0);}
 .sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--border2);margin:12px auto 0;flex-shrink:0;}
 .sheet-head{padding:14px 20px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid var(--border);}
-.sheet-title{font-size:17px;font-weight:300;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+.sheet-title{font-size:18px;font-weight:700;color:var(--text);font-family:'Inter',sans-serif;}
 .sheet-close{width:30px;height:30px;border-radius:8px;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);}
 .sheet-body{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
 .sheet-body::-webkit-scrollbar{display:none;}
 .sheet-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;}
 .filter-strip{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .filter-strip::-webkit-scrollbar{display:none;}
-.chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:300;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0;}
-.chip.sel{background:var(--accent);color:#fff;border-color:var(--accent);}
+.chip{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0;}
+.chip.sel{background:#1E4A8A;color:#fff;border-color:#1E4A8A;font-weight:600;}
 .chip:active{opacity:.8;}
-.ap-item{margin:0 16px 10px;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:border-color .15s;}
-.ap-item.open{border-color:var(--accent);}
+.ap-item{margin:0 16px 10px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .15s;box-shadow:var(--shadow-sm);}
+.ap-item.open{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
 .ap-item-head{padding:13px 14px;display:flex;align-items:center;gap:11px;}
 .ap-item-ico{width:36px;height:36px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .ap-item-ico i{font-size:17px;color:var(--text3);}
@@ -167,12 +180,15 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 </style>
 </head>
 <body>
-<div id="loading">
-  <svg width="48" height="48" viewBox="0 0 36 36">
-    <rect x="2" y="2" width="22" height="14" rx="4" fill="#3D6FB0"/>
-    <rect x="12" y="20" width="22" height="14" rx="4" fill="#8AAFD6"/>
+<div id="loading" style="position:fixed;inset:0;background:linear-gradient(180deg,#1E4A8A 0%,#163B72 100%);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:28px;">
+  <svg width="68" height="68" viewBox="0 0 36 36" style="animation:pulse 1.8s ease-in-out infinite;">
+    <rect x="2" y="2" width="22" height="14" rx="5" fill="#FFFFFF"/>
+    <rect x="12" y="20" width="22" height="14" rx="5" fill="rgba(255,255,255,0.4)"/>
   </svg>
-  <p>Carregando…</p>
+  <div style="text-align:center;">
+    <div style="font-size:24px;font-weight:300;color:#fff;letter-spacing:-.5px;font-family:'Plus Jakarta Sans',sans-serif;">simpp</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:6px;letter-spacing:.14em;text-transform:uppercase;font-family:'Inter',sans-serif;">gestão simples</div>
+  </div>
 </div>
 <div class="toast" id="toast"><i class="ti ti-check"></i><span id="toast-msg"></span></div>
 
@@ -192,29 +208,37 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
   <!-- PAINEL -->
   <div class="screen on" id="s-painel">
     <div class="screen-body">
+      <div class="searchbar" style="padding:14px 16px 4px;">
+        <i class="ti ti-search"></i>
+        <input type="search" placeholder="Buscar cliente, placa ou nº da apólice" id="p-srch" oninput="filterApGlobal(this.value)" autocomplete="off">
+      </div>
       <div class="metric-strip">
-        <div class="metric-card accent-border" onclick="goScreen('apolices')">
+        <div class="metric-card" onclick="goScreen('apolices')">
+          <div class="mico"><i class="ti ti-file-certificate"></i></div>
           <div class="mlabel">Apólices</div><div class="mnum" id="m-a">0</div><div class="msub">vigentes</div>
         </div>
-        <div class="metric-card green-border" onclick="goScreen('clientes')">
+        <div class="metric-card" onclick="goScreen('clientes')">
+          <div class="mico"><i class="ti ti-users"></i></div>
           <div class="mlabel">Clientes</div><div class="mnum" id="m-c">0</div><div class="msub">cadastrados</div>
         </div>
-        <div class="metric-card amber-border" onclick="goScreen('apolices');setTimeout(()=>setFiltro('Proposta'),80)">
+        <div class="metric-card" onclick="goScreen('apolices');setTimeout(()=>setFiltro('Proposta'),80)">
+          <div class="mico"><i class="ti ti-file-text"></i></div>
           <div class="mlabel">Propostas</div><div class="mnum" id="m-prop">0</div><div class="msub">pendentes</div>
         </div>
-        <div class="metric-card red-border" onclick="goScreen('renovacoes')">
+        <div class="metric-card" onclick="goScreen('renovacoes')">
+          <div class="mico"><i class="ti ti-bell-ringing"></i></div>
           <div class="mlabel">Renovações</div><div class="mnum" id="m-r">0</div><div class="msub">em 30 dias</div>
         </div>
       </div>
-      <div class="sec-head">Tarefas · próximos 7 dias</div>
+      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-checkbox"></i>Tarefas · próximos 7 dias</div></div>
       <div class="card" style="margin:0 16px 16px;"><div id="p-tarefas"></div>
         <div style="padding:10px 16px;border-top:1px solid var(--border);">
           <button class="btn btn-ghost btn-full" onclick="goScreen('tarefas')" style="font-size:13px;">Ver todas</button>
         </div>
       </div>
-      <div class="sec-head">Vencendo em breve</div>
+      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-clock"></i>Vencendo em breve</div></div>
       <div class="card" style="margin:0 16px 16px;"><div id="p-vencendo"></div></div>
-      <div class="sec-head">Últimas apólices</div>
+      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-file-certificate"></i>Últimas apólices</div></div>
       <div class="card" style="margin:0 16px 24px;"><div id="p-list"></div>
         <div style="padding:10px 16px;border-top:1px solid var(--border);">
           <button class="btn btn-ghost btn-full" onclick="goScreen('apolices')" style="font-size:13px;">Ver todas</button>
@@ -282,7 +306,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
   <!-- MAIS -->
   <div class="screen" id="s-mais">
     <div class="screen-body">
-      <div class="sec-head">Relatórios</div>
+      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-chart-bar"></i>Relatórios</div></div>
       <div class="card" style="margin:0 16px 16px;">
         <div class="cfg-item" onclick="goScreen('producao')">
           <div class="cfg-ico"><i class="ti ti-chart-bar"></i></div>
@@ -297,7 +321,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
           <i class="ti ti-chevron-right" style="color:var(--text3);font-size:15px;"></i>
         </div>
       </div>
-      <div class="sec-head">Conta</div>
+      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-user"></i>Conta</div></div>
       <div class="card" style="margin:0 16px 16px;">
         <div class="cfg-item" onclick="goScreen('configuracoes')">
           <div class="cfg-ico"><i class="ti ti-settings"></i></div>
@@ -355,7 +379,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
         <button class="chip" data-pm="10" onclick="selProdMes(this,'10')">Nov</button>
         <button class="chip" data-pm="11" onclick="selProdMes(this,'11')">Dez</button>
       </div>
-      <div class="sec-head">Apólices ativas</div>
+      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-list"></i>Apólices ativas</div></div>
       <div class="card" style="margin:0 16px 24px;"><div id="prod-list"></div></div>
     </div>
   </div>
@@ -363,7 +387,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
   <!-- CONFIGURAÇÕES -->
   <div class="screen" id="s-configuracoes">
     <div class="screen-body" style="padding:8px 16px 24px;">
-      <div class="sec-head" style="padding:16px 0 8px;">Ramos cadastrados</div>
+      <div class="sec-head" style="padding:16px 0 8px;"><div class="sec-head-pill"><i class="ti ti-tag"></i>Ramos</div></div>
       <div class="card" style="margin-bottom:12px;">
         <div style="padding:14px 16px;">
           <div style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px;" id="ramos-lista"></div>
@@ -373,7 +397,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
           </div>
         </div>
       </div>
-      <div class="sec-head" style="padding:8px 0;">Motivos de cancelamento / recusa</div>
+      <div class="sec-head" style="padding:8px 0;"><div class="sec-head-pill"><i class="ti ti-x"></i>Motivos de cancelamento</div></div>
       <div class="card" style="margin-bottom:12px;">
         <div style="padding:14px 16px;">
           <div style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px;" id="motivos-lista"></div>
@@ -383,7 +407,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
           </div>
         </div>
       </div>
-      <div class="sec-head" style="padding:8px 0;">Logo da corretora</div>
+      <div class="sec-head" style="padding:8px 0;"><div class="sec-head-pill"><i class="ti ti-photo"></i>Logo da corretora</div></div>
       <div class="card" style="margin-bottom:12px;">
         <div style="padding:14px 16px;">
           <div onclick="document.getElementById('cfg-logo-input').click()" style="height:70px;border:1.5px dashed var(--border2);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;">
@@ -810,6 +834,8 @@ function setTheme(th) {
   var isDark = th === 'dark';
   var icon = isDark ? 'ti-moon' : 'ti-sun';
   document.querySelectorAll('#theme-icon,#cfg-theme-ico').forEach(el=>el.className='ti '+icon);
+  var tmeta=document.getElementById('theme-meta');if(tmeta)tmeta.content=isDark?'#0D1A2E':'#1E4A8A';
+  var topbarEl=document.querySelector('.topbar');if(topbarEl)topbarEl.style.background=isDark?'linear-gradient(180deg,#162236 0%,#0F1A2E 100%)':'linear-gradient(180deg,#1E4A8A 0%,#163B72 100%)';
   var lbl = document.getElementById('cfg-theme-label');
   if(lbl) lbl.textContent = isDark ? 'Escuro' : 'Claro';
   document.getElementById('theme-meta') && (document.getElementById('theme-meta').content = isDark ? '#0A1220' : '#FFFFFF');
@@ -908,14 +934,14 @@ function buildPainelList() {
   var items = D.slice(0,5);
   if (!items.length) { el.innerHTML='<div class="empty" style="padding:24px;"><p>Nenhuma apólice ainda</p></div>'; return; }
   el.innerHTML = items.map(d => {
-    var pc = PC[d.prod]||PC['Outro'];
+    var ic=getPicoIcon(d.ramo||d.prod);
     return '<div class="list-item" onclick="goScreen(\'apolices\');setTimeout(()=>openApDetail(\''+d.id+'\'),80)">'+
-      '<div class="av" style="width:38px;height:38px;background:'+pc.bg+';color:'+pc.cor+';">'+d.ini+'</div>'+
-      '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:300;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+d.nome+'</div>'+
-      '<div style="font-size:11px;color:var(--text3);margin-top:2px;">'+d.prod+' · '+d.seg+'</div></div>'+
-      '<div style="text-align:right;flex-shrink:0;"><div style="font-size:13px;font-weight:300;color:var(--text);font-family:\'Inter\',sans-serif;">'+brl(d.premio)+'</div>'+
-      '<div style="font-size:10px;color:var(--text3);">'+d.parc+'</div></div>'+
-      '</div>';
+      '<div style="width:38px;height:38px;border-radius:12px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class=\"ti '+ic+'\" style=\"font-size:18px;color:var(--accent-t);\"></i></div>'+
+      '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+d.nome+'</div>'+
+      '<div style="font-size:12px;color:var(--text3);margin-top:2px;">'+d.prod+' · '+d.seg+'</div></div>'+
+      '<div style="text-align:right;flex-shrink:0;"><div style="font-size:13px;font-weight:600;color:var(--text);font-family:\'Inter\',sans-serif;">'+brl(d.premio)+'</div>'+
+      '<div style="font-size:11px;color:var(--text3);">'+d.parc+'</div></div>'+
+      '<i class=\"ti ti-chevron-right\" style=\"font-size:14px;color:var(--text3);flex-shrink:0;margin-left:4px;\"></i></div>';
   }).join('');
 }
 
@@ -925,7 +951,7 @@ function buildPainelTarefas() {
   var hoje = new Date(); hoje.setHours(0,0,0,0);
   var em7 = new Date(hoje); em7.setDate(em7.getDate()+7);
   var lista = TAREFAS.filter(t=>!t.feita&&new Date(t.data+'T00:00:00')<=em7).sort((a,b)=>new Date(a.data)-new Date(b.data)).slice(0,4);
-  if (!lista.length) { el.innerHTML='<div style="padding:20px 16px;text-align:center;font-size:12px;color:var(--text3);">Sem tarefas nos próximos 7 dias</div>'; return; }
+  if (!lista.length) { el.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:16px;"><div style="width:38px;height:38px;border-radius:12px;background:var(--green-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class=\"ti ti-check\" style=\"font-size:18px;color:var(--green);\"></i></div><div><div style=\"font-size:14px;font-weight:600;color:var(--text)\">Nenhuma tarefa pendente</div><div style=\"font-size:12px;color:var(--text3);margin-top:2px\">Sua semana está organizada!</div></div></div>'; return; }
   el.innerHTML = lista.map(t=>{
     var d=new Date(t.data+'T00:00:00');d.setHours(0,0,0,0);
     var atrasada=d<hoje;var dataCor=atrasada?'var(--red)':'var(--text3)';
@@ -1030,13 +1056,13 @@ function buildApDetail(ap, c) {
     '</div>';
   }
 
-  // Botões PDF proposta e apólice
+  // Botões PDF proposta / apólice
   var temPdfProposta = ap.pdfPropostaData || ap.pdfPropostaPath;
   var temPdfApolice  = ap.pdfApoliceData  || ap.pdfApolicePath;
   if(temPdfProposta || temPdfApolice){
     rows += '<div style="padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--border);">';
     if(temPdfProposta) rows += '<button onclick="event.stopPropagation();abrirPdfApp(\'proposta\',\''+ap.id+'\',null)" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--accent-t);font-size:12px;cursor:pointer;font-family:\'Inter\',sans-serif;font-weight:500;"><i class=\"ti ti-file-type-pdf\" style=\"font-size:15px;\"></i>PDF Proposta</button>';
-    if(temPdfApolice)  rows += '<button onclick="event.stopPropagation();abrirPdfApp(\'apolice\',\''+ap.id+'\',null)" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1px solid rgba(185,28,28,0.18);background:var(--red-bg);color:var(--red);font-size:12px;cursor:pointer;font-family:\'Inter\',sans-serif;font-weight:500;"><i class=\"ti ti-file-type-pdf\" style=\"font-size:15px;\"></i>PDF Apólice</button>';
+    if(temPdfApolice)  rows += '<button onclick="event.stopPropagation();abrirPdfApp(\'apolice\',\''+ap.id+'\',null)" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1px solid rgba(220,38,38,0.18);background:var(--red-bg);color:var(--red);font-size:12px;cursor:pointer;font-family:\'Inter\',sans-serif;font-weight:500;"><i class=\"ti ti-file-type-pdf\" style=\"font-size:15px;\"></i>PDF Apólice</button>';
     rows += '</div>';
   }
   return rows;
@@ -1056,7 +1082,8 @@ function openApDetail(apId) {
   if (el) { document.querySelectorAll('.ap-item.open').forEach(a=>a.classList.remove('open')); el.classList.add('open'); el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
 }
 
-function filterAp(q) { buildApList(q); }
+function filterAp(q){buildApList(q);}
+function filterApGlobal(q){if(!q.trim())return;setFiltro('Todas');goScreen('apolices');setTimeout(()=>{var inp=document.getElementById('ap-srch');if(inp){inp.value=q;buildApList(q);}},80);}
 function setFiltro(val) {
   apFiltro = val;
   buildApList('');
@@ -1757,63 +1784,41 @@ async function carregarDados(){
 // ── ABRIR PDF NO MOBILE ───────────────────────────────────────────
 function abrirPdfApp(tipo, apId, endossoIdx) {
   var ap = APOLICES.find(a=>String(a.id)===String(apId));
-  if(!ap){ toast('Apólice não encontrada','err'); return; }
-
-  var b64 = null;
-  var path = null;
-  var nome = 'documento.pdf';
-
-  if(tipo === 'proposta'){
-    b64   = ap.pdfPropostaData;
-    path  = ap.pdfPropostaPath;
-    nome  = ap.pdfPropostaNome || 'proposta.pdf';
-  } else if(tipo === 'apolice'){
-    b64   = ap.pdfApoliceData;
-    path  = ap.pdfApolicePath;
-    nome  = ap.pdfApoliceNome || 'apolice.pdf';
-  } else if(tipo === 'endosso' && endossoIdx !== null){
-    var e = (ap.endossos||[])[endossoIdx];
-    if(!e){ toast('Endosso não encontrado','err'); return; }
-    b64  = e.pdfData;
-    path = e.pdfPath;
-    nome = e.pdfNome || 'endosso.pdf';
+  if(!ap){ toast('Apólice não encontrada'); return; }
+  var b64=null, path=null, nome='documento.pdf';
+  if(tipo==='proposta'){
+    b64=ap.pdfPropostaData; path=ap.pdfPropostaPath; nome=ap.pdfPropostaNome||'proposta.pdf';
+  } else if(tipo==='apolice'){
+    b64=ap.pdfApoliceData; path=ap.pdfApolicePath; nome=ap.pdfApoliceNome||'apolice.pdf';
+  } else if(tipo==='endosso'&&endossoIdx!==null){
+    var e=(ap.endossos||[])[endossoIdx];
+    if(!e){ toast('Endosso não encontrado'); return; }
+    b64=e.pdfData; path=e.pdfPath; nome=e.pdfNome||'endosso.pdf';
   }
-
-  // Opção 1: base64 direto no objeto
   if(b64){
     try{
-      // limpar possível prefixo data:application/pdf;base64,
-      var raw = b64.includes(',') ? b64.split(',')[1] : b64;
-      var byteChars = atob(raw);
-      var byteArr = new Uint8Array(byteChars.length);
+      var raw=b64.includes(',')?b64.split(',')[1]:b64;
+      var byteChars=atob(raw);
+      var byteArr=new Uint8Array(byteChars.length);
       for(var i=0;i<byteChars.length;i++) byteArr[i]=byteChars.charCodeAt(i);
-      var blob = new Blob([byteArr],{type:'application/pdf'});
-      var url  = URL.createObjectURL(blob);
+      var blob=new Blob([byteArr],{type:'application/pdf'});
+      var url=URL.createObjectURL(blob);
       window.open(url,'_blank');
-      setTimeout(()=>URL.revokeObjectURL(url), 30000);
+      setTimeout(()=>URL.revokeObjectURL(url),30000);
       return;
-    } catch(err){
-      console.error('Erro ao abrir PDF base64:', err);
-    }
+    } catch(err){ console.error('PDF base64 error:',err); }
   }
-
-  // Opção 2: path no Supabase Storage
-  if(path && _supaUser){
-    supa.storage.from('pdfs').createSignedUrl(path, 120)
-      .then(function(res){
-        if(res.data && res.data.signedUrl){
-          window.open(res.data.signedUrl,'_blank');
-        } else {
-          toast('Não foi possível abrir o PDF','err');
-          console.error('Signed URL error:', res.error);
-        }
-      });
+  if(path&&_supaUser){
+    supa.storage.from('pdfs').createSignedUrl(path,120).then(function(res){
+      if(res.data&&res.data.signedUrl) window.open(res.data.signedUrl,'_blank');
+      else toast('Não foi possível abrir o PDF');
+    });
     return;
   }
-
-  toast('PDF não disponível nesta apólice','err');
+  toast('PDF não disponível');
 }
 
+function setVH(){document.documentElement.style.setProperty('--vh',(window.innerHeight*0.01)+'px');}setVH();window.addEventListener('resize',setVH);
 initAuth();
 </script>
 </body>
