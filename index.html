@@ -1795,6 +1795,7 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
     if(!e){ toast('Endosso não encontrado'); return; }
     b64=e.pdfData; path=e.pdfPath; nome=e.pdfNome||'endosso.pdf';
   }
+  // Opção 1: base64
   if(b64){
     try{
       var raw=b64.includes(',')?b64.split(',')[1]:b64;
@@ -1808,14 +1809,65 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
       return;
     } catch(err){ console.error('PDF base64 error:',err); }
   }
+  // Opção 2: path no Storage — tenta o path como URL pública primeiro,
+  // depois tenta signed URL nos buckets conhecidos
   if(path&&_supaUser){
-    supa.storage.from('pdfs').createSignedUrl(path,120).then(function(res){
-      if(res.data&&res.data.signedUrl) window.open(res.data.signedUrl,'_blank');
-      else toast('Não foi possível abrir o PDF');
+    // Se o path já é uma URL completa, abre direto
+    if(path.startsWith('http')){
+      window.open(path,'_blank');
+      return;
+    }
+    // Extrai bucket e caminho: o path pode ser "bucket/arquivo.pdf" ou só "arquivo.pdf"
+    var parts = path.split('/');
+    var bucket, filePath;
+    // Tenta detectar o bucket pelo início do path
+    var knownBuckets = ['apolices','propostas','pdfs','documentos','uploads','simpp'];
+    if(parts.length > 1 && knownBuckets.includes(parts[0])){
+      bucket = parts[0];
+      filePath = parts.slice(1).join('/');
+    } else {
+      // Tenta os buckets conhecidos em sequência
+      bucket = 'apolices';
+      filePath = path;
+    }
+    // Tenta URL pública primeiro (bucket público)
+    var pubUrl = SUPA_URL + '/storage/v1/object/public/' + bucket + '/' + filePath;
+    // Testa se a URL pública funciona
+    fetch(pubUrl, {method:'HEAD'}).then(function(r){
+      if(r.ok){
+        window.open(pubUrl,'_blank');
+      } else {
+        // Tenta signed URL
+        supa.storage.from(bucket).createSignedUrl(filePath, 300).then(function(res){
+          if(res.data&&res.data.signedUrl){
+            window.open(res.data.signedUrl,'_blank');
+          } else {
+            // Tenta bucket alternativo
+            var alt = bucket==='apolices'?'pdfs':bucket==='pdfs'?'apolices':'simpp';
+            supa.storage.from(alt).createSignedUrl(filePath, 300).then(function(res2){
+              if(res2.data&&res2.data.signedUrl){
+                window.open(res2.data.signedUrl,'_blank');
+              } else {
+                console.error('Storage error bucket='+bucket,res.error,'alt bucket='+alt,res2.error);
+                toast('Erro ao abrir PDF — path: '+path.substring(0,40));
+              }
+            });
+          }
+        });
+      }
+    }).catch(function(){
+      // fetch falhou (CORS) — vai direto para signed URL
+      supa.storage.from(bucket).createSignedUrl(filePath, 300).then(function(res){
+        if(res.data&&res.data.signedUrl) window.open(res.data.signedUrl,'_blank');
+        else {
+          console.error('Signed URL failed:',res.error,'path:',path,'bucket:',bucket);
+          toast('Erro: '+JSON.stringify(res.error).substring(0,60));
+        }
+      });
     });
     return;
   }
-  toast('PDF não disponível');
+  toast('PDF não disponível nesta apólice');
 }
 
 function setVH(){document.documentElement.style.setProperty('--vh',(window.innerHeight*0.01)+'px');}setVH();window.addEventListener('resize',setVH);
