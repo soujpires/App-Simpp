@@ -1795,7 +1795,7 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
     if(!e){ toast('Endosso não encontrado'); return; }
     b64=e.pdfData; path=e.pdfPath; nome=e.pdfNome||'endosso.pdf';
   }
-  // Opção 1: base64 direto
+  // base64
   if(b64){
     try{
       var raw=b64.includes(',')?b64.split(',')[1]:b64;
@@ -1807,30 +1807,16 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
       return;
     } catch(err){ console.error('b64 err:',err); }
   }
-  // Opção 2: path no Storage
+  // Supabase Storage — bucket 'PDFs' (case-sensitive)
   if(path&&_supaUser){
-    // path = "user_id/arquivo.pdf" sem bucket
-    // descobre o bucket tentando signed URL em sequência
-    var buckets = ['apolices','simpp-pdfs','pdfs','documentos','simpp','uploads'];
-    function tryBucket(i){
-      if(i>=buckets.length){
-        toast('PDF não encontrado no storage');
-        return;
+    supa.storage.from('PDFs').createSignedUrl(path,300).then(function(res){
+      if(res.data&&res.data.signedUrl){
+        window.open(res.data.signedUrl,'_blank');
+      } else {
+        console.error('Storage error:',res.error,'path:',path);
+        toast('Erro ao abrir PDF: '+(res.error?res.error.message:'desconhecido'));
       }
-      supa.storage.from(buckets[i]).createSignedUrl(path, 300).then(function(res){
-        if(res.data && res.data.signedUrl){
-          window.open(res.data.signedUrl,'_blank');
-        } else {
-          // Também tenta URL pública deste bucket
-          var pub = SUPA_URL+'/storage/v1/object/public/'+buckets[i]+'/'+path;
-          fetch(pub,{method:'HEAD'}).then(function(r){
-            if(r.ok){ window.open(pub,'_blank'); }
-            else { tryBucket(i+1); }
-          }).catch(function(){ tryBucket(i+1); });
-        }
-      }).catch(function(){ tryBucket(i+1); });
-    }
-    tryBucket(0);
+    });
     return;
   }
   toast('PDF não disponível');
