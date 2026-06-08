@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simpp · entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Inter', sans-serif; font-weight: 300; }
+body { background: #0a1628; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+canvas { position: fixed; inset: 0; z-index: 0; }
+.card {
+  position: relative; z-index: 10; width: 360px;
+  background: #EEF3FA;
+  border: 1px solid rgba(61,111,176,0.12);
+  border-radius: 18px; padding: 40px 36px 36px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.45);
+  animation: cardIn .5s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes cardIn { from{opacity:0;transform:translateY(18px) scale(.98)} to{opacity:1;transform:none} }
+.logo-wrap { display:flex; align-items:center; gap:11px; margin-bottom:32px; }
+.logo-name { font-family:'Plus Jakarta Sans',sans-serif; font-size:22px; font-weight:300; color:#0D1A2E; letter-spacing:-.5px; }
+.logo-tag  { font-size:10px; color:#8896A8; margin-top:1px; letter-spacing:.1em; text-transform:uppercase; }
+.form-label { display:block; font-size:11px; color:#8896A8; text-transform:uppercase; letter-spacing:.07em; margin-bottom:7px; }
+.form-input {
+  width:100%; background:#fff; border:1px solid rgba(61,111,176,0.18);
+  border-radius:8px; padding:11px 14px; font-size:14px; color:#0D1A2E;
+  font-family:'Inter',sans-serif; font-weight:300; outline:none;
+  transition:border-color .15s, box-shadow .15s; caret-color:#3D6FB0;
+}
+.form-input::placeholder { color:#C0CCE0; }
+.form-input:focus { border-color:#3D6FB0; box-shadow:0 0 0 3px rgba(61,111,176,0.1); }
+.form-group { margin-bottom:16px; }
+.btn-enter {
+  width:100%; margin-top:8px; padding:12px; background:#3D6FB0;
+  border:none; border-radius:8px; color:#fff; font-size:13px;
+  font-family:'Inter',sans-serif; font-weight:300; cursor:pointer;
+  transition:background .15s, opacity .15s;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+}
+.btn-enter:hover { background:#2d5a99; }
+.btn-enter:disabled { opacity:.6; cursor:not-allowed; }
+.error-msg {
+  display:none; margin-top:14px; padding:10px 12px;
+  background:rgba(220,38,38,0.06); border:1px solid rgba(220,38,38,0.18);
+  border-radius:7px; font-size:12px; color:#DC2626; text-align:center;
+}
+.error-msg.on { display:block; }
+.footer-txt { text-align:center; margin-top:28px; font-size:10px; color:#B0BCCC; letter-spacing:.04em; }
+.spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="card">
+  <div class="logo-wrap">
+    <svg width="36" height="36" viewBox="0 0 36 36" style="flex-shrink:0;">
+      <rect x="2"  y="2"  width="22" height="14" rx="4" fill="#3D6FB0"/>
+      <rect x="12" y="20" width="22" height="14" rx="4" fill="#8AAFD6"/>
+    </svg>
+    <div>
+      <div class="logo-name">simpp</div>
+      <div class="logo-tag">gestão simples</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label" for="email">E-mail</label>
+    <input class="form-input" type="email" id="email" placeholder="seu@email.com" autocomplete="username" autofocus>
+  </div>
+  <div class="form-group">
+    <label class="form-label" for="senha">Senha</label>
+    <input class="form-input" type="password" id="senha" placeholder="••••••••" autocomplete="current-password">
+  </div>
+  <button class="btn-enter" id="btn-login" onclick="tentarLogin()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 2H2.5A1.5 1.5 0 001 3.5v7A1.5 1.5 0 002.5 12H5M9 10l3-3-3-3M12 7H5"/>
+    </svg>
+    Entrar
+  </button>
+  <div class="error-msg" id="err"></div>
+  <div class="footer-txt">simpp · gestão simples para corretores</div>
+</div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────
+const SUPA_URL = 'https://qqmfvpubrrdxakowpldv.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxbWZ2cHVicnJkeGFrb3dwbGR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NTczMjEsImV4cCI6MjA5NjMzMzMyMX0.XLh29w5Jsq-u27hYfiy_7dOMzm9Ifs9_glvWOoQP6G0';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// Se já tem sessão ativa, vai direto pro app
+supa.auth.getSession().then(({data:{session}}) => {
+  if (session) window.location.replace('index.html');
+});
+
+async function tentarLogin() {
+  var email = document.getElementById('email').value.trim();
+  var senha = document.getElementById('senha').value;
+  var err   = document.getElementById('err');
+  var btn   = document.getElementById('btn-login');
+
+  if (!email || !senha) {
+    mostrarErro('Preencha e-mail e senha.');
+    return;
+  }
+
+  // Estado de loading
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+
+  const { data, error } = await supa.auth.signInWithPassword({ email, password: senha });
+
+  if (error) {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2H2.5A1.5 1.5 0 001 3.5v7A1.5 1.5 0 002.5 12H5M9 10l3-3-3-3M12 7H5"/></svg> Entrar';
+    mostrarErro('E-mail ou senha incorretos.');
+    document.getElementById('senha').value = '';
+    document.getElementById('senha').focus();
+    shake();
+    return;
+  }
+
+  window.location.replace('index.html');
+}
+
+function mostrarErro(msg) {
+  var err = document.getElementById('err');
+  err.textContent = msg;
+  err.classList.add('on');
+}
+
+function shake() {
+  var card = document.querySelector('.card');
+  card.style.transition = 'transform .06s';
+  card.style.transform = 'translateX(-6px)';
+  setTimeout(function(){ card.style.transform = 'translateX(6px)'; }, 60);
+  setTimeout(function(){ card.style.transform = 'translateX(-3px)'; }, 120);
+  setTimeout(function(){ card.style.transform = 'translateX(0)'; }, 180);
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') tentarLogin();
+});
+
+// ── CANVAS ────────────────────────────────────────────────────
+(function(){
+  var cv=document.getElementById('c'),ctx=cv.getContext('2d');
+  var W,H,nodes=[],mouse={x:-9999,y:-9999};
+  var N=55,DIST=130,MDIST=180;
+  function resize(){ W=cv.width=window.innerWidth; H=cv.height=window.innerHeight; }
+  window.addEventListener('resize',resize); resize();
+  window.addEventListener('mousemove',function(e){ mouse.x=e.clientX; mouse.y=e.clientY; });
+  var cols=['#1a3a6e','#1e4a8a','#234f96','#1b3d78','#163266','#2a5ba8','#12284f'];
+  for(var i=0;i<N;i++) nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:1.5+Math.random()*2,col:cols[Math.floor(Math.random()*cols.length)],pulse:Math.random()*Math.PI*2});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var g=ctx.createRadialGradient(W*.5,H*.45,0,W*.5,H*.45,W*.7);
+    g.addColorStop(0,'#0d1f3d'); g.addColorStop(1,'#060e1e');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    for(var i=0;i<nodes.length;i++){
+      var n=nodes[i]; n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>W)n.vx*=-1; if(n.y<0||n.y>H)n.vy*=-1; n.pulse+=.018;
+      var dx=mouse.x-n.x,dy=mouse.y-n.y,dm=Math.sqrt(dx*dx+dy*dy);
+      if(dm<MDIST){var f=(1-dm/MDIST)*.012;n.vx+=dx*f;n.vy+=dy*f;var sp=Math.sqrt(n.vx*n.vx+n.vy*n.vy);if(sp>1.2){n.vx=n.vx/sp*1.2;n.vy=n.vy/sp*1.2;}}
+    }
+    for(var i=0;i<nodes.length;i++) for(var j=i+1;j<nodes.length;j++){
+      var a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<DIST){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle='rgba(91,143,212,'+((1-d/DIST)*.18).toFixed(3)+')';ctx.lineWidth=.6;ctx.stroke();}
+    }
+    for(var i=0;i<nodes.length;i++){
+      var n=nodes[i],p=.7+Math.sin(n.pulse)*.3;
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r*p,0,Math.PI*2);
+      ctx.fillStyle=n.col;ctx.globalAlpha=.55+Math.sin(n.pulse)*.2;ctx.fill();ctx.globalAlpha=1;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
