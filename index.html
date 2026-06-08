@@ -1737,10 +1737,10 @@ async function carregarDados(){
     ap:a.ap||'',proposta:a.proposta||'',dataProposta:a.data_proposta||'',
     premio:parseFloat(a.premio)||0,parc:a.parc,com:parseFloat(a.com)||0,
     iv:a.iv||'',fv:a.fv||'',st:a.st||'Proposta',obj:a.obj||'',obs:a.obs||'',
-    pdfPropostaNome:a.pdf_proposta_nome,pdfPropostaData:a.pdf_proposta_data,
-    pdfApoliceNome:a.pdf_apolice_nome,pdfApoliceData:a.pdf_apolice_data,
+    pdfPropostaNome:a.pdf_proposta_nome,pdfPropostaData:a.pdf_proposta_data,pdfPropostaPath:a.pdf_proposta_path||null,
+    pdfApoliceNome:a.pdf_apolice_nome,pdfApoliceData:a.pdf_apolice_data,pdfApolicePath:a.pdf_apolice_path||null,
     cancelamento:a.cancelamento||null,
-    endossos:(a.endossos||[]).map(e=>({id:e.id,num:e.num,tipo:e.tipo,data:e.data,campos:e.campos,obs:e.obs,pdfNome:e.pdf_nome,pdfData:e.pdf_data}))
+    endossos:(a.endossos||[]).map(e=>({id:e.id,num:e.num,tipo:e.tipo,data:e.data,campos:e.campos,obs:e.obs,pdfNome:e.pdf_nome,pdfData:e.pdf_data,pdfPath:e.pdf_path||null}))
   }));
   // buscar clientes faltantes
   var cidSet=new Set(CLIENTES.map(c=>c.id));
