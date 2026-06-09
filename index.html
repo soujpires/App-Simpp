@@ -209,8 +209,8 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
   <div class="screen on" id="s-painel">
     <div class="screen-body">
       <div class="searchbar" style="padding:14px 16px 4px;">
-        <i class="ti ti-search"></i>
-        <input type="search" placeholder="Buscar cliente, placa ou nº da apólice" id="p-srch" oninput="filterApGlobal(this.value)" autocomplete="off">
+        <i class="ti ti-search" style="cursor:pointer;" onclick="var q=document.getElementById('p-srch').value;if(q.trim())filterApGlobal(q);"></i>
+        <input type="search" placeholder="Buscar cliente, placa ou nº da apólice" id="p-srch" onkeydown="if(event.key==='Enter'&&this.value.trim())filterApGlobal(this.value)" autocomplete="off" inputmode="search">
       </div>
       <div class="metric-strip">
         <div class="metric-card" onclick="goScreen('apolices')">
@@ -1083,7 +1083,20 @@ function openApDetail(apId) {
 }
 
 function filterAp(q){buildApList(q);}
-function filterApGlobal(q){if(!q.trim())return;setFiltro('Todas');goScreen('apolices');setTimeout(()=>{var inp=document.getElementById('ap-srch');if(inp){inp.value=q;buildApList(q);}},80);}
+function filterApGlobal(q){
+  if(!q||!q.trim()) return;
+  // navega para apólices e preenche o campo de busca sem resetar
+  apFiltro='Todas';
+  goScreen('apolices');
+  setTimeout(function(){
+    var inp=document.getElementById('ap-srch');
+    if(inp){ inp.value=q; buildApList(q); inp.focus(); }
+    // atualizar chips
+    document.querySelectorAll('[data-ap-filter]').forEach(function(b){
+      b.classList.toggle('sel', b.dataset.apFilter==='Todas');
+    });
+  }, 100);
+}
 function setFiltro(val) {
   apFiltro = val;
   buildApList('');
@@ -1795,7 +1808,6 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
     if(!e){ toast('Endosso não encontrado'); return; }
     b64=e.pdfData; path=e.pdfPath; nome=e.pdfNome||'endosso.pdf';
   }
-  // base64
   if(b64){
     try{
       var raw=b64.includes(',')?b64.split(',')[1]:b64;
@@ -1803,19 +1815,16 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
       var byteArr=new Uint8Array(byteChars.length);
       for(var i=0;i<byteChars.length;i++) byteArr[i]=byteChars.charCodeAt(i);
       var blob=new Blob([byteArr],{type:'application/pdf'});
-      window.open(URL.createObjectURL(blob),'_blank');
+      var url=URL.createObjectURL(blob);
+      window.open(url,'_blank');
+      setTimeout(()=>URL.revokeObjectURL(url),30000);
       return;
-    } catch(err){ console.error('b64 err:',err); }
+    } catch(err){ console.error('PDF base64 error:',err); }
   }
-  // Supabase Storage — bucket 'PDFs' (case-sensitive)
   if(path&&_supaUser){
-    supa.storage.from('PDFs').createSignedUrl(path,300).then(function(res){
-      if(res.data&&res.data.signedUrl){
-        window.open(res.data.signedUrl,'_blank');
-      } else {
-        console.error('Storage error:',res.error,'path:',path);
-        toast('Erro ao abrir PDF: '+(res.error?res.error.message:'desconhecido'));
-      }
+    supa.storage.from('pdfs').createSignedUrl(path,120).then(function(res){
+      if(res.data&&res.data.signedUrl) window.open(res.data.signedUrl,'_blank');
+      else toast('Não foi possível abrir o PDF');
     });
     return;
   }
