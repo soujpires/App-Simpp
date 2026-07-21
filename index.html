@@ -8,12 +8,24 @@
 <meta name="theme-color" content="#1E4A8A" id="theme-meta">
 <meta name="apple-mobile-web-app-title" content="Simpp">
 <link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="/manifest.json">
 <title>Simpp · APP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>document.documentElement.setAttribute('data-theme','light');</script>
+<script>
+document.documentElement.setAttribute('data-theme','light');
+(function(){
+  var isStandalone=window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches;
+  var jaViu=sessionStorage.getItem('simpp_skip_install');
+  var isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(!isStandalone&&!jaViu&&isMobile){
+    sessionStorage.setItem('simpp_skip_install','1');
+    window.location.replace('/install.html');
+  }
+})();
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;-webkit-tap-highlight-color:transparent;}
@@ -1822,9 +1834,13 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
     } catch(err){ console.error('PDF base64 error:',err); }
   }
   if(path&&_supaUser){
-    supa.storage.from('pdfs').createSignedUrl(path,120).then(function(res){
-      if(res.data&&res.data.signedUrl) window.open(res.data.signedUrl,'_blank');
-      else toast('Não foi possível abrir o PDF');
+    supa.storage.from('PDFs').createSignedUrl(path,300).then(function(res){
+      if(res.data&&res.data.signedUrl){
+        window.open(res.data.signedUrl,'_blank');
+      } else {
+        console.error('Signed URL error:', res.error, 'path:', path);
+        toast('Erro ao abrir PDF');
+      }
     });
     return;
   }

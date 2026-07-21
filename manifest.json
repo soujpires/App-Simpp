@@ -1,0 +1,30 @@
+{
+  "name": "Simpp · Gestão de Seguros",
+  "short_name": "Simpp",
+  "description": "Gestão simples de apólices para corretores de seguros",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E4A8A",
+  "theme_color": "#1E4A8A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

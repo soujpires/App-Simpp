@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1E4A8A">
+<title>Instalar Simpp</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(160deg,#0D1A2E 0%,#1E4A8A 100%);
+  min-height:100dvh;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* HERO */
+.hero{
+  display:flex;flex-direction:column;align-items:center;
+  padding:60px 24px 32px;
+  text-align:center;
+}
+.hero-icon{
+  width:96px;height:96px;border-radius:22px;
+  background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:24px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.hero-icon svg{width:60px;height:60px;}
+.hero h1{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:28px;font-weight:700;letter-spacing:-.5px;
+  margin-bottom:10px;
+}
+.hero p{
+  font-size:15px;color:rgba(255,255,255,0.65);
+  line-height:1.6;max-width:300px;
+}
+
+/* DETECTOR */
+.detector{
+  margin:0 20px 12px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:16px;
+  padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+  font-size:13px;color:rgba(255,255,255,0.75);
+}
+.detector i{font-size:20px;color:rgba(255,255,255,0.9);}
+.detector strong{color:#fff;font-weight:600;}
+
+/* TABS */
+.tabs{
+  display:flex;gap:0;
+  margin:0 20px 20px;
+  background:rgba(255,255,255,0.08);
+  border-radius:12px;padding:4px;
+}
+.tab{
+  flex:1;padding:9px;border-radius:9px;
+  font-size:13px;font-weight:500;
+  border:none;background:transparent;color:rgba(255,255,255,0.55);
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.tab i{font-size:16px;}
+.tab.active{background:#fff;color:#1E4A8A;font-weight:700;}
+
+/* STEPS CARD */
+.steps-card{
+  margin:0 20px;
+  background:#fff;border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+}
+.steps-head{
+  background:linear-gradient(135deg,#1E4A8A,#163B72);
+  padding:18px 20px;display:flex;align-items:center;gap:12px;
+}
+.steps-head i{font-size:22px;color:rgba(255,255,255,0.85);}
+.steps-head-text{color:#fff;}
+.steps-head-text h2{font-size:15px;font-weight:700;}
+.steps-head-text p{font-size:12px;color:rgba(255,255,255,0.65);margin-top:2px;}
+
+.step{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px 20px;border-bottom:1px solid #F0F4F8;
+}
+.step:last-child{border-bottom:none;}
+.step-num{
+  width:30px;height:30px;border-radius:50%;
+  background:#E8EEF5;color:#1E4A8A;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.step-body{}
+.step-title{font-size:14px;font-weight:600;color:#0D1A2E;margin-bottom:3px;}
+.step-desc{font-size:13px;color:#667085;line-height:1.5;}
+.step-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#E8EEF5;color:#1E4A8A;
+  border-radius:8px;padding:3px 8px;
+  font-size:12px;font-weight:600;margin-top:6px;
+}
+.step-tag i{font-size:13px;}
+.step-img{
+  margin-top:10px;
+  background:#F5F7FA;border-radius:10px;
+  padding:10px 14px;
+  font-size:12px;color:#667085;
+  display:flex;align-items:center;gap:8px;
+  border:1px solid #E8EEF5;
+}
+.step-img i{font-size:16px;color:#1E4A8A;}
+
+/* OPEN BTN */
+.open-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin:20px 20px 16px;
+  padding:16px;border-radius:16px;
+  background:#fff;color:#1E4A8A;
+  font-size:16px;font-weight:700;
+  text-decoration:none;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  transition:all .15s;
+  font-family:'Inter',sans-serif;
+  border:none;cursor:pointer;width:calc(100% - 40px);
+}
+.open-btn i{font-size:20px;}
+.open-btn:active{transform:scale(.98);}
+
+/* SKIP */
+.skip{
+  text-align:center;padding:0 20px 40px;
+  font-size:13px;color:rgba(255,255,255,0.45);
+}
+.skip a{color:rgba(255,255,255,0.6);text-decoration:underline;}
+
+/* ALREADY INSTALLED */
+.installed-banner{
+  display:none;
+  margin:0 20px 16px;
+  background:rgba(34,197,94,0.15);
+  border:1px solid rgba(34,197,94,0.3);
+  border-radius:14px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  font-size:13px;color:#fff;
+}
+.installed-banner i{font-size:20px;color:#22C55E;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-icon">
+    <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="6" width="36" height="22" rx="7" fill="#1E4A8A"/>
+      <rect x="20" y="32" width="36" height="22" rx="7" fill="#1E4A8A" opacity=".45"/>
+    </svg>
+  </div>
+  <h1>Instalar o Simpp</h1>
+  <p>Adicione à tela inicial do seu celular e acesse como um app nativo — sem precisar de loja.</p>
+</div>
+
+<!-- DETECTOR -->
+<div class="detector" id="detector">
+  <i class="ti ti-device-mobile" id="det-icon"></i>
+  <div>Detectando seu dispositivo<br><strong id="det-label">…</strong></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" id="tab-ios" onclick="showOS('ios')">
+    <i class="ti ti-brand-apple"></i> iPhone / iPad
+  </button>
+  <button class="tab" id="tab-android" onclick="showOS('android')">
+    <i class="ti ti-brand-android"></i> Android
+  </button>
+</div>
+
+<!-- iOS STEPS -->
+<div class="steps-card" id="steps-ios">
+  <div class="steps-head">
+    <i class="ti ti-brand-apple"></i>
+    <div class="steps-head-text">
+      <h2>iPhone &amp; iPad · Safari</h2>
+      <p>Funciona melhor pelo Safari — não pelo Chrome</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">Abra no Safari</div>
+      <div class="step-desc">Se estiver no Chrome ou outro browser, copie a URL e abra no Safari.</div>
+      <div class="step-tag"><i class="ti ti-world"></i>app-simpp.vercel.app</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">Toque em Compartilhar</div>
+      <div class="step-desc">Na barra inferior do Safari, toque no ícone de compartilhar.</div>
+      <div class="step-img">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:#1E4A8A;">
+    <polyline points="8 6 12 2 16 6"></polyline>
+    <line x1="12" y1="2" x2="12" y2="15"></line>
+    <path d="M20 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3"></path>
+    <path d="M17 10h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4"></path>
+  </svg>
+  Este ícone na barra inferior do Safari
+</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">Adicionar à Tela de Início</div>
+      <div class="step-desc">Role o menu e toque em "Adicionar à Tela de Início".</div>
+      <div class="step-img"><i class="ti ti-plus-square"></i>Adicionar à Tela de Início</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">Confirmar</div>
+      <div class="step-desc">Toque em "Adicionar" no canto superior direito. O ícone do Simpp aparecerá na sua tela inicial.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ANDROID STEPS -->
+<div class="steps-card" id="steps-android" style="display:none;">
+  <div class="steps-head">
+    <i class="ti ti-brand-android"></i>
+    <div class="steps-head-text">
+      <h2>Android · Chrome</h2>
+      <p>Funciona melhor pelo Chrome</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">Abra no Chrome</div>
+      <div class="step-desc">Acesse o endereço abaixo pelo Chrome.</div>
+      <div class="step-tag"><i class="ti ti-world"></i>app-simpp.vercel.app</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">Instalar app</div>
+      <div class="step-desc">O Chrome mostrará automaticamente um banner "Adicionar à tela inicial" na parte de baixo. Toque nele.</div>
+      <div class="step-img"><i class="ti ti-download"></i>Banner aparece automaticamente</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">Ou pelo menu</div>
+      <div class="step-desc">Se o banner não aparecer, toque nos 3 pontos (⋮) no canto superior direito e selecione "Adicionar à tela inicial".</div>
+      <div class="step-img"><i class="ti ti-dots-vertical"></i>Menu → Adicionar à tela inicial</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">Confirmar instalação</div>
+      <div class="step-desc">Toque em "Instalar" na confirmação. O Simpp aparecerá na sua tela inicial como um app.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTÃO ABRIR -->
+<div style="margin-top:24px;">
+  <button class="open-btn" onclick="window.location.href='/'" >
+    <i class="ti ti-arrow-right"></i> Abrir o Simpp
+  </button>
+</div>
+
+<div class="skip">
+  Já instalou? <a href="/">Entrar direto</a>
+</div>
+
+<script>
+function showOS(os) {
+  document.getElementById('steps-ios').style.display     = os==='ios'     ? 'block' : 'none';
+  document.getElementById('steps-android').style.display = os==='android' ? 'block' : 'none';
+  document.getElementById('tab-ios').classList.toggle('active', os==='ios');
+  document.getElementById('tab-android').classList.toggle('active', os==='android');
+}
+
+// Detectar dispositivo automaticamente
+(function(){
+  var ua = navigator.userAgent;
+  var isIOS = /iPhone|iPad|iPod/.test(ua);
+  var isAndroid = /Android/.test(ua);
+  var isMac = /Macintosh/.test(ua) && navigator.maxTouchPoints > 0; // iPad moderno
+
+  var detIcon  = document.getElementById('det-icon');
+  var detLabel = document.getElementById('det-label');
+
+  if(isIOS || isMac){
+    showOS('ios');
+    detIcon.className = 'ti ti-brand-apple';
+    detLabel.textContent = 'iPhone / iPad detectado — siga os passos abaixo';
+  } else if(isAndroid){
+    showOS('android');
+    detIcon.className = 'ti ti-brand-android';
+    detLabel.textContent = 'Android detectado — siga os passos abaixo';
+  } else {
+    // Desktop — mostra iOS por padrão mas avisa
+    detIcon.className = 'ti ti-device-laptop';
+    detLabel.textContent = 'Acesse pelo seu celular para instalar o app';
+  }
+
+  // Verificar se já está instalado (standalone)
+  if(window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches){
+    window.location.href = '/';
+  }
+})();
+</script>
+</body>
+</html>
