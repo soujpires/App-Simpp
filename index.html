@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><!-- SIMPP APP v20260607 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1E4A8A" id="theme-meta">
@@ -11,8 +11,10 @@
 <link rel="manifest" href="/manifest.json">
 <title>Simpp · APP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+<link rel="stylesheet" href="/app-icons.css?v=20260725">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.documentElement.setAttribute('data-theme','light');
@@ -190,6 +192,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeSlideUp .2s ease;}
 </style>
+<link rel="stylesheet" href="/app-redesign.css?v=20260725">
 </head>
 <body>
 <div id="loading" style="position:fixed;inset:0;background:linear-gradient(180deg,#1E4A8A 0%,#163B72 100%);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:28px;">
@@ -211,51 +214,86 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
       <svg width="28" height="28" viewBox="0 0 36 36"><rect x="2" y="2" width="22" height="14" rx="4" fill="#3D6FB0"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#8AAFD6"/></svg>
       <span class="tb-logo-name" id="tb-logo-name">simpp</span>
     </div>
-    <div class="tb-right">
-      <button class="icon-btn" onclick="toggleTheme()"><i class="ti ti-sun" id="theme-icon"></i></button>
-      <button class="icon-btn" onclick="sairDoSimpp()"><i class="ti ti-logout"></i></button>
-    </div>
+    <div class="tb-right" id="tb-right"></div>
   </div>
 
   <!-- PAINEL -->
   <div class="screen on" id="s-painel">
     <div class="screen-body">
-      <div class="searchbar" style="padding:14px 16px 4px;">
-        <i class="ti ti-search" style="cursor:pointer;" onclick="var q=document.getElementById('p-srch').value;if(q.trim())filterApGlobal(q);"></i>
-        <input type="search" placeholder="Buscar cliente, placa ou nº da apólice" id="p-srch" onkeydown="if(event.key==='Enter'&&this.value.trim())filterApGlobal(this.value)" autocomplete="off" inputmode="search">
+      <div class="panel-content">
+        <div class="home-search-wrap">
+          <button class="home-search-action" onclick="openUniversalSearch()" aria-label="Encontrar uma apólice">
+            <span class="home-search-icon"><i class="ti ti-search" aria-hidden="true"></i></span>
+            <span class="home-search-copy">
+              <strong>Encontrar uma apólice</strong>
+              <span>Cliente, CPF, telefone, placa ou número</span>
+            </span>
+            <i class="ti ti-chevron-right home-search-arrow" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="metric-strip home-metrics" aria-label="Resumo da carteira">
+          <button class="metric-card" onclick="goScreen('apolices')" aria-label="Ver apólices ativas">
+            <span class="metric-top"><span class="mico"><i class="ti ti-shield-check" aria-hidden="true"></i></span><span class="mlabel">Apólices</span></span>
+            <span class="metric-value-row"><span class="mnum" id="m-a">0</span><span class="msub">ativas</span></span>
+          </button>
+          <button class="metric-card" onclick="goScreen('clientes')" aria-label="Ver clientes cadastrados">
+            <span class="metric-top"><span class="mico"><i class="ti ti-users-group" aria-hidden="true"></i></span><span class="mlabel">Clientes</span></span>
+            <span class="metric-value-row"><span class="mnum" id="m-c">0</span><span class="msub">cadastrados</span></span>
+          </button>
+          <button class="metric-card" onclick="goScreen('apolices');setTimeout(()=>setFiltro('Proposta'),80)" aria-label="Ver propostas pendentes">
+            <span class="metric-top"><span class="mico"><i class="ti ti-file-description" aria-hidden="true"></i></span><span class="mlabel">Propostas</span></span>
+            <span class="metric-value-row"><span class="mnum" id="m-prop">0</span><span class="msub">pendentes</span></span>
+          </button>
+          <button class="metric-card" onclick="goScreen('renovacoes')" aria-label="Ver renovações dos próximos 30 dias">
+            <span class="metric-top"><span class="mico"><i class="ti ti-calendar-due" aria-hidden="true"></i></span><span class="mlabel">Renovações</span></span>
+            <span class="metric-value-row"><span class="mnum" id="m-r">0</span><span class="msub">em 30 dias</span></span>
+          </button>
+        </div>
+
+        <div class="home-section-head">
+          <span class="home-section-icon"><i class="ti ti-list-check" aria-hidden="true"></i></span>
+          <span class="home-section-copy"><strong>Tarefas próximas</strong></span>
+          <button class="home-section-link" onclick="goScreen('tarefas')">Ver todas</button>
+        </div>
+        <div class="card home-card">
+          <div id="p-tarefas"></div>
+        </div>
+
+        <div class="home-section-head">
+          <span class="home-section-icon warning"><i class="ti ti-clock-exclamation" aria-hidden="true"></i></span>
+          <span class="home-section-copy"><strong>Vencendo em breve</strong></span>
+          <button class="home-section-link" onclick="goScreen('renovacoes')">Ver todas</button>
+        </div>
+        <div class="card home-card">
+          <div id="p-vencendo"></div>
+        </div>
       </div>
-      <div class="metric-strip">
-        <div class="metric-card" onclick="goScreen('apolices')">
-          <div class="mico"><i class="ti ti-file-certificate"></i></div>
-          <div class="mlabel">Apólices</div><div class="mnum" id="m-a">0</div><div class="msub">vigentes</div>
-        </div>
-        <div class="metric-card" onclick="goScreen('clientes')">
-          <div class="mico"><i class="ti ti-users"></i></div>
-          <div class="mlabel">Clientes</div><div class="mnum" id="m-c">0</div><div class="msub">cadastrados</div>
-        </div>
-        <div class="metric-card" onclick="goScreen('apolices');setTimeout(()=>setFiltro('Proposta'),80)">
-          <div class="mico"><i class="ti ti-file-text"></i></div>
-          <div class="mlabel">Propostas</div><div class="mnum" id="m-prop">0</div><div class="msub">pendentes</div>
-        </div>
-        <div class="metric-card" onclick="goScreen('renovacoes')">
-          <div class="mico"><i class="ti ti-bell-ringing"></i></div>
-          <div class="mlabel">Renovações</div><div class="mnum" id="m-r">0</div><div class="msub">em 30 dias</div>
-        </div>
-      </div>
-      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-checkbox"></i>Tarefas · próximos 7 dias</div></div>
-      <div class="card" style="margin:0 16px 16px;"><div id="p-tarefas"></div>
-        <div style="padding:10px 16px;border-top:1px solid var(--border);">
-          <button class="btn btn-ghost btn-full" onclick="goScreen('tarefas')" style="font-size:13px;">Ver todas</button>
-        </div>
-      </div>
-      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-clock"></i>Vencendo em breve</div></div>
-      <div class="card" style="margin:0 16px 16px;"><div id="p-vencendo"></div></div>
-      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-file-certificate"></i>Últimas apólices</div></div>
-      <div class="card" style="margin:0 16px 24px;"><div id="p-list"></div>
-        <div style="padding:10px 16px;border-top:1px solid var(--border);">
-          <button class="btn btn-ghost btn-full" onclick="goScreen('apolices')" style="font-size:13px;">Ver todas</button>
+    </div>
+  </div>
+
+  <!-- BUSCA UNIVERSAL -->
+  <div class="screen" id="s-buscar">
+    <div class="screen-body">
+      <div class="universal-search-shell">
+        <div class="universal-search-field">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input
+            type="search"
+            id="universal-search"
+            placeholder="Cliente, CPF, telefone, placa ou apólice"
+            autocomplete="off"
+            inputmode="search"
+            enterkeyhint="search"
+            aria-label="Buscar cliente ou apólice"
+            oninput="filterUniversal(this.value)"
+          >
+          <button class="search-clear" id="universal-search-clear" onclick="clearUniversalSearch()" aria-label="Limpar busca">
+            <i class="ti ti-x" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
+      <div class="universal-results" id="universal-results" aria-live="polite"></div>
     </div>
   </div>
 
@@ -437,23 +475,23 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
   </div>
 
   <!-- BOTTOM NAV -->
-  <nav class="botnav">
+  <nav class="botnav" aria-label="Navegação principal">
     <button class="bnav-item active" data-screen="painel" onclick="goScreen('painel',this)">
-      <i class="ti ti-layout-dashboard"></i><span>Painel</span>
+      <i class="ti ti-home-2" aria-hidden="true"></i><span>Início</span>
     </button>
-    <button class="bnav-item" data-screen="apolices" onclick="goScreen('apolices',this)">
-      <i class="ti ti-file-certificate"></i><span>Apólices</span>
+    <button class="bnav-item" data-screen="buscar" onclick="openUniversalSearch()">
+      <i class="ti ti-search" aria-hidden="true"></i><span>Buscar</span>
     </button>
     <button class="bnav-item" data-screen="clientes" onclick="goScreen('clientes',this)">
-      <i class="ti ti-users"></i><span>Clientes</span>
+      <i class="ti ti-users-group" aria-hidden="true"></i><span>Clientes</span>
     </button>
     <button class="bnav-item" data-screen="tarefas" onclick="goScreen('tarefas',this)">
-      <i class="ti ti-checkbox"></i><span>Tarefas</span>
-      <div class="bnav-dot" id="tf-dot" style="display:none;"></div>
+      <i class="ti ti-list-check" aria-hidden="true"></i><span>Tarefas</span>
+      <span class="bnav-dot" id="tf-dot" style="display:none;" aria-hidden="true"></span>
     </button>
     <button class="bnav-item" data-screen="mais" onclick="goScreen('mais',this)">
-      <i class="ti ti-dots"></i><span>Mais</span>
-      <div class="bnav-dot" id="ren-dot" style="display:none;"></div>
+      <i class="ti ti-dots-circle-horizontal" aria-hidden="true"></i><span>Mais</span>
+      <span class="bnav-dot" id="ren-dot" style="display:none;" aria-hidden="true"></span>
     </button>
   </nav>
 </div>
@@ -779,7 +817,16 @@ const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 var _supaUser = null;
 
 // ── AUTH ──────────────────────────────────────────────────
+function isLocalPreview() {
+  return ['localhost','127.0.0.1'].includes(window.location.hostname) &&
+    new URLSearchParams(window.location.search).get('preview') === '1';
+}
+
 async function initAuth() {
+  if (isLocalPreview()) {
+    carregarPreviewLocal();
+    return;
+  }
   const { data: { session } } = await supa.auth.getSession();
   if (!session) { window.location.replace('login.html'); return; }
   _supaUser = session.user;
@@ -819,6 +866,52 @@ var _ramosLista = (function(){var s=localStorage.getItem('simpp_ramos');return s
 var _motivosLista = JSON.parse(localStorage.getItem('simpp_motivos')||'["Preço","Perfil de risco","Cobertura insuficiente","Prazo","Outro"]');
 var _logoCorretorB64 = localStorage.getItem('simpp_logo_corretor')||null;
 var _logoCorretorPendente = null;
+
+// Dados exclusivamente visuais para desenvolvimento local (?preview=1).
+function carregarPreviewLocal() {
+  function iso(offset) {
+    var d = new Date();
+    d.setDate(d.getDate()+offset);
+    return d.toISOString().slice(0,10);
+  }
+  function brDate(offset) {
+    var p = iso(offset).split('-');
+    return p[2]+'/'+p[1]+'/'+p[0];
+  }
+
+  CLIENTES = [
+    {id:'cl-1',nome:'Mariana Almeida',ini:'MA',cor:{dark:'#26375C',light:'#DFEBF8'},cort:{dark:'#C8DCF3',light:'#153B68'},cpf:'123.456.789-10',nasc:'14/08/1987',tel:'(11) 99876-5432',email:'mariana.almeida@email.com',end:'São Paulo · SP',obs:''},
+    {id:'cl-2',nome:'Ricardo Nogueira',ini:'RN',cor:{dark:'#163D35',light:'#DDF5EB'},cort:{dark:'#A7E6D2',light:'#155E4B'},cpf:'987.654.321-00',nasc:'22/03/1979',tel:'(11) 97754-2108',email:'ricardo.nogueira@email.com',end:'Campinas · SP',obs:''},
+    {id:'cl-3',nome:'Studio Horizonte Ltda.',ini:'SH',cor:{dark:'#4A3518',light:'#FFF0D4'},cort:{dark:'#F1D49B',light:'#7A4A08'},cpf:'45.678.901/0001-22',nasc:'',tel:'(11) 3344-2211',email:'financeiro@studiohorizonte.com.br',end:'São Paulo · SP',obs:''},
+    {id:'cl-4',nome:'Camila Ferreira',ini:'CF',cor:{dark:'#3E2658',light:'#F0E4FA'},cort:{dark:'#D9B9F0',light:'#5D2E82'},cpf:'321.654.987-55',nasc:'03/12/1991',tel:'(11) 98812-4470',email:'camila.ferreira@email.com',end:'Santo André · SP',obs:''}
+  ];
+  APOLICES = [
+    {id:'ap-1',cid:'cl-1',prod:'Seguro Auto',ramo:'Automóvel',seg:'Porto Seguro',ap:'0531 778924',proposta:'',dataProposta:'',premio:2860.40,parc:'10x de R$ 286,04',com:18,iv:brDate(-210),fv:brDate(155),st:'Vigente',obj:'Honda HR-V · ABC1D23',obs:'Assistência completa 24h',pdfPropostaNome:null,pdfApoliceNome:'apolice-mariana.pdf',endossos:[]},
+    {id:'ap-2',cid:'cl-2',prod:'Seguro Residencial',ramo:'Residencial',seg:'Tokio Marine',ap:'RES-2026-18442',proposta:'',dataProposta:'',premio:728.90,parc:'6x de R$ 121,48',com:20,iv:brDate(-330),fv:brDate(12),st:'A renovar',obj:'Residência · Campinas',obs:'Contatar antes do vencimento',pdfPropostaNome:null,pdfApoliceNome:'residencial-ricardo.pdf',endossos:[]},
+    {id:'ap-3',cid:'cl-3',prod:'Seguro Empresarial',ramo:'Empresarial',seg:'Allianz',ap:'EMP-996421-7',proposta:'',dataProposta:'',premio:5890.00,parc:'8x de R$ 736,25',com:16,iv:brDate(-120),fv:brDate(245),st:'Vigente',obj:'Studio Horizonte · unidade Centro',obs:'Cobertura de equipamentos eletrônicos',pdfPropostaNome:null,pdfApoliceNome:'empresarial-horizonte.pdf',endossos:[]},
+    {id:'ap-4',cid:'cl-4',prod:'Seguro de Vida',ramo:'Seguro de Vida',seg:'MetLife',ap:'',proposta:'PROP-2026-44019',dataProposta:brDate(-3),premio:1480.00,parc:'12x de R$ 123,33',com:22,iv:'',fv:'',st:'Proposta',obj:'Camila Ferreira',obs:'Aguardando aceite da cliente',pdfPropostaNome:'proposta-camila.pdf',pdfApoliceNome:null,endossos:[]},
+    {id:'ap-5',cid:'cl-1',prod:'Seguro Residencial',ramo:'Residencial',seg:'HDI Seguros',ap:'RES-440882',proposta:'',dataProposta:'',premio:650.70,parc:'5x de R$ 130,14',com:18,iv:brDate(-355),fv:brDate(10),st:'A renovar',obj:'Apartamento · Vila Mariana',obs:'',pdfPropostaNome:null,pdfApoliceNome:'residencial-mariana.pdf',endossos:[]}
+  ];
+  TAREFAS = [
+    {id:'tf-1',texto:'Ligar para Ricardo sobre a renovação',tipo:'ligacao',data:iso(0),feita:false,cliente:'Ricardo Nogueira',cidRef:'cl-2',obs:''},
+    {id:'tf-2',texto:'Enviar proposta revisada de Vida',tipo:'proposta',data:iso(1),feita:false,cliente:'Camila Ferreira',cidRef:'cl-4',obs:''},
+    {id:'tf-3',texto:'Conferir documentação da empresa',tipo:'documento',data:iso(4),feita:false,cliente:'Studio Horizonte Ltda.',cidRef:'cl-3',obs:''}
+  ];
+  D = APOLICES.map(function(a) {
+    var c = CLIENTES.find(function(x){return x.id===a.cid;});
+    return Object.assign({},a,{nome:c.nome,ini:c.ini,cor:c.cor,cort:c.cort,tel:c.tel,email:c.email});
+  });
+  _supaUser = {id:'preview-local',created_at:new Date().toISOString()};
+  buildPainelList();
+  buildPainelTarefas();
+  buildPainelVencendo();
+  buildTarefas();
+  buildApList('');
+  buildClList(CLIENTES);
+  buildRen();
+  atualizarMetricas();
+  document.getElementById('loading').style.display='none';
+}
 
 // ── HELPERS ───────────────────────────────────────────────
 function brl(v){return "R$ "+v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});}
@@ -864,24 +957,32 @@ var _subScreens = ['s-cliente-detail','s-producao','s-configuracoes'];
 
 function goScreen(name, btn) {
   var screenId = 's-'+name;
+  var targetScreen = document.getElementById(screenId);
+  if (!targetScreen) return;
   // Hide all screens
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
-  document.getElementById(screenId).classList.add('on');
+  targetScreen.classList.add('on');
+  var body = targetScreen.querySelector('.screen-body');
+  if (body) body.scrollTop = 0;
   // Update topbar
   updateTopbar(name);
   // Update bottom nav (not for sub-screens)
   if (!_subScreens.includes(screenId)) {
     _curScreen = name;
-    document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
-    var navBtn = document.querySelector('[data-screen="'+name+'"]');
-    if (navBtn) navBtn.classList.add('active');
-    else {
-      // mais
-      var maisBtn = document.querySelector('[data-screen="mais"]');
-      if(maisBtn) maisBtn.classList.add('active');
+    var navMap = {apolices:'buscar',renovacoes:'painel'};
+    var navName = navMap[name] || name;
+    document.querySelectorAll('.bnav-item').forEach(b=>{
+      b.classList.remove('active');
+      b.removeAttribute('aria-current');
+    });
+    var navBtn = document.querySelector('[data-screen="'+navName+'"]');
+    if (navBtn) {
+      navBtn.classList.add('active');
+      navBtn.setAttribute('aria-current','page');
     }
   }
   // Build data for screen
+  if (name === 'buscar') prepareUniversalSearch();
   if (name === 'producao') buildProdRows();
   if (name === 'renovacoes') buildRen();
   if (name === 'configuracoes') initConfiguracoes();
@@ -889,23 +990,24 @@ function goScreen(name, btn) {
 }
 
 function updateTopbar(name) {
-  var titles = {painel:'simpp',apolices:'Apólices',clientes:'Clientes',tarefas:'Tarefas',renovacoes:'Renovações',mais:'Mais',producao:'Produção',configuracoes:'Configurações'};
+  var titles = {painel:'simpp',buscar:'Buscar',apolices:'Carteira de apólices',clientes:'Clientes',tarefas:'Tarefas',renovacoes:'Renovações',mais:'Mais',producao:'Produção',configuracoes:'Configurações'};
   var isLogo = (name === 'painel');
   var tbLeft = document.getElementById('tb-left');
-  var tbTitle = document.getElementById('tb-logo-name');
+  var tbRight = document.getElementById('tb-right');
   if (isLogo) {
     tbLeft.innerHTML = '<svg width="28" height="28" viewBox="0 0 36 36"><rect x="2" y="2" width="22" height="14" rx="4" fill="#3D6FB0"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#8AAFD6"/></svg><span class="tb-logo-name">simpp</span>';
-    document.getElementById('tb-right').style.display = 'flex';
+    tbRight.innerHTML = '';
+    tbRight.style.display = 'flex';
     return;
   }
   var isSubScreen = _subScreens.includes('s-'+name) || name === 'cliente-detail';
   if (isSubScreen || name === 'producao' || name === 'configuracoes') {
     tbLeft.innerHTML = '<button class="topbar-back" onclick="goBack()"><i class="ti ti-chevron-left"></i>'+titles[name]+'</button>';
-    document.getElementById('tb-right').style.display = 'none';
+    tbRight.style.display = 'none';
     return;
   }
   tbLeft.innerHTML = '<span class="tb-logo-name" style="font-size:16px;">'+(titles[name]||name)+'</span>';
-  document.getElementById('tb-right').style.display = 'flex';
+  tbRight.style.display = name === 'buscar' ? 'none' : 'flex';
 }
 
 function goBack() {
@@ -962,13 +1064,13 @@ function buildPainelTarefas() {
   if (!el) return;
   var hoje = new Date(); hoje.setHours(0,0,0,0);
   var em7 = new Date(hoje); em7.setDate(em7.getDate()+7);
-  var lista = TAREFAS.filter(t=>!t.feita&&new Date(t.data+'T00:00:00')<=em7).sort((a,b)=>new Date(a.data)-new Date(b.data)).slice(0,4);
+  var lista = TAREFAS.filter(t=>!t.feita&&new Date(t.data+'T00:00:00')<=em7).sort((a,b)=>new Date(a.data)-new Date(b.data)).slice(0,2);
   if (!lista.length) { el.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:16px;"><div style="width:38px;height:38px;border-radius:12px;background:var(--green-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class=\"ti ti-check\" style=\"font-size:18px;color:var(--green);\"></i></div><div><div style=\"font-size:14px;font-weight:600;color:var(--text)\">Nenhuma tarefa pendente</div><div style=\"font-size:12px;color:var(--text3);margin-top:2px\">Sua semana está organizada!</div></div></div>'; return; }
   el.innerHTML = lista.map(t=>{
     var d=new Date(t.data+'T00:00:00');d.setHours(0,0,0,0);
     var atrasada=d<hoje;var dataCor=atrasada?'var(--red)':'var(--text3)';
     var dataStr=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
-    return '<div class="list-item" onclick="toggleTarefa('+t.id+')" style="gap:10px;">'+
+    return '<div class="list-item" data-task-id="'+escapeHtml(t.id)+'" onclick="toggleTarefa(this.dataset.taskId)" style="gap:10px;">'+
       '<div style="width:16px;height:16px;border-radius:5px;border:1.5px solid var(--border2);flex-shrink:0;"></div>'+
       '<div style="flex:1;min-width:0;"><div style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+t.texto+'</div>'+
       '<div style="font-size:10px;color:var(--text3);margin-top:1px;">'+t.cliente+'</div></div>'+
@@ -984,9 +1086,9 @@ function buildPainelVencendo() {
   var em30 = new Date(hoje); em30.setDate(em30.getDate()+30);
   function pd(s){if(!s)return null;var p=s.split('/');return new Date(p[2],p[1]-1,p[0]);}
   var lista = APOLICES.filter(a=>{if(a.st!=='Vigente'&&a.st!=='A renovar')return false;var d=pd(a.fv);return d&&d>=hoje&&d<=em7;}).sort((a,b)=>pd(a.fv)-pd(b.fv));
-  if (!lista.length) lista=APOLICES.filter(a=>{if(a.st!=='Vigente'&&a.st!=='A renovar')return false;var d=pd(a.fv);return d&&d>=hoje&&d<=em30;}).sort((a,b)=>pd(a.fv)-pd(b.fv)).slice(0,4);
+  if (!lista.length) lista=APOLICES.filter(a=>{if(a.st!=='Vigente'&&a.st!=='A renovar')return false;var d=pd(a.fv);return d&&d>=hoje&&d<=em30;}).sort((a,b)=>pd(a.fv)-pd(b.fv)).slice(0,2);
   if (!lista.length){el.innerHTML='<div style="padding:20px 16px;text-align:center;font-size:12px;color:var(--text3);">Nenhuma apólice vencendo em breve</div>';return;}
-  el.innerHTML = lista.slice(0,4).map(a=>{
+  el.innerHTML = lista.slice(0,2).map(a=>{
     var c=CLIENTES.find(x=>String(x.id)===String(a.cid))||{nome:'—'};
     var d=pd(a.fv);var dias=Math.ceil((d-hoje)/86400000);
     var cor=dias<=3?'var(--red)':dias<=7?'var(--amber)':'var(--text3)';
@@ -1097,18 +1199,205 @@ function openApDetail(apId) {
 function filterAp(q){buildApList(q);}
 function filterApGlobal(q){
   if(!q||!q.trim()) return;
-  // navega para apólices e preenche o campo de busca sem resetar
-  apFiltro='Todas';
-  goScreen('apolices');
-  setTimeout(function(){
-    var inp=document.getElementById('ap-srch');
-    if(inp){ inp.value=q; buildApList(q); inp.focus(); }
-    // atualizar chips
-    document.querySelectorAll('[data-ap-filter]').forEach(function(b){
-      b.classList.toggle('sel', b.dataset.apFilter==='Todas');
-    });
-  }, 100);
+  openUniversalSearch(q);
 }
+
+// ── BUSCA UNIVERSAL ───────────────────────────────────────
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+function normalizeSearch(value) {
+  return String(value||'')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase()
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function searchableIncludes(values, query) {
+  var haystack = normalizeSearch(values.join(' '));
+  if (haystack.includes(query)) return true;
+  var compactQuery = query.replace(/[^a-z0-9]/g,'');
+  if (compactQuery.length < 3) return false;
+  return haystack.replace(/[^a-z0-9]/g,'').includes(compactQuery);
+}
+
+function searchStatusBadge(status) {
+  var classes = {
+    'Vigente':'bdg-g',
+    'Proposta':'bdg-b',
+    'A renovar':'bdg-a',
+    'Cancelada':'bdg-r',
+    'Recusada':'bdg-r'
+  };
+  return '<span class="bdg '+(classes[status]||'')+'">'+escapeHtml(status||'—')+'</span>';
+}
+
+function policySearchCard(ap) {
+  var c = CLIENTES.find(x=>String(x.id)===String(ap.cid))||{nome:'Cliente não encontrado',ini:'?',tel:''};
+  var ic = getPicoIcon(ap.ramo||ap.prod);
+  var numero = ap.ap ? '#'+ap.ap : (ap.proposta||'Sem número');
+  return '<button class="policy-search-card" data-policy-id="'+escapeHtml(ap.id)+'" onclick="openSearchPolicy(this.dataset.policyId)">'+
+    '<span class="policy-search-main">'+
+      '<span class="policy-search-icon"><i class="ti '+escapeHtml(ic)+'" aria-hidden="true"></i></span>'+
+      '<span class="policy-search-content">'+
+        '<span class="policy-search-name">'+escapeHtml(c.nome)+'</span>'+
+        '<span class="policy-search-meta">'+escapeHtml(ap.prod||ap.ramo||'Seguro')+' · '+escapeHtml(numero)+'</span>'+
+      '</span>'+
+      '<i class="ti ti-chevron-right policy-search-chevron" aria-hidden="true"></i>'+
+    '</span>'+
+  '</button>';
+}
+
+function searchClientCard(c) {
+  var total = APOLICES.filter(a=>String(a.cid)===String(c.id)).length;
+  return '<button class="search-client-card" data-client-id="'+escapeHtml(c.id)+'" onclick="openCl(this.dataset.clientId)">'+
+    '<span class="av" style="background:var(--accent-bg);color:var(--accent-t);">'+escapeHtml(c.ini||'?')+'</span>'+
+    '<span style="min-width:0;flex:1;">'+
+      '<span style="display:block;overflow:hidden;color:var(--text);font-size:15px;font-weight:700;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(c.nome)+'</span>'+
+      '<span style="display:block;margin-top:3px;color:var(--text3);font-size:12px;font-weight:500;">'+(total?total+' apólice'+(total===1?'':'s'):'Cliente sem apólice')+'</span>'+
+    '</span>'+
+    '<i class="ti ti-chevron-right" style="color:var(--text3);font-size:21px;" aria-hidden="true"></i>'+
+  '</button>';
+}
+
+function renderSearchStart() {
+  var el = document.getElementById('universal-results');
+  if (!el) return;
+  var recentes = D.slice(0,4);
+  if (!recentes.length) {
+    el.innerHTML = '<div class="search-empty"><span class="search-empty-icon"><i class="ti ti-search"></i></span><strong>Encontre qualquer apólice</strong><p>Digite um cliente, telefone, CPF, placa, seguradora ou número da apólice.</p></div>';
+    return;
+  }
+  el.innerHTML =
+    '<div class="quick-access-title"><i class="ti ti-history"></i>Apólices recentes</div>'+
+    '<div class="universal-results-grid">'+recentes.map(policySearchCard).join('')+'</div>';
+}
+
+function prepareUniversalSearch() {
+  var input = document.getElementById('universal-search');
+  var el = document.getElementById('universal-results');
+  if (!input || !el) return;
+  if (input.value.trim()) filterUniversal(input.value);
+  else renderSearchStart();
+}
+
+function openUniversalSearch(seed) {
+  goScreen('buscar');
+  requestAnimationFrame(function(){
+    var input = document.getElementById('universal-search');
+    if (!input) return;
+    if (typeof seed === 'string') input.value = seed;
+    filterUniversal(input.value);
+    input.focus({preventScroll:true});
+  });
+}
+
+function clearUniversalSearch() {
+  var input = document.getElementById('universal-search');
+  if (!input) return;
+  input.value = '';
+  filterUniversal('');
+  input.focus({preventScroll:true});
+}
+
+function filterUniversal(value) {
+  var q = normalizeSearch(value);
+  var clear = document.getElementById('universal-search-clear');
+  var el = document.getElementById('universal-results');
+  if (!el) return;
+  if (clear) clear.classList.toggle('show',!!q);
+  if (!q) { renderSearchStart(); return; }
+
+  var matchingClients = CLIENTES.filter(c=>searchableIncludes([
+    c.nome,c.cpf,c.tel,c.email,c.end
+  ],q));
+  var matchingClientIds = new Set(matchingClients.map(c=>String(c.id)));
+  var policies = APOLICES.filter(a=>{
+    var c = CLIENTES.find(x=>String(x.id)===String(a.cid))||{};
+    return matchingClientIds.has(String(a.cid)) || searchableIncludes([
+      c.nome,c.cpf,c.tel,c.email,
+      a.ap,a.proposta,a.seg,a.prod,a.ramo,a.obj,a.iv,a.fv,a.st
+    ],q);
+  }).sort((a,b)=>{
+    var weight = {'A renovar':0,'Vigente':1,'Proposta':2,'Renovada':3,'Cancelada':4,'Recusada':5};
+    return (weight[a.st]??9)-(weight[b.st]??9);
+  });
+
+  var clientsWithoutPolicies = matchingClients.filter(c=>!APOLICES.some(a=>String(a.cid)===String(c.id)));
+  if (!policies.length && !clientsWithoutPolicies.length) {
+    el.innerHTML = '<div class="search-empty"><span class="search-empty-icon"><i class="ti ti-file-search"></i></span><strong>Nada encontrado</strong><p>Tente parte do nome, os últimos números do telefone, a placa ou o número da apólice.</p></div>';
+    return;
+  }
+
+  var totalLabel = policies.length+' apólice'+(policies.length===1?'':'s')+' encontrada'+(policies.length===1?'':'s');
+  var html = '<div class="search-summary"><strong>'+escapeHtml(totalLabel)+'</strong></div>';
+  if (policies.length) html += '<div class="universal-results-grid">'+policies.slice(0,40).map(policySearchCard).join('')+'</div>';
+  if (clientsWithoutPolicies.length) {
+    html += '<div class="quick-access-title" style="margin-top:18px;"><i class="ti ti-user-search"></i>Clientes sem apólice</div>'+
+      clientsWithoutPolicies.slice(0,10).map(searchClientCard).join('');
+  }
+  el.innerHTML = html;
+}
+
+function openSearchPolicy(policyId) {
+  var ap = APOLICES.find(a=>String(a.id)===String(policyId));
+  if (!ap) return;
+  var c = CLIENTES.find(x=>String(x.id)===String(ap.cid))||{nome:'Cliente não encontrado',tel:'',email:'',id:''};
+  var numero = ap.ap ? '#'+ap.ap : (ap.proposta||'Sem número');
+  var vigencia = ap.iv && ap.fv ? ap.iv+' a '+ap.fv : 'Ainda não informada';
+  var telefone = c.tel&&c.tel!=='—' ? c.tel : '';
+  var telHref = telefone.replace(/[^\d+]/g,'');
+  var pdfTipo = ap.pdfApoliceData||ap.pdfApolicePath ? 'apolice' : (ap.pdfPropostaData||ap.pdfPropostaPath ? 'proposta' : '');
+  var actions = '';
+  if (telefone) actions += '<a class="search-action-btn" href="tel:'+escapeHtml(telHref)+'"><i class="ti ti-phone"></i>Ligar</a>';
+  actions += '<button class="search-action-btn" data-client-id="'+escapeHtml(c.id)+'" onclick="openCl(this.dataset.clientId)"><i class="ti ti-user"></i>Cliente</button>';
+  if (pdfTipo) actions += '<button class="search-action-btn" data-policy-id="'+escapeHtml(ap.id)+'" data-pdf-type="'+pdfTipo+'" onclick="abrirPdfApp(this.dataset.pdfType,this.dataset.policyId,null)"><i class="ti ti-file-type-pdf"></i>Abrir PDF</button>';
+  actions += '<button class="search-action-btn primary" data-policy-id="'+escapeHtml(ap.id)+'" onclick="openPolicyInPortfolio(this.dataset.policyId)"><i class="ti ti-shield-search"></i>Carteira</button>';
+
+  var el = document.getElementById('universal-results');
+  el.innerHTML = '<div class="search-detail">'+
+    '<button class="search-detail-back" onclick="closeSearchPolicy()"><i class="ti ti-arrow-left"></i>Voltar aos resultados</button>'+
+    '<article class="search-detail-card">'+
+      '<div class="search-detail-hero">'+
+        '<div class="search-detail-kicker"><span>'+escapeHtml(ap.prod||ap.ramo||'Seguro')+'</span>'+searchStatusBadge(ap.st)+'</div>'+
+        '<div class="search-detail-name">'+escapeHtml(c.nome)+'</div>'+
+        '<div class="search-detail-sub">'+escapeHtml(ap.seg||'Seguradora não informada')+' · '+escapeHtml(numero)+'</div>'+
+      '</div>'+
+      '<div class="search-detail-grid">'+
+        '<div class="search-detail-item"><span>Apólice / proposta</span><strong>'+escapeHtml(numero)+'</strong></div>'+
+        '<div class="search-detail-item"><span>Vigência</span><strong>'+escapeHtml(vigencia)+'</strong></div>'+
+        '<div class="search-detail-item"><span>Item segurado</span><strong>'+escapeHtml(ap.obj||'Não informado')+'</strong></div>'+
+        '<div class="search-detail-item"><span>Ramo</span><strong>'+escapeHtml(ap.ramo||ap.prod||'—')+'</strong></div>'+
+        '<div class="search-detail-item"><span>Prêmio</span><strong>'+escapeHtml(brl(parseFloat(ap.premio)||0))+'</strong></div>'+
+        '<div class="search-detail-item"><span>Parcelamento</span><strong>'+escapeHtml(ap.parc||'—')+'</strong></div>'+
+        (telefone?'<div class="search-detail-item full"><span>Telefone do cliente</span><strong>'+escapeHtml(telefone)+'</strong></div>':'')+
+        (ap.obs?'<div class="search-detail-item full"><span>Observações</span><strong>'+escapeHtml(ap.obs)+'</strong></div>':'')+
+      '</div>'+
+      '<div class="search-detail-actions">'+actions+'</div>'+
+    '</article>'+
+  '</div>';
+  document.getElementById('s-buscar').querySelector('.screen-body').scrollTop = 0;
+}
+
+function closeSearchPolicy() {
+  var input = document.getElementById('universal-search');
+  filterUniversal(input ? input.value : '');
+}
+
+function openPolicyInPortfolio(policyId) {
+  apFiltro = 'Todas';
+  goScreen('apolices');
+  setTimeout(function(){ buildApList(''); openApDetail(policyId); },80);
+}
+
 function setFiltro(val) {
   apFiltro = val;
   buildApList('');
@@ -1234,7 +1523,7 @@ function buildTarefas() {
     var dataStr=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
     var dataCor=atrasada?'var(--red)':venceHoje?'var(--amber)':'var(--text3)';
     return '<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);'+(t.feita?'opacity:.5':'')+'">'+
-      '<div onclick="toggleTarefa('+t.id+')" style="width:20px;height:20px;border-radius:6px;border:1.5px solid '+(t.feita?'var(--green)':'var(--border2)')+';background:'+(t.feita?'var(--green)':'transparent')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .15s;">'+
+      '<div data-task-id="'+escapeHtml(t.id)+'" onclick="toggleTarefa(this.dataset.taskId)" style="width:20px;height:20px;border-radius:6px;border:1.5px solid '+(t.feita?'var(--green)':'var(--border2)')+';background:'+(t.feita?'var(--green)':'transparent')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .15s;">'+
         (t.feita?'<i class="ti ti-check" style="font-size:11px;color:#fff;"></i>':'')+
       '</div>'+
       '<div style="flex:1;min-width:0;">'+
