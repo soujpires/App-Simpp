@@ -1,0 +1,101 @@
+/*
+ * SIMPP App — Material Symbols Rounded
+ *
+ * O web atual usa a biblioteca Material Symbols Rounded com peso 430.
+ * Mantemos os nomes de classe legados no HTML para não quebrar os ícones
+ * criados dinamicamente pelo JavaScript, mas não carregamos mais o Tabler.
+ */
+.ti {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  overflow: visible;
+  font-size: 1em;
+  font-style: normal;
+  line-height: 1;
+}
+
+.ti::before {
+  display: block;
+  font-family: "Material Symbols Rounded" !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-feature-settings: "liga";
+  font-variation-settings: "FILL" 0, "wght" 430, "GRAD" 0, "opsz" 24;
+  letter-spacing: normal;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bnav-item.active .ti::before {
+  font-variation-settings: "FILL" 1, "wght" 480, "GRAD" 0, "opsz" 24;
+}
+
+.ti-alert-triangle::before { content: "warning"; }
+.ti-arrow-left::before { content: "arrow_back"; }
+.ti-bell-ringing::before { content: "notifications_active"; }
+.ti-building::before { content: "apartment"; }
+.ti-calendar-due::before { content: "event_upcoming"; }
+.ti-car::before { content: "directions_car"; }
+.ti-chart-bar::before { content: "monitoring"; }
+.ti-check::before { content: "check"; }
+.ti-checkbox::before { content: "task_alt"; }
+.ti-chevron-left::before { content: "chevron_left"; }
+.ti-chevron-right::before { content: "chevron_right"; }
+.ti-clock-exclamation::before { content: "pending_actions"; }
+.ti-coins::before { content: "payments"; }
+.ti-container::before { content: "inventory_2"; }
+.ti-crane::before { content: "engineering"; }
+.ti-dots-circle-horizontal::before,
+.ti-dots-vertical::before { content: "more_horiz"; }
+.ti-dots-vertical::before { content: "more_vert"; }
+.ti-edit::before { content: "edit"; }
+.ti-file-certificate::before { content: "policy"; }
+.ti-file-description::before,
+.ti-file-text::before { content: "description"; }
+.ti-file-plus::before { content: "note_add"; }
+.ti-file-search::before { content: "find_in_page"; }
+.ti-file-type-pdf::before { content: "picture_as_pdf"; }
+.ti-first-aid-kit::before { content: "medical_services"; }
+.ti-heart::before { content: "favorite"; }
+.ti-history::before { content: "history"; }
+.ti-home::before,
+.ti-home-2::before { content: "home"; }
+.ti-link::before { content: "link"; }
+.ti-list::before { content: "list"; }
+.ti-list-check::before { content: "checklist"; }
+.ti-logout::before { content: "logout"; }
+.ti-mail::before { content: "mail"; }
+.ti-moon::before { content: "dark_mode"; }
+.ti-motorbike::before { content: "two_wheeler"; }
+.ti-paperclip::before { content: "attach_file"; }
+.ti-phone::before { content: "phone"; }
+.ti-photo::before { content: "image"; }
+.ti-plus::before { content: "add"; }
+.ti-refresh::before { content: "autorenew"; }
+.ti-scale::before { content: "balance"; }
+.ti-search::before { content: "search"; }
+.ti-settings::before { content: "settings"; }
+.ti-shield::before { content: "shield"; }
+.ti-shield-check::before { content: "verified_user"; }
+.ti-shield-search::before { content: "policy"; }
+.ti-sparkles::before { content: "auto_awesome"; }
+.ti-sun::before { content: "light_mode"; }
+.ti-tag::before { content: "sell"; }
+.ti-trash::before { content: "delete"; }
+.ti-truck::before { content: "local_shipping"; }
+.ti-upload::before { content: "upload"; }
+.ti-user::before { content: "person"; }
+.ti-user-plus::before { content: "person_add"; }
+.ti-user-search::before { content: "person_search"; }
+.ti-users::before { content: "group"; }
+.ti-users-group::before { content: "groups"; }
+.ti-x::before { content: "close"; }
