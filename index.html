@@ -251,23 +251,27 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
           </button>
         </div>
 
-        <div class="home-section-head">
-          <span class="home-section-icon"><i class="ti ti-list-check" aria-hidden="true"></i></span>
-          <span class="home-section-copy"><strong>Tarefas próximas</strong></span>
-          <button class="home-section-link" onclick="goScreen('tarefas')">Ver todas</button>
-        </div>
-        <div class="card home-card">
-          <div id="p-tarefas"></div>
-        </div>
+        <section class="home-module home-module-tasks">
+          <div class="home-section-head">
+            <span class="home-section-icon"><i class="ti ti-list-check" aria-hidden="true"></i></span>
+            <span class="home-section-copy"><strong>Tarefas próximas</strong></span>
+            <button class="home-section-link" onclick="goScreen('tarefas')">Ver todas</button>
+          </div>
+          <div class="card home-card">
+            <div id="p-tarefas"></div>
+          </div>
+        </section>
 
-        <div class="home-section-head">
-          <span class="home-section-icon warning"><i class="ti ti-clock-exclamation" aria-hidden="true"></i></span>
-          <span class="home-section-copy"><strong>Vencendo em breve</strong></span>
-          <button class="home-section-link" onclick="goScreen('renovacoes')">Ver todas</button>
-        </div>
-        <div class="card home-card">
-          <div id="p-vencendo"></div>
-        </div>
+        <section class="home-module home-module-renewals">
+          <div class="home-section-head">
+            <span class="home-section-icon warning"><i class="ti ti-clock-exclamation" aria-hidden="true"></i></span>
+            <span class="home-section-copy"><strong>Vencendo em breve</strong></span>
+            <button class="home-section-link" onclick="goScreen('renovacoes')">Ver todas</button>
+          </div>
+          <div class="card home-card">
+            <div id="p-vencendo"></div>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -886,7 +890,7 @@ function carregarPreviewLocal() {
     {id:'cl-4',nome:'Camila Ferreira',ini:'CF',cor:{dark:'#3E2658',light:'#F0E4FA'},cort:{dark:'#D9B9F0',light:'#5D2E82'},cpf:'321.654.987-55',nasc:'03/12/1991',tel:'(11) 98812-4470',email:'camila.ferreira@email.com',end:'Santo André · SP',obs:''}
   ];
   APOLICES = [
-    {id:'ap-1',cid:'cl-1',prod:'Seguro Auto',ramo:'Automóvel',seg:'Porto Seguro',ap:'0531 778924',proposta:'',dataProposta:'',premio:2860.40,parc:'10x de R$ 286,04',com:18,iv:brDate(-210),fv:brDate(155),st:'Vigente',obj:'Honda HR-V · ABC1D23',obs:'Assistência completa 24h',pdfPropostaNome:null,pdfApoliceNome:'apolice-mariana.pdf',endossos:[]},
+    {id:'ap-1',cid:'cl-1',prod:'Seguro Auto',ramo:'Automóvel',seg:'Porto Seguro',ap:'0531 778924',proposta:'',dataProposta:'',premio:2860.40,parc:'10x de R$ 286,04',com:18,iv:brDate(-210),fv:brDate(155),st:'Vigente',obj:'Honda HR-V · ABC1D23',obs:'Assistência completa 24h',pdfPropostaNome:'proposta-mariana.pdf',pdfPropostaPath:'preview/proposta-mariana.pdf',pdfApoliceNome:'apolice-mariana.pdf',pdfApolicePath:'preview/apolice-mariana.pdf',endossos:[]},
     {id:'ap-2',cid:'cl-2',prod:'Seguro Residencial',ramo:'Residencial',seg:'Tokio Marine',ap:'RES-2026-18442',proposta:'',dataProposta:'',premio:728.90,parc:'6x de R$ 121,48',com:20,iv:brDate(-330),fv:brDate(12),st:'A renovar',obj:'Residência · Campinas',obs:'Contatar antes do vencimento',pdfPropostaNome:null,pdfApoliceNome:'residencial-ricardo.pdf',endossos:[]},
     {id:'ap-3',cid:'cl-3',prod:'Seguro Empresarial',ramo:'Empresarial',seg:'Allianz',ap:'EMP-996421-7',proposta:'',dataProposta:'',premio:5890.00,parc:'8x de R$ 736,25',com:16,iv:brDate(-120),fv:brDate(245),st:'Vigente',obj:'Studio Horizonte · unidade Centro',obs:'Cobertura de equipamentos eletrônicos',pdfPropostaNome:null,pdfApoliceNome:'empresarial-horizonte.pdf',endossos:[]},
     {id:'ap-4',cid:'cl-4',prod:'Seguro de Vida',ramo:'Seguro de Vida',seg:'MetLife',ap:'',proposta:'PROP-2026-44019',dataProposta:brDate(-3),premio:1480.00,parc:'12x de R$ 123,33',com:22,iv:'',fv:'',st:'Proposta',obj:'Camila Ferreira',obs:'Aguardando aceite da cliente',pdfPropostaNome:'proposta-camila.pdf',pdfApoliceNome:null,endossos:[]},
@@ -1261,7 +1265,7 @@ function searchClientCard(c) {
   return '<button class="search-client-card" data-client-id="'+escapeHtml(c.id)+'" onclick="openCl(this.dataset.clientId)">'+
     '<span class="av" style="background:var(--accent-bg);color:var(--accent-t);">'+escapeHtml(c.ini||'?')+'</span>'+
     '<span style="min-width:0;flex:1;">'+
-      '<span style="display:block;overflow:hidden;color:var(--text);font-size:15px;font-weight:700;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(c.nome)+'</span>'+
+      '<span style="display:block;overflow:hidden;color:var(--text);font-size:15px;font-weight:500;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(c.nome)+'</span>'+
       '<span style="display:block;margin-top:3px;color:var(--text3);font-size:12px;font-weight:500;">'+(total?total+' apólice'+(total===1?'':'s'):'Cliente sem apólice')+'</span>'+
     '</span>'+
     '<i class="ti ti-chevron-right" style="color:var(--text3);font-size:21px;" aria-hidden="true"></i>'+
@@ -1355,11 +1359,14 @@ function openSearchPolicy(policyId) {
   var vigencia = ap.iv && ap.fv ? ap.iv+' a '+ap.fv : 'Ainda não informada';
   var telefone = c.tel&&c.tel!=='—' ? c.tel : '';
   var telHref = telefone.replace(/[^\d+]/g,'');
-  var pdfTipo = ap.pdfApoliceData||ap.pdfApolicePath ? 'apolice' : (ap.pdfPropostaData||ap.pdfPropostaPath ? 'proposta' : '');
+  var temPdfProposta = !!(ap.pdfPropostaData||ap.pdfPropostaPath);
+  var temPdfApolice = !!(ap.pdfApoliceData||ap.pdfApolicePath);
+  var documents = '';
+  if (temPdfProposta) documents += '<button class="search-document-btn proposal" data-policy-id="'+escapeHtml(ap.id)+'" onclick="abrirPdfApp(\'proposta\',this.dataset.policyId,null)"><i class="ti ti-file-type-pdf"></i><span>PDF da proposta</span></button>';
+  if (temPdfApolice) documents += '<button class="search-document-btn policy" data-policy-id="'+escapeHtml(ap.id)+'" onclick="abrirPdfApp(\'apolice\',this.dataset.policyId,null)"><i class="ti ti-file-type-pdf"></i><span>PDF da apólice</span></button>';
   var actions = '';
   if (telefone) actions += '<a class="search-action-btn" href="tel:'+escapeHtml(telHref)+'"><i class="ti ti-phone"></i>Ligar</a>';
   actions += '<button class="search-action-btn" data-client-id="'+escapeHtml(c.id)+'" onclick="openCl(this.dataset.clientId)"><i class="ti ti-user"></i>Cliente</button>';
-  if (pdfTipo) actions += '<button class="search-action-btn" data-policy-id="'+escapeHtml(ap.id)+'" data-pdf-type="'+pdfTipo+'" onclick="abrirPdfApp(this.dataset.pdfType,this.dataset.policyId,null)"><i class="ti ti-file-type-pdf"></i>Abrir PDF</button>';
   actions += '<button class="search-action-btn primary" data-policy-id="'+escapeHtml(ap.id)+'" onclick="openPolicyInPortfolio(this.dataset.policyId)"><i class="ti ti-shield-search"></i>Carteira</button>';
 
   var el = document.getElementById('universal-results');
@@ -1381,6 +1388,7 @@ function openSearchPolicy(policyId) {
         (telefone?'<div class="search-detail-item full"><span>Telefone do cliente</span><strong>'+escapeHtml(telefone)+'</strong></div>':'')+
         (ap.obs?'<div class="search-detail-item full"><span>Observações</span><strong>'+escapeHtml(ap.obs)+'</strong></div>':'')+
       '</div>'+
+      (documents?'<div class="search-document-actions">'+documents+'</div>':'')+
       '<div class="search-detail-actions">'+actions+'</div>'+
     '</article>'+
   '</div>';
@@ -2099,6 +2107,10 @@ async function carregarDados(){
 function abrirPdfApp(tipo, apId, endossoIdx) {
   var ap = APOLICES.find(a=>String(a.id)===String(apId));
   if(!ap){ toast('Apólice não encontrada'); return; }
+  if(isLocalPreview()){
+    toast('Prévia: o PDF real abrirá neste botão');
+    return;
+  }
   var b64=null, path=null, nome='documento.pdf';
   if(tipo==='proposta'){
     b64=ap.pdfPropostaData; path=ap.pdfPropostaPath; nome=ap.pdfPropostaNome||'proposta.pdf';
