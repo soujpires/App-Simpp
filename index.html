@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
-<link rel="stylesheet" href="./app-icons.css?v=20260725-3">
+<link rel="stylesheet" href="./app-icons.css?v=20260725-4">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.documentElement.setAttribute('data-theme','light');
@@ -192,7 +192,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeSlideUp .2s ease;}
 </style>
-<link rel="stylesheet" href="./app-redesign.css?v=20260725-3">
+<link rel="stylesheet" href="./app-redesign.css?v=20260725-4">
 <!-- Estilos críticos mantidos no index para o app não perder o layout
      quando uma atualização móvel publicar apenas este arquivo. -->
 <style id="simpp-critical-mobile-layout">
@@ -347,9 +347,9 @@ button,input,select,textarea{font:inherit}
 
         <section class="home-module home-module-tasks">
           <div class="home-section-head">
-            <span class="home-section-icon"><i class="ti ti-list-check" aria-hidden="true"></i></span>
-            <span class="home-section-copy"><strong>Tarefas próximas</strong></span>
-            <button class="home-section-link" onclick="goScreen('tarefas')">Ver todas</button>
+            <span class="home-section-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span>
+            <span class="home-section-copy"><strong>Atendimentos próximos</strong></span>
+            <button class="home-section-link" onclick="goScreen('atendimentos')">Ver todos</button>
           </div>
           <div class="card home-card">
             <div id="p-tarefas"></div>
@@ -455,6 +455,35 @@ button,input,select,textarea{font:inherit}
     <button class="fab" onclick="abrirNovaTarefa()" aria-label="Criar tarefa"><i class="ti ti-plus"></i></button>
   </div>
 
+  <!-- ATENDIMENTOS -->
+  <div class="screen" id="s-atendimentos">
+    <div class="screen-body">
+      <div class="collection-shell">
+        <div class="atendimento-intro">
+          <span class="atendimento-intro-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span>
+          <span><strong>Atendimentos</strong><small id="at-summary">Sincronizados com o Simpp web</small></span>
+        </div>
+        <div class="atendimento-filters" id="at-filtros" aria-label="Filtros de atendimentos"></div>
+        <div class="atendimento-list" id="at-lista"></div>
+      </div>
+      <div style="height:80px;"></div>
+    </div>
+  </div>
+
+  <!-- ASSISTÊNCIAS -->
+  <div class="screen" id="s-assistencias">
+    <div class="screen-body">
+      <div class="collection-shell">
+        <div class="screen-search-field">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input type="search" placeholder="Buscar seguradora" id="ast-srch" oninput="buildAssistencias(this.value)" autocomplete="off" aria-label="Buscar seguradora">
+        </div>
+        <div class="assistencia-list" id="ast-list"></div>
+      </div>
+      <div style="height:40px;"></div>
+    </div>
+  </div>
+
   <!-- RENOVAÇÕES -->
   <div class="screen" id="s-renovacoes">
     <div class="screen-body" style="padding-top:8px;">
@@ -466,8 +495,14 @@ button,input,select,textarea{font:inherit}
   <!-- MAIS -->
   <div class="screen" id="s-mais">
     <div class="screen-body">
-      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-chart-bar"></i>Relatórios</div></div>
+      <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-chart-bar"></i>Recursos</div></div>
       <div class="card" style="margin:0 16px 16px;">
+        <div class="cfg-item" onclick="goScreen('assistencias')">
+          <div class="cfg-ico"><i class="ti ti-headset"></i></div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:400;color:var(--text);">Assistências</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">Contatos das seguradoras</div></div>
+          <i class="ti ti-chevron-right" style="color:var(--text3);font-size:15px;"></i>
+        </div>
         <div class="cfg-item" onclick="goScreen('producao')">
           <div class="cfg-ico"><i class="ti ti-chart-bar"></i></div>
           <div style="flex:1;"><div style="font-size:14px;font-weight:300;color:var(--text);">Produção</div>
@@ -489,10 +524,11 @@ button,input,select,textarea{font:inherit}
             <div style="font-size:11px;color:var(--text3);margin-top:2px;">Ramos, motivos, logo</div></div>
           <i class="ti ti-chevron-right" style="color:var(--text3);font-size:15px;"></i>
         </div>
-        <div class="cfg-item" onclick="toggleTheme()">
-          <div class="cfg-ico"><i class="ti ti-sun" id="cfg-theme-ico"></i></div>
-          <div style="flex:1;"><div style="font-size:14px;font-weight:300;color:var(--text);">Tema</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="cfg-theme-label">Claro</div></div>
+        <div class="cfg-item" onclick="goScreen('suporte')">
+          <div class="cfg-ico"><i class="ti ti-lifebuoy"></i></div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:400;color:var(--text);">Suporte</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">Ajuda e canais de atendimento</div></div>
+          <i class="ti ti-chevron-right" style="color:var(--text3);font-size:15px;"></i>
         </div>
         <div class="cfg-item" onclick="sairDoSimpp()">
           <div class="cfg-ico" style="background:var(--red-bg);"><i class="ti ti-logout" style="color:var(--red);"></i></div>
@@ -508,6 +544,31 @@ button,input,select,textarea{font:inherit}
         </div>
       </div>
       <div style="text-align:center;padding:8px 0 24px;font-size:10px;color:var(--text3);">Simpp · gestão simples · v20260607</div>
+    </div>
+  </div>
+
+  <!-- SUPORTE -->
+  <div class="screen" id="s-suporte">
+    <div class="screen-body">
+      <div class="support-shell">
+        <div class="support-intro">
+          <span><i class="ti ti-lifebuoy" aria-hidden="true"></i></span>
+          <strong>Como podemos ajudar?</strong>
+          <small>Fale com a equipe do Simpp pelos mesmos canais da versão web.</small>
+        </div>
+        <div class="support-grid">
+          <a class="support-card whatsapp" href="https://api.whatsapp.com/send?phone=5511942688776&text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Simpp." target="_blank" rel="noopener noreferrer">
+            <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+            <strong>WhatsApp</strong>
+            <small>+55 11 94268-8776</small>
+          </a>
+          <a class="support-card" href="mailto:suporte@simpp.com.br">
+            <i class="ti ti-mail" aria-hidden="true"></i>
+            <strong>E-mail</strong>
+            <small>suporte@simpp.com.br</small>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -587,16 +648,16 @@ button,input,select,textarea{font:inherit}
   <!-- BOTTOM NAV -->
   <nav class="botnav" aria-label="Navegação principal">
     <button class="bnav-item active" data-screen="painel" onclick="goScreen('painel',this)">
-      <i class="ti ti-home-2" aria-hidden="true"></i><span>Início</span>
+      <i class="ti ti-layout-dashboard" aria-hidden="true"></i><span>Painel</span>
     </button>
-    <button class="bnav-item" data-screen="buscar" onclick="openUniversalSearch()">
-      <i class="ti ti-search" aria-hidden="true"></i><span>Buscar</span>
+    <button class="bnav-item" data-screen="apolices" onclick="goScreen('apolices',this)">
+      <i class="ti ti-file-certificate" aria-hidden="true"></i><span>Apólices</span>
     </button>
     <button class="bnav-item" data-screen="clientes" onclick="goScreen('clientes',this)">
       <i class="ti ti-users-group" aria-hidden="true"></i><span>Clientes</span>
     </button>
-    <button class="bnav-item" data-screen="tarefas" onclick="goScreen('tarefas',this)">
-      <i class="ti ti-list-check" aria-hidden="true"></i><span>Tarefas</span>
+    <button class="bnav-item" data-screen="atendimentos" onclick="goScreen('atendimentos',this)">
+      <i class="ti ti-clipboard-list" aria-hidden="true"></i><span>Atendimentos</span>
       <span class="bnav-dot" id="tf-dot" style="display:none;" aria-hidden="true"></span>
     </button>
     <button class="bnav-item" data-screen="mais" onclick="goScreen('mais',this)">
@@ -948,9 +1009,11 @@ function sairDoSimpp() {
 
 // ── DATA ──────────────────────────────────────────────────
 var CLIENTES = [], APOLICES = [], D = [], TAREFAS = [];
+var ATENDIMENTOS = [], ASSISTENCIAS = [], SEGURADORAS = [];
 var curTheme = 'light';
 var apFiltro = 'Todas';
 var tfFiltroAtual = 'pendentes';
+var atFiltroAtual = 'Todos';
 var _prodMes = 'todos';
 var acaoApId = null;
 var nextId = 10000;
@@ -1007,6 +1070,19 @@ function carregarPreviewLocal() {
     {id:'tf-2',texto:'Enviar proposta revisada de Vida',tipo:'proposta',data:iso(1),feita:false,cliente:'Camila Ferreira',cidRef:'cl-4',obs:''},
     {id:'tf-3',texto:'Conferir documentação da empresa',tipo:'documento',data:iso(4),feita:false,cliente:'Studio Horizonte Ltda.',cidRef:'cl-3',obs:''}
   ];
+  SEGURADORAS = [
+    {id:'seg-1',nome:'Porto Seguro'},
+    {id:'seg-2',nome:'Tokio Marine'}
+  ];
+  ASSISTENCIAS = [
+    {id:'ast-1',seguradora_id:'seg-1',label:'Assistência 24 horas',telefone:'0800 727 0800',ordem:1,user_id:null},
+    {id:'ast-2',seguradora_id:'seg-1',label:'WhatsApp',telefone:'551133669366',ordem:2,user_id:null},
+    {id:'ast-3',seguradora_id:'seg-2',label:'Assistência Auto',telefone:'0800 318 6546',ordem:1,user_id:null}
+  ];
+  ATENDIMENTOS = [
+    {id:'at-1',clienteId:'cl-2',apoliceId:'ap-2',clienteNome:'Ricardo Nogueira',apoliceLabel:'Seguro Residencial · RES-2026-18442',tipo:'contato',status:'Aberto',descricao:'Cliente pediu contato sobre a renovação.',dataAcompanhamento:iso(1),createdAt:new Date().toISOString()},
+    {id:'at-2',clienteId:'cl-1',apoliceId:'ap-1',clienteNome:'Mariana Almeida',apoliceLabel:'Seguro Auto · 0531 778924',tipo:'assistencia',status:'Em andamento',descricao:'Orientação sobre assistência 24 horas.',dataAcompanhamento:null,createdAt:new Date().toISOString()}
+  ];
   D = APOLICES.map(function(a) {
     var c = CLIENTES.find(function(x){return x.id===a.cid;});
     return Object.assign({},a,{nome:c.nome,ini:c.ini,cor:c.cor,cort:c.cort,tel:c.tel,email:c.email});
@@ -1016,6 +1092,8 @@ function carregarPreviewLocal() {
   buildPainelTarefas();
   buildPainelVencendo();
   buildTarefas();
+  buildAtendimentos();
+  buildAssistencias('');
   buildApList('');
   buildClList(CLIENTES);
   buildRen();
@@ -1065,7 +1143,8 @@ function toggleTheme(){setTheme(curTheme==='dark'?'light':'dark');}
 // ── NAVIGATION ────────────────────────────────────────────
 var _prevScreen = null;
 var _curScreen = 'painel';
-var _subScreens = ['s-cliente-detail','s-producao','s-configuracoes'];
+var _clientBackScreen = 'clientes';
+var _subScreens = ['s-cliente-detail','s-assistencias','s-producao','s-configuracoes','s-suporte'];
 
 function topbarThemeButton() {
   var icon = curTheme === 'dark' ? 'ti-moon' : 'ti-sun';
@@ -1090,7 +1169,7 @@ function goScreen(name, btn) {
   // Update bottom nav (not for sub-screens)
   if (!_subScreens.includes(screenId)) {
     _curScreen = name;
-    var navMap = {apolices:'buscar',renovacoes:'painel'};
+    var navMap = {buscar:'painel',renovacoes:'mais',assistencias:'mais',producao:'mais',configuracoes:'mais',suporte:'mais'};
     var navName = navMap[name] || name;
     document.querySelectorAll('.bnav-item').forEach(b=>{
       b.classList.remove('active');
@@ -1108,10 +1187,12 @@ function goScreen(name, btn) {
   if (name === 'renovacoes') buildRen();
   if (name === 'configuracoes') initConfiguracoes();
   if (name === 'tarefas') buildTarefas();
+  if (name === 'atendimentos') buildAtendimentos();
+  if (name === 'assistencias') buildAssistencias(document.getElementById('ast-srch')?.value || '');
 }
 
 function updateTopbar(name) {
-  var titles = {painel:'simpp',buscar:'Buscar',apolices:'Carteira de apólices',clientes:'Clientes',tarefas:'Tarefas',renovacoes:'Renovações',mais:'Mais',producao:'Produção',configuracoes:'Configurações'};
+  var titles = {painel:'simpp',buscar:'Buscar',apolices:'Apólices',clientes:'Clientes',tarefas:'Tarefas',atendimentos:'Atendimentos',assistencias:'Assistências',renovacoes:'Renovações',mais:'Mais',producao:'Produção',configuracoes:'Configurações',suporte:'Central de Suporte'};
   var isLogo = (name === 'painel');
   var tbLeft = document.getElementById('tb-left');
   var tbRight = document.getElementById('tb-right');
@@ -1139,8 +1220,8 @@ function goBack() {
   var cur = [...document.querySelectorAll('.screen')].find(s=>s.classList.contains('on'));
   if (!cur) return;
   var id = cur.id;
-  if (id === 's-cliente-detail') { goScreen('clientes'); return; }
-  if (id === 's-producao' || id === 's-configuracoes') { goScreen('mais'); return; }
+  if (id === 's-cliente-detail') { goScreen(_clientBackScreen||'clientes'); return; }
+  if (id === 's-assistencias' || id === 's-producao' || id === 's-configuracoes' || id === 's-suporte') { goScreen('mais'); return; }
   goScreen('painel');
 }
 
@@ -1158,8 +1239,8 @@ function atualizarMetricas() {
   var elP=document.getElementById('m-prop');if(elP)elP.textContent=nProp;
   var elR=document.getElementById('m-r');if(elR)elR.textContent=nRen;
   // dots
-  var tfPend=TAREFAS.filter(t=>!t.feita).length;
-  var tfDot=document.getElementById('tf-dot');if(tfDot)tfDot.style.display=tfPend>0?'block':'none';
+  var atPend=ATENDIMENTOS.filter(a=>a.status!=='Concluído').length;
+  var tfDot=document.getElementById('tf-dot');if(tfDot)tfDot.style.display=atPend>0?'block':'none';
   var renDot=document.getElementById('ren-dot');if(renDot)renDot.style.display=nRen>0?'block':'none';
 }
 
@@ -1187,17 +1268,24 @@ function buildPainelTarefas() {
   if (!el) return;
   var hoje = new Date(); hoje.setHours(0,0,0,0);
   var em7 = new Date(hoje); em7.setDate(em7.getDate()+7);
-  var lista = TAREFAS.filter(t=>!t.feita&&new Date(t.data+'T00:00:00')<=em7).sort((a,b)=>new Date(a.data)-new Date(b.data)).slice(0,2);
-  if (!lista.length) { el.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:16px;"><div style="width:38px;height:38px;border-radius:12px;background:var(--green-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class=\"ti ti-check\" style=\"font-size:18px;color:var(--green);\"></i></div><div><div style=\"font-size:14px;font-weight:600;color:var(--text)\">Nenhuma tarefa pendente</div><div style=\"font-size:12px;color:var(--text3);margin-top:2px\">Sua semana está organizada!</div></div></div>'; return; }
-  el.innerHTML = lista.map(t=>{
-    var d=new Date(t.data+'T00:00:00');d.setHours(0,0,0,0);
-    var atrasada=d<hoje;var dataCor=atrasada?'var(--red)':'var(--text3)';
-    var dataStr=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
-    return '<div class="list-item" data-task-id="'+escapeHtml(t.id)+'" onclick="toggleTarefa(this.dataset.taskId)" style="gap:10px;">'+
-      '<div style="width:16px;height:16px;border-radius:5px;border:1.5px solid var(--border2);flex-shrink:0;"></div>'+
-      '<div style="flex:1;min-width:0;"><div style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+t.texto+'</div>'+
-      '<div style="font-size:10px;color:var(--text3);margin-top:1px;">'+t.cliente+'</div></div>'+
-      '<span style="font-size:10px;color:'+dataCor+';flex-shrink:0;">'+(atrasada?'⚠ ':'')+dataStr+'</span></div>';
+  var lista = ATENDIMENTOS.filter(function(a){
+    if(a.status==='Concluído')return false;
+    if(!a.dataAcompanhamento)return true;
+    return new Date(a.dataAcompanhamento+'T00:00:00')<=em7;
+  }).sort(function(a,b){
+    return new Date(a.dataAcompanhamento||a.createdAt||0)-new Date(b.dataAcompanhamento||b.createdAt||0);
+  }).slice(0,2);
+  if (!lista.length) { el.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:16px;"><div style="width:38px;height:38px;border-radius:12px;background:var(--green-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class=\"ti ti-check\" style=\"font-size:18px;color:var(--green);\"></i></div><div><div style=\"font-size:14px;font-weight:600;color:var(--text)\">Nenhum atendimento pendente</div><div style=\"font-size:12px;color:var(--text3);margin-top:2px\">Os novos registros aparecerão aqui.</div></div></div>'; return; }
+  el.innerHTML = lista.map(a=>{
+    var d=a.dataAcompanhamento?new Date(a.dataAcompanhamento+'T00:00:00'):null;
+    if(d)d.setHours(0,0,0,0);
+    var atrasada=d&&d<hoje;var dataCor=atrasada?'var(--red)':'var(--text3)';
+    var dataStr=d?d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}):'';
+    return '<div class="list-item" data-client-id="'+escapeHtml(a.clienteId||'')+'" onclick="if(this.dataset.clientId)openCl(this.dataset.clientId,\'painel\')" style="gap:10px;">'+
+      '<div style="width:34px;height:34px;border-radius:11px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti '+escapeHtml(AT_TIPO_ICONES[a.tipo]||'ti-clipboard-list')+'" style="color:var(--accent-t);font-size:17px;"></i></div>'+
+      '<div style="flex:1;min-width:0;"><div style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escapeHtml(a.clienteNome)+'</div>'+
+      '<div style="font-size:10px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escapeHtml(a.descricao||AT_TIPO_LABELS[a.tipo]||'Atendimento')+'</div></div>'+
+      (dataStr?'<span style="font-size:10px;color:'+dataCor+';flex-shrink:0;">'+(atrasada?'⚠ ':'')+escapeHtml(dataStr)+'</span>':'')+'</div>';
   }).join('');
 }
 
@@ -1381,7 +1469,7 @@ function policySearchCard(ap) {
 
 function searchClientCard(c) {
   var total = APOLICES.filter(a=>String(a.cid)===String(c.id)).length;
-  return '<button class="search-client-card" data-client-id="'+escapeHtml(c.id)+'" onclick="openCl(this.dataset.clientId)">'+
+  return '<button class="search-client-card" data-client-id="'+escapeHtml(c.id)+'" onclick="openCl(this.dataset.clientId,\'buscar\')">'+
     '<span class="av" style="background:var(--accent-bg);color:var(--accent-t);">'+escapeHtml(c.ini||'?')+'</span>'+
     '<span style="min-width:0;flex:1;">'+
       '<span style="display:block;overflow:hidden;color:var(--text);font-size:15px;font-weight:500;text-overflow:ellipsis;white-space:nowrap;">'+escapeHtml(c.nome)+'</span>'+
@@ -1485,7 +1573,7 @@ function openSearchPolicy(policyId) {
   if (temPdfApolice) documents += '<button class="search-document-btn policy" data-policy-id="'+escapeHtml(ap.id)+'" onclick="abrirPdfApp(\'apolice\',this.dataset.policyId,null)"><i class="ti ti-file-type-pdf"></i><span>PDF da apólice</span></button>';
   var actions = '';
   if (telefone) actions += '<a class="search-action-btn" href="tel:'+escapeHtml(telHref)+'"><i class="ti ti-phone"></i>Ligar</a>';
-  actions += '<button class="search-action-btn" data-client-id="'+escapeHtml(c.id)+'" onclick="openCl(this.dataset.clientId)"><i class="ti ti-user"></i>Cliente</button>';
+  actions += '<button class="search-action-btn" data-client-id="'+escapeHtml(c.id)+'" onclick="openCl(this.dataset.clientId,\'buscar\')"><i class="ti ti-user"></i>Cliente</button>';
   actions += '<button class="search-action-btn primary" data-policy-id="'+escapeHtml(ap.id)+'" onclick="openPolicyInPortfolio(this.dataset.policyId)"><i class="ti ti-shield-search"></i>Carteira</button>';
 
   var el = document.getElementById('universal-results');
@@ -1582,9 +1670,10 @@ function filterCl(q) {
   buildClList(v?CLIENTES.filter(d=>searchableIncludes([d.nome,d.cpf,d.tel,d.email],v)):CLIENTES);
 }
 
-function openCl(id) {
+function openCl(id, backScreen) {
   var c = CLIENTES.find(x=>String(x.id)===String(id));
   if (!c) return;
+  _clientBackScreen=backScreen||'clientes';
   var aps = APOLICES.filter(a=>String(a.cid)===String(id));
   var PC = (PICOC[curTheme]||PICOC.light);
   var pc = PC[aps[0]?.prod||'Outro']||PC['Outro'];
@@ -1635,7 +1724,7 @@ function openCl(id) {
   goScreen('cliente-detail');
   // update topbar manually for this sub-screen
   var tbLeft = document.getElementById('tb-left');
-  tbLeft.innerHTML = '<button class="topbar-back" onclick="goScreen(\'clientes\')"><i class="ti ti-chevron-left"></i>'+c.nome+'</button>';
+  tbLeft.innerHTML = '<button class="topbar-back" onclick="goScreen(_clientBackScreen||\'clientes\')"><i class="ti ti-chevron-left"></i>'+c.nome+'</button>';
   var tbRight = document.getElementById('tb-right');
   tbRight.innerHTML = topbarThemeButton();
   tbRight.style.display = 'flex';
@@ -1682,7 +1771,7 @@ function buildTarefas() {
     '</article>';
   }).join('');
   // update count
-  var pend=TAREFAS.filter(t=>!t.feita).length;
+  var pend=ATENDIMENTOS.filter(a=>a.status!=='Concluído').length;
   var tfDot=document.getElementById('tf-dot');if(tfDot)tfDot.style.display=pend>0?'block':'none';
 }
 
@@ -1700,6 +1789,103 @@ function toggleTarefa(id) {
     buildTarefas();buildPainelTarefas();
     if(_supaUser&&typeof t.id==='number'&&t.id<9000)supa.from('tarefas').update({feita:t.feita}).eq('id',t.id).then(()=>{});
   }
+}
+
+// ── ATENDIMENTOS ─────────────────────────────────────────
+var AT_TIPO_ICONES = {sinistro:'ti-alert-triangle',assistencia:'ti-tool',envio:'ti-file-upload',contato:'ti-phone'};
+var AT_TIPO_LABELS = {sinistro:'Sinistro',assistencia:'Assistência',envio:'Envio de documento',contato:'Contato'};
+
+function mapAtendimentoApp(a) {
+  var c=CLIENTES.find(x=>String(x.id)===String(a.cliente_id));
+  var ap=APOLICES.find(x=>String(x.id)===String(a.apolice_id));
+  return {
+    id:a.id,
+    clienteId:a.cliente_id,
+    apoliceId:a.apolice_id,
+    clienteNome:c?c.nome:'Cliente não encontrado',
+    apoliceLabel:ap?((ap.prod||ap.ramo||'Apólice')+' · '+(ap.ap||ap.proposta||'Sem número')):'Sem apólice vinculada',
+    tipo:a.tipo||'contato',
+    status:a.status||'Aberto',
+    descricao:a.descricao||'',
+    dataAcompanhamento:a.data_acompanhamento||'',
+    createdAt:a.created_at||''
+  };
+}
+
+function formatAppDate(value) {
+  if(!value)return '';
+  var d=new Date(String(value).length===10?value+'T00:00:00':value);
+  if(Number.isNaN(d.getTime()))return '';
+  return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
+}
+
+function setAtFiltro(status) {
+  atFiltroAtual=status;
+  buildAtendimentos();
+}
+
+function buildAtendimentos() {
+  var listEl=document.getElementById('at-lista');
+  var filtersEl=document.getElementById('at-filtros');
+  var summaryEl=document.getElementById('at-summary');
+  if(!listEl||!filtersEl)return;
+  var statuses=['Todos','Aberto','Em andamento','Concluído'];
+  filtersEl.innerHTML=statuses.map(function(status){
+    var count=status==='Todos'?ATENDIMENTOS.length:ATENDIMENTOS.filter(a=>a.status===status).length;
+    return '<button class="atendimento-filter'+(atFiltroAtual===status?' active':'')+'" data-status="'+escapeHtml(status)+'" onclick="setAtFiltro(this.dataset.status)">'+escapeHtml(status)+' <span>'+count+'</span></button>';
+  }).join('');
+  var data=atFiltroAtual==='Todos'?[...ATENDIMENTOS]:ATENDIMENTOS.filter(a=>a.status===atFiltroAtual);
+  if(summaryEl)summaryEl.textContent=data.length+' atendimento'+(data.length===1?'':'s')+(atFiltroAtual==='Todos'?'':' · '+atFiltroAtual.toLowerCase());
+  if(!data.length){
+    listEl.innerHTML='<div class="collection-empty"><span><i class="ti ti-clipboard-list"></i></span><strong>Nenhum atendimento</strong><small>Os registros feitos no Simpp web aparecerão aqui.</small></div>';
+    return;
+  }
+  listEl.innerHTML=data.map(function(a){
+    var statusClass=a.status==='Concluído'?' done':a.status==='Em andamento'?' progress':' open';
+    var dataLabel=formatAppDate(a.dataAcompanhamento||a.createdAt);
+    return '<button class="atendimento-card" data-client-id="'+escapeHtml(a.clienteId||'')+'" onclick="if(this.dataset.clientId)openCl(this.dataset.clientId,\'atendimentos\')">'+
+      '<span class="atendimento-card-icon"><i class="ti '+escapeHtml(AT_TIPO_ICONES[a.tipo]||'ti-clipboard-list')+'" aria-hidden="true"></i></span>'+
+      '<span class="atendimento-card-copy">'+
+        '<strong>'+escapeHtml(a.clienteNome)+'</strong>'+
+        '<span>'+escapeHtml(a.apoliceLabel)+'</span>'+
+        '<small>'+escapeHtml(AT_TIPO_LABELS[a.tipo]||'Atendimento')+(dataLabel?' · '+escapeHtml(dataLabel):'')+(a.descricao?' · '+escapeHtml(a.descricao):'')+'</small>'+
+      '</span>'+
+      '<span class="atendimento-status'+statusClass+'">'+escapeHtml(a.status)+'</span>'+
+    '</button>';
+  }).join('');
+}
+
+// ── ASSISTÊNCIAS ─────────────────────────────────────────
+function buildAssistencias(query) {
+  var el=document.getElementById('ast-list');
+  if(!el)return;
+  var q=normalizeSearch(query||'');
+  var seguradoras=SEGURADORAS.filter(function(seg){
+    var contatos=ASSISTENCIAS.filter(a=>String(a.seguradora_id)===String(seg.id));
+    return contatos.length&&(!q||searchableIncludes([seg.nome].concat(contatos.map(a=>a.label+' '+a.telefone)),q));
+  });
+  if(!seguradoras.length){
+    el.innerHTML='<div class="collection-empty"><span><i class="ti ti-headset"></i></span><strong>Nenhuma assistência encontrada</strong><small>Tente buscar pelo nome da seguradora.</small></div>';
+    return;
+  }
+  el.innerHTML=seguradoras.map(function(seg){
+    var contatos=ASSISTENCIAS.filter(a=>String(a.seguradora_id)===String(seg.id)).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+    var rows=contatos.map(function(contato){
+      var digits=String(contato.telefone||'').replace(/\D/g,'');
+      var isWhatsapp=String(contato.label||'').toLowerCase().includes('whatsapp');
+      var href=isWhatsapp?'https://wa.me/'+digits:'tel:'+digits;
+      var icon=isWhatsapp?'ti-brand-whatsapp':'ti-phone';
+      return '<a class="assistencia-contact" href="'+escapeHtml(href)+'"'+(isWhatsapp?' target="_blank" rel="noopener noreferrer"':'')+'>'+
+        '<i class="ti '+icon+'" aria-hidden="true"></i>'+
+        '<span><strong>'+escapeHtml(contato.label||'Telefone')+'</strong><small>'+escapeHtml(contato.telefone||'')+'</small></span>'+
+        '<i class="ti ti-chevron-right" aria-hidden="true"></i>'+
+      '</a>';
+    }).join('');
+    return '<section class="assistencia-card">'+
+      '<div class="assistencia-card-head"><span><i class="ti ti-headset"></i></span><strong>'+escapeHtml(seg.nome||'Seguradora')+'</strong></div>'+
+      rows+
+    '</section>';
+  }).join('');
 }
 
 // ── RENOVAÇÕES ────────────────────────────────────────────
@@ -2214,6 +2400,14 @@ async function carregarDados(){
     cliente:(CLIENTES.find(c=>String(c.id)===String(t.cliente_id))||{}).nome||'Geral',
     cidRef:t.cliente_id,obs:t.obs||''
   }));
+  const extras=await Promise.all([
+    supa.from('seguradoras').select('id,nome,logo_url').order('nome'),
+    supa.from('assistencias').select('*').order('ordem'),
+    supa.from('atendimentos').select('*').eq('user_id',uid).order('created_at',{ascending:false})
+  ]);
+  SEGURADORAS=extras[0].data||[];
+  ASSISTENCIAS=(extras[1].data||[]).filter(a=>!a.user_id||String(a.user_id)===String(uid));
+  ATENDIMENTOS=(extras[2].data||[]).map(mapAtendimentoApp);
   D=APOLICES.map(a=>{
     var c=CLIENTES.find(x=>String(x.id)===String(a.cid))||{nome:'—',ini:'?',cor:{dark:'#222',light:'#eee'},cort:{dark:'#fff',light:'#000'},tel:'—',email:'—'};
     return{...a,nome:c.nome,ini:c.ini,cor:c.cor,cort:c.cort,tel:c.tel,email:c.email};
@@ -2223,7 +2417,7 @@ async function carregarDados(){
   curTheme='light';
   // Build UI
   buildPainelList();buildPainelTarefas();buildPainelVencendo();
-  buildTarefas();buildApList('');buildClList(CLIENTES);buildRen();
+  buildTarefas();buildAtendimentos();buildAssistencias('');buildApList('');buildClList(CLIENTES);buildRen();
   setTimeout(atualizarMetricas,200);
   // Expiration
   if(_supaUser&&_supaUser.created_at){

@@ -42,6 +42,7 @@
 .ti-alert-triangle::before { content: "warning"; }
 .ti-arrow-left::before { content: "arrow_back"; }
 .ti-bell-ringing::before { content: "notifications_active"; }
+.ti-brand-whatsapp::before { content: "chat"; }
 .ti-building::before { content: "apartment"; }
 .ti-calendar-due::before { content: "event_upcoming"; }
 .ti-car::before { content: "directions_car"; }
@@ -64,6 +65,7 @@
 .ti-file-plus::before { content: "note_add"; }
 .ti-file-search::before { content: "find_in_page"; }
 .ti-file-type-pdf::before { content: "picture_as_pdf"; }
+.ti-headset::before { content: "headset_mic"; }
 .ti-first-aid-kit::before { content: "medical_services"; }
 .ti-heart::before { content: "favorite"; }
 .ti-history::before { content: "history"; }
@@ -72,6 +74,8 @@
 .ti-link::before { content: "link"; }
 .ti-list::before { content: "list"; }
 .ti-list-check::before { content: "checklist"; }
+.ti-layout-dashboard::before { content: "dashboard"; }
+.ti-lifebuoy::before { content: "support"; }
 .ti-logout::before { content: "logout"; }
 .ti-mail::before { content: "mail"; }
 .ti-moon::before { content: "dark_mode"; }
@@ -99,4 +103,7 @@
 .ti-user-search::before { content: "person_search"; }
 .ti-users::before { content: "group"; }
 .ti-users-group::before { content: "groups"; }
+.ti-clipboard-list::before { content: "support_agent"; }
+.ti-file-upload::before { content: "upload_file"; }
+.ti-tool::before { content: "build"; }
 .ti-x::before { content: "close"; }

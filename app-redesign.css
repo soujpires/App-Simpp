@@ -1483,6 +1483,339 @@ a:focus-visible,
   font-size: 12px;
 }
 
+.atendimento-intro {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px;
+  border: 1px solid rgba(30, 74, 138, 0.12);
+  border-radius: 19px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.atendimento-intro-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  border-radius: 13px;
+  color: var(--accent-t);
+  background: var(--accent-bg);
+}
+
+.atendimento-intro-icon i {
+  font-size: 22px;
+}
+
+.atendimento-intro strong,
+.atendimento-intro small {
+  display: block;
+}
+
+.atendimento-intro strong {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.atendimento-intro small {
+  margin-top: 3px;
+  color: var(--text3);
+  font-size: 11.5px;
+}
+
+.atendimento-filters {
+  display: flex;
+  gap: 7px;
+  margin: 11px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.atendimento-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.atendimento-filter {
+  min-height: 36px;
+  flex: 0 0 auto;
+  padding: 7px 13px;
+  border: 1px solid var(--border2);
+  border-radius: 999px;
+  color: var(--text3);
+  background: var(--surface);
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.atendimento-filter.active {
+  border-color: var(--accent);
+  color: var(--accent-t);
+  background: var(--accent-bg);
+  font-weight: 600;
+}
+
+.atendimento-list,
+.assistencia-list {
+  display: grid;
+  gap: 9px;
+}
+
+.atendimento-card {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+.atendimento-card-icon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  color: var(--accent-t);
+  background: var(--accent-bg);
+}
+
+.atendimento-card-copy {
+  min-width: 0;
+}
+
+.atendimento-card-copy strong,
+.atendimento-card-copy span,
+.atendimento-card-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atendimento-card-copy strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.atendimento-card-copy span {
+  margin-top: 3px;
+  color: var(--text2);
+  font-size: 11.5px;
+}
+
+.atendimento-card-copy small {
+  margin-top: 3px;
+  color: var(--text3);
+  font-size: 10.5px;
+}
+
+.atendimento-status {
+  max-width: 84px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--text2);
+  background: var(--surface2);
+  font-size: 9.5px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.atendimento-status.open {
+  color: var(--amber);
+  background: var(--amber-bg);
+}
+
+.atendimento-status.progress {
+  color: var(--accent-t);
+  background: var(--accent-bg);
+}
+
+.atendimento-status.done {
+  color: var(--green);
+  background: var(--green-bg);
+}
+
+.assistencia-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.assistencia-card-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.assistencia-card-head span {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 38px;
+  border-radius: 12px;
+  color: var(--accent-t);
+  background: var(--accent-bg);
+}
+
+.assistencia-card-head strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assistencia-contact {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.assistencia-contact:last-child {
+  border-bottom: 0;
+}
+
+.assistencia-contact > i {
+  color: var(--accent-t);
+  font-size: 20px;
+}
+
+.assistencia-contact span {
+  min-width: 0;
+  flex: 1;
+}
+
+.assistencia-contact strong,
+.assistencia-contact small {
+  display: block;
+}
+
+.assistencia-contact strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.assistencia-contact small {
+  margin-top: 2px;
+  color: var(--text3);
+  font-size: 11px;
+}
+
+.support-shell {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 22px 16px;
+}
+
+.support-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 18px;
+  text-align: center;
+}
+
+.support-intro > span {
+  width: 54px;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  border-radius: 17px;
+  color: var(--accent-t);
+  background: var(--accent-bg);
+}
+
+.support-intro > span i {
+  font-size: 27px;
+}
+
+.support-intro strong {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.support-intro small {
+  max-width: 330px;
+  margin-top: 6px;
+  color: var(--text3);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.support-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 19px 12px;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  text-decoration: none;
+}
+
+.support-card > i {
+  margin-bottom: 9px;
+  color: var(--accent-t);
+  font-size: 28px;
+}
+
+.support-card.whatsapp > i {
+  color: var(--green);
+}
+
+.support-card strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.support-card small {
+  overflow-wrap: anywhere;
+  margin-top: 4px;
+  color: var(--text3);
+  font-size: 10.5px;
+}
+
+.bnav-item[data-screen="atendimentos"] span {
+  font-size: 10.5px;
+}
+
 .ap-item-name,
 .ren-card > div:nth-child(2) > div:first-child {
   font-size: 15px;
