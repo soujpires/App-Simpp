@@ -214,7 +214,12 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
       <svg width="28" height="28" viewBox="0 0 36 36"><rect x="2" y="2" width="22" height="14" rx="4" fill="#3D6FB0"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#8AAFD6"/></svg>
       <span class="tb-logo-name" id="tb-logo-name">simpp</span>
     </div>
-    <div class="tb-right" id="tb-right"></div>
+    <div class="tb-right" id="tb-right">
+      <button class="icon-btn theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar entre tema claro e escuro">
+        <i class="ti ti-sun" id="theme-icon" aria-hidden="true"></i>
+        <span class="theme-toggle-label" id="theme-toggle-label">Claro</span>
+      </button>
+    </div>
   </div>
 
   <!-- PAINEL -->
@@ -317,13 +322,17 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
   <!-- CLIENTES -->
   <div class="screen" id="s-clientes">
     <div class="screen-body">
-      <div class="searchbar"><i class="ti ti-search"></i>
-        <input type="search" placeholder="Buscar cliente…" id="cl-srch" oninput="filterCl(this.value)" autocomplete="off">
+      <div class="collection-shell">
+        <div class="screen-search-field">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input type="search" placeholder="Nome, CPF, telefone ou e-mail" id="cl-srch" oninput="filterCl(this.value)" autocomplete="off" aria-label="Buscar cliente">
+        </div>
+        <div class="collection-summary" id="cl-summary"></div>
+        <div class="client-card-list" id="cl-list"></div>
       </div>
-      <div id="cl-list"></div>
       <div style="height:80px;"></div>
     </div>
-    <button class="fab" onclick="abrirNovoCliente()"><i class="ti ti-user-plus"></i></button>
+    <button class="fab" onclick="abrirNovoCliente()" aria-label="Cadastrar cliente"><i class="ti ti-user-plus"></i></button>
   </div>
 
   <!-- CLIENTE DETAIL -->
@@ -337,16 +346,24 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
   <!-- TAREFAS -->
   <div class="screen" id="s-tarefas">
     <div class="screen-body">
-      <div class="filter-strip" style="padding-top:12px;">
-        <button class="chip sel" data-tf="pendentes" onclick="setTfFiltro('pendentes',this)">Pendentes</button>
-        <button class="chip" data-tf="hoje" onclick="setTfFiltro('hoje',this)">Hoje</button>
-        <button class="chip" data-tf="7dias" onclick="setTfFiltro('7dias',this)">7 dias</button>
-        <button class="chip" data-tf="todas" onclick="setTfFiltro('todas',this)">Todas</button>
+      <div class="collection-shell">
+        <div class="task-filter-panel">
+          <div class="task-filter-title">
+            <span class="task-filter-icon"><i class="ti ti-list-check" aria-hidden="true"></i></span>
+            <span><strong>Organização</strong><small id="tf-summary">Tarefas pendentes</small></span>
+          </div>
+          <div class="task-filter-tabs" aria-label="Filtros de tarefas">
+            <button class="task-filter-tab active" data-tf="pendentes" onclick="setTfFiltro('pendentes',this)">Pendentes</button>
+            <button class="task-filter-tab" data-tf="hoje" onclick="setTfFiltro('hoje',this)">Hoje</button>
+            <button class="task-filter-tab" data-tf="7dias" onclick="setTfFiltro('7dias',this)">7 dias</button>
+            <button class="task-filter-tab" data-tf="todas" onclick="setTfFiltro('todas',this)">Todas</button>
+          </div>
+        </div>
+        <div class="task-card-list" id="tf-list"></div>
       </div>
-      <div class="card" style="margin:0 16px;"><div id="tf-list"></div></div>
       <div style="height:80px;"></div>
     </div>
-    <button class="fab" onclick="abrirNovaTarefa()"><i class="ti ti-plus"></i></button>
+    <button class="fab" onclick="abrirNovaTarefa()" aria-label="Criar tarefa"><i class="ti ti-plus"></i></button>
   </div>
 
   <!-- RENOVAÇÕES -->
@@ -947,6 +964,8 @@ function setTheme(th) {
   var topbarEl=document.querySelector('.topbar');if(topbarEl)topbarEl.style.background=isDark?'linear-gradient(180deg,#162236 0%,#0F1A2E 100%)':'linear-gradient(180deg,#1E4A8A 0%,#163B72 100%)';
   var lbl = document.getElementById('cfg-theme-label');
   if(lbl) lbl.textContent = isDark ? 'Escuro' : 'Claro';
+  var topbarLbl = document.getElementById('theme-toggle-label');
+  if(topbarLbl) topbarLbl.textContent = isDark ? 'Escuro' : 'Claro';
   document.getElementById('theme-meta') && (document.getElementById('theme-meta').content = isDark ? '#0A1220' : '#FFFFFF');
   buildApList('');
   buildClList(CLIENTES);
@@ -958,6 +977,15 @@ function toggleTheme(){setTheme(curTheme==='dark'?'light':'dark');}
 var _prevScreen = null;
 var _curScreen = 'painel';
 var _subScreens = ['s-cliente-detail','s-producao','s-configuracoes'];
+
+function topbarThemeButton() {
+  var icon = curTheme === 'dark' ? 'ti-moon' : 'ti-sun';
+  var label = curTheme === 'dark' ? 'Escuro' : 'Claro';
+  return '<button class="icon-btn theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar entre tema claro e escuro">'+
+    '<i class="ti '+icon+'" id="theme-icon" aria-hidden="true"></i>'+
+    '<span class="theme-toggle-label" id="theme-toggle-label">'+label+'</span>'+
+  '</button>';
+}
 
 function goScreen(name, btn) {
   var screenId = 's-'+name;
@@ -1000,18 +1028,20 @@ function updateTopbar(name) {
   var tbRight = document.getElementById('tb-right');
   if (isLogo) {
     tbLeft.innerHTML = '<svg width="28" height="28" viewBox="0 0 36 36"><rect x="2" y="2" width="22" height="14" rx="4" fill="#3D6FB0"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#8AAFD6"/></svg><span class="tb-logo-name">simpp</span>';
-    tbRight.innerHTML = '';
+    tbRight.innerHTML = topbarThemeButton();
     tbRight.style.display = 'flex';
     return;
   }
   var isSubScreen = _subScreens.includes('s-'+name) || name === 'cliente-detail';
   if (isSubScreen || name === 'producao' || name === 'configuracoes') {
     tbLeft.innerHTML = '<button class="topbar-back" onclick="goBack()"><i class="ti ti-chevron-left"></i>'+titles[name]+'</button>';
-    tbRight.style.display = 'none';
+    tbRight.innerHTML = topbarThemeButton();
+    tbRight.style.display = 'flex';
     return;
   }
   tbLeft.innerHTML = '<span class="tb-logo-name" style="font-size:16px;">'+(titles[name]||name)+'</span>';
-  tbRight.style.display = name === 'buscar' ? 'none' : 'flex';
+  tbRight.innerHTML = topbarThemeButton();
+  tbRight.style.display = 'flex';
 }
 
 function goBack() {
@@ -1436,27 +1466,31 @@ function closeAcoes(){document.getElementById('sheet-acoes').classList.remove('o
 // ── CLIENTES ──────────────────────────────────────────────
 function buildClList(data) {
   var el = document.getElementById('cl-list');
+  var summary = document.getElementById('cl-summary');
   if (!el) return;
-  if (!data.length) { el.innerHTML='<div class="empty"><i class="ti ti-users"></i><p>Nenhum cliente encontrado</p></div>'; return; }
+  if (summary) summary.textContent = data.length+' cliente'+(data.length===1?'':'s');
+  if (!data.length) { el.innerHTML='<div class="collection-empty"><span><i class="ti ti-user-search"></i></span><strong>Nenhum cliente encontrado</strong><small>Tente outro nome, CPF ou telefone.</small></div>'; return; }
   var sorted = [...data].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
-  var html = '';
-  var lastLetra = '';
-  sorted.forEach(d=>{
-    var l=d.nome.charAt(0).toUpperCase();
-    if(l!==lastLetra){html+='<div style="padding:10px 16px 4px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;">'+l+'</div>';lastLetra=l;}
+  el.innerHTML = sorted.map(d=>{
     var nAps=APOLICES.filter(a=>String(a.cid)===String(d.id)).length;
-    html+='<div class="list-item" onclick="openCl(\''+d.id+'\')">'+
-      '<div class="av" style="width:36px;height:36px;background:var(--surface2);font-size:14px;color:var(--text3);">'+d.ini+'</div>'+
-      '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:300;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+d.nome+'</div>'+
-      '<div style="font-size:11px;color:var(--text3);">'+nAps+' apólice'+(nAps!==1?'s':'')+'</div></div>'+
-      '<i class="ti ti-chevron-right" style="color:var(--text3);font-size:14px;flex-shrink:0;"></i></div>';
-  });
-  el.innerHTML = html;
+    var avatarBg=(d.cor&&d.cor[curTheme])||'var(--accent-bg)';
+    var avatarColor=(d.cort&&d.cort[curTheme])||'var(--accent-t)';
+    var contact=d.tel&&d.tel!=='—'?d.tel:(d.email&&d.email!=='—'?d.email:'Sem contato informado');
+    return '<button class="client-card" data-client-id="'+escapeHtml(d.id)+'" onclick="openCl(this.dataset.clientId)">'+
+      '<span class="client-card-avatar" style="background:'+escapeHtml(avatarBg)+';color:'+escapeHtml(avatarColor)+';">'+escapeHtml(d.ini||'?')+'</span>'+
+      '<span class="client-card-content">'+
+        '<strong>'+escapeHtml(d.nome)+'</strong>'+
+        '<span class="client-card-policy-count">'+nAps+' apólice'+(nAps===1?'':'s')+'</span>'+
+        '<small>'+escapeHtml(contact)+'</small>'+
+      '</span>'+
+      '<span class="client-card-arrow"><i class="ti ti-chevron-right" aria-hidden="true"></i></span>'+
+    '</button>';
+  }).join('');
 }
 
 function filterCl(q) {
-  var v=q.toLowerCase().trim();
-  buildClList(v?CLIENTES.filter(d=>d.nome.toLowerCase().includes(v)||(d.email||'').toLowerCase().includes(v)):CLIENTES);
+  var v=normalizeSearch(q);
+  buildClList(v?CLIENTES.filter(d=>searchableIncludes([d.nome,d.cpf,d.tel,d.email],v)):CLIENTES);
 }
 
 function openCl(id) {
@@ -1479,35 +1513,43 @@ function openCl(id) {
     '</div>';
   }).join('') : '<div style="padding:20px;text-align:center;font-size:12px;color:var(--text3);">Nenhuma apólice</div>';
 
+  var contactHtml =
+    (c.tel&&c.tel!=='—'?'<span><i class="ti ti-phone" aria-hidden="true"></i>'+escapeHtml(c.tel)+'</span>':'')+
+    (c.email&&c.email!=='—'?'<span><i class="ti ti-mail" aria-hidden="true"></i>'+escapeHtml(c.email)+'</span>':'');
+  var infoHtml =
+    (c.cpf?'<div class="client-info-item'+(!c.nasc?' wide':'')+'"><span>CPF / CNPJ</span><strong>'+escapeHtml(c.cpf)+'</strong></div>':'')+
+    (c.nasc?'<div class="client-info-item'+(!c.cpf?' wide':'')+'"><span>Nascimento</span><strong>'+escapeHtml(c.nasc)+'</strong></div>':'')+
+    (c.end&&c.end!=='—'?'<div class="client-info-item wide"><span>Endereço</span><strong>'+escapeHtml(c.end)+'</strong></div>':'')+
+    (c.obs?'<div class="client-info-item wide"><span>Observações</span><strong>'+escapeHtml(c.obs)+'</strong></div>':'');
+
   document.getElementById('cl-detail-body').innerHTML =
-    '<div style="background:var(--surface);border-bottom:1px solid var(--border);padding:20px 16px;display:flex;align-items:center;gap:14px;">'+
-      '<div class="av" style="width:52px;height:52px;font-size:18px;background:'+pc.bg+';color:'+pc.cor+';">'+c.ini+'</div>'+
-      '<div style="flex:1;min-width:0;">'+
-        '<div style="font-size:18px;font-weight:300;color:var(--text);font-family:\'Plus Jakarta Sans\',sans-serif;">'+c.nome+'</div>'+
-        '<div style="font-size:11px;color:var(--text3);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;">'+
-          (c.tel&&c.tel!=='—'?'<span><i class="ti ti-phone" style="font-size:11px;"></i> '+c.tel+'</span>':'')+
-          (c.email&&c.email!=='—'?'<span><i class="ti ti-mail" style="font-size:11px;"></i> '+c.email+'</span>':'')+
+    '<div class="client-detail-shell">'+
+      '<section class="client-profile-card">'+
+        '<div class="client-profile-main">'+
+          '<div class="client-profile-avatar" style="background:'+pc.bg+';color:'+pc.cor+';">'+escapeHtml(c.ini||'?')+'</div>'+
+          '<div class="client-profile-copy">'+
+            '<h2>'+escapeHtml(c.nome)+'</h2>'+
+            '<span>'+aps.length+' apólice'+(aps.length===1?'':'s')+' cadastrada'+(aps.length===1?'':'s')+'</span>'+
+          '</div>'+
         '</div>'+
-      '</div>'+
-    '</div>'+
-    '<div style="background:var(--surface);border-bottom:1px solid var(--border);">'+
-      (c.cpf?'<div class="ap-drow"><span class="ap-dlabel">CPF</span><span class="ap-dval">'+c.cpf+'</span></div>':'')+
-      (c.nasc?'<div class="ap-drow"><span class="ap-dlabel">Nascimento</span><span class="ap-dval">'+c.nasc+'</span></div>':'')+
-      (c.end&&c.end!=='—'?'<div class="ap-drow"><span class="ap-dlabel">Endereço</span><span class="ap-dval">'+c.end+'</span></div>':'')+
-      (c.obs?'<div class="ap-drow"><span class="ap-dlabel">Obs</span><span class="ap-dval">'+c.obs+'</span></div>':'')+
-      '<div style="padding:10px 16px;display:flex;gap:8px;">'+
-        '<button class="btn btn-ghost" style="font-size:12px;flex:1;" onclick="abrirEditarCliente(\''+c.id+'\')"><i class="ti ti-edit"></i>Editar</button>'+
-        '<button class="btn btn-danger" style="font-size:12px;flex:1;" onclick="confirmarExcluirCliente(\''+c.id+'\')"><i class="ti ti-trash"></i>Excluir</button>'+
-      '</div>'+
-    '</div>'+
-    '<div style="padding:16px 16px 8px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;">Apólices · '+aps.length+'</div>'+
-    '<div style="padding:0 0 8px;">'+apHtml+'</div>';
+        (contactHtml?'<div class="client-contact-row">'+contactHtml+'</div>':'')+
+        '<div class="client-profile-actions">'+
+          '<button onclick="abrirEditarCliente(\''+c.id+'\')"><i class="ti ti-edit"></i>Editar</button>'+
+          '<button class="danger" onclick="confirmarExcluirCliente(\''+c.id+'\')"><i class="ti ti-trash"></i>Excluir</button>'+
+        '</div>'+
+      '</section>'+
+      (infoHtml?'<section class="client-info-card"><div class="client-detail-section-title"><i class="ti ti-user"></i>Dados do cliente</div><div class="client-info-grid">'+infoHtml+'</div></section>':'')+
+      '<div class="client-policy-heading"><span><i class="ti ti-shield-check"></i>Apólices</span><strong>'+aps.length+'</strong></div>'+
+      '<div class="client-policy-list">'+apHtml+'</div>'+
+    '</div>';
 
   goScreen('cliente-detail');
   // update topbar manually for this sub-screen
   var tbLeft = document.getElementById('tb-left');
   tbLeft.innerHTML = '<button class="topbar-back" onclick="goScreen(\'clientes\')"><i class="ti ti-chevron-left"></i>'+c.nome+'</button>';
-  document.getElementById('tb-right').style.display = 'none';
+  var tbRight = document.getElementById('tb-right');
+  tbRight.innerHTML = topbarThemeButton();
+  tbRight.style.display = 'flex';
 }
 
 // ── TAREFAS ───────────────────────────────────────────────
@@ -1521,28 +1563,34 @@ function buildTarefas() {
   else lista=[...TAREFAS];
   lista.sort((a,b)=>new Date(a.data)-new Date(b.data));
   var el = document.getElementById('tf-list');
+  var summary = document.getElementById('tf-summary');
   if (!el) return;
-  if (!lista.length){el.innerHTML='<div class="empty" style="padding:32px;"><i class="ti ti-checkbox"></i><p>Nenhuma tarefa</p></div>';return;}
+  if (summary) {
+    var labels={pendentes:'pendentes',hoje:'para hoje','7dias':'nos próximos 7 dias',todas:'no total'};
+    summary.textContent=lista.length+' tarefa'+(lista.length===1?'':'s')+' '+labels[tfFiltroAtual];
+  }
+  if (!lista.length){el.innerHTML='<div class="collection-empty"><span><i class="ti ti-task-alt"></i></span><strong>Nenhuma tarefa aqui</strong><small>Você está em dia neste filtro.</small></div>';return;}
   el.innerHTML = lista.map(t=>{
     var d=new Date(t.data+'T00:00:00');d.setHours(0,0,0,0);
     var atrasada=!t.feita&&d<hoje;
     var venceHoje=!t.feita&&d.getTime()===hoje.getTime();
     var ic=TF_ICONES[t.tipo]||'ti-checkbox';
     var dataStr=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
-    var dataCor=atrasada?'var(--red)':venceHoje?'var(--amber)':'var(--text3)';
-    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);'+(t.feita?'opacity:.5':'')+'">'+
-      '<div data-task-id="'+escapeHtml(t.id)+'" onclick="toggleTarefa(this.dataset.taskId)" style="width:20px;height:20px;border-radius:6px;border:1.5px solid '+(t.feita?'var(--green)':'var(--border2)')+';background:'+(t.feita?'var(--green)':'transparent')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .15s;">'+
-        (t.feita?'<i class="ti ti-check" style="font-size:11px;color:#fff;"></i>':'')+
-      '</div>'+
-      '<div style="flex:1;min-width:0;">'+
-        '<div style="font-size:14px;color:var(--text);line-height:1.4;'+(t.feita?'text-decoration:line-through;':'')+'">'+t.texto+'</div>'+
-        '<div style="display:flex;align-items:center;gap:8px;margin-top:5px;">'+
-          '<i class="ti '+ic+'" style="font-size:12px;color:var(--text3);"></i>'+
-          '<span style="font-size:11px;color:var(--text3);">'+t.cliente+'</span>'+
-          '<span style="font-size:11px;color:'+dataCor+';margin-left:auto;">'+(atrasada?'⚠ ':'')+dataStr+'</span>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
+    var stateClass=t.feita?' is-done':atrasada?' is-overdue':venceHoje?' is-today':'';
+    var typeLabels={ligacao:'Ligação',proposta:'Proposta',endosso:'Endosso',renovacao:'Renovação',documento:'Documento',financeiro:'Financeiro'};
+    return '<article class="task-card'+stateClass+'">'+
+      '<span class="task-card-icon"><i class="ti '+escapeHtml(ic)+'" aria-hidden="true"></i></span>'+
+      '<span class="task-card-content">'+
+        '<strong>'+escapeHtml(t.texto)+'</strong>'+
+        '<span class="task-card-meta"><span>'+escapeHtml(typeLabels[t.tipo]||'Tarefa')+'</span><span>'+escapeHtml(t.cliente||'Geral')+'</span></span>'+
+      '</span>'+
+      '<span class="task-card-side">'+
+        '<small>'+(atrasada?'Atrasada · ':'')+escapeHtml(dataStr)+'</small>'+
+        '<button class="task-check" data-task-id="'+escapeHtml(t.id)+'" onclick="toggleTarefa(this.dataset.taskId)" aria-label="'+(t.feita?'Reabrir':'Concluir')+' tarefa">'+
+          (t.feita?'<i class="ti ti-check" aria-hidden="true"></i>':'')+
+        '</button>'+
+      '</span>'+
+    '</article>';
   }).join('');
   // update count
   var pend=TAREFAS.filter(t=>!t.feita).length;
@@ -1551,8 +1599,8 @@ function buildTarefas() {
 
 function setTfFiltro(val, btn) {
   tfFiltroAtual = val;
-  document.querySelectorAll('[data-tf]').forEach(b=>b.classList.remove('sel'));
-  if(btn)btn.classList.add('sel');
+  document.querySelectorAll('[data-tf]').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
   buildTarefas();
 }
 

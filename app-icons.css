@@ -90,6 +90,7 @@
 .ti-sparkles::before { content: "auto_awesome"; }
 .ti-sun::before { content: "light_mode"; }
 .ti-tag::before { content: "sell"; }
+.ti-task-alt::before { content: "task_alt"; }
 .ti-trash::before { content: "delete"; }
 .ti-truck::before { content: "local_shipping"; }
 .ti-upload::before { content: "upload"; }
