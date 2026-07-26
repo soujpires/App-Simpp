@@ -304,8 +304,15 @@ function prevStep(){
   var isMac = /Macintosh/.test(ua) && navigator.maxTouchPoints > 0;
 
   var detLabel = document.getElementById('det-label');
+  var forcedOS = location.pathname === '/iphone' ? 'ios' : location.pathname === '/android' ? 'android' : null;
 
-  if(isIOS || isMac){
+  if(forcedOS === 'ios'){
+    showOS('ios');
+    detLabel.textContent = 'Siga os passos abaixo para instalar no iPhone / iPad';
+  } else if(forcedOS === 'android'){
+    showOS('android');
+    detLabel.textContent = 'Siga os passos abaixo para instalar no Android';
+  } else if(isIOS || isMac){
     showOS('ios');
     detLabel.textContent = 'iPhone / iPad detectado — siga os passos abaixo';
   } else if(isAndroid){

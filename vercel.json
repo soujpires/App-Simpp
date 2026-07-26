@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/android", "destination": "/install.html" },
+    { "source": "/iphone", "destination": "/install.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
