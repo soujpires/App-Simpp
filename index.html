@@ -1255,8 +1255,8 @@ function buildPainelList() {
     var ic=getPicoIcon(d.ramo||d.prod);
     return '<div class="list-item" onclick="goScreen(\'apolices\');setTimeout(()=>openApDetail(\''+d.id+'\'),80)">'+
       '<div style="width:38px;height:38px;border-radius:12px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class=\"ti '+ic+'\" style=\"font-size:18px;color:var(--accent-t);\"></i></div>'+
-      '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+d.nome+'</div>'+
-      '<div style="font-size:12px;color:var(--text3);margin-top:2px;">'+d.prod+' · '+d.seg+'</div></div>'+
+      '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escapeHtml(d.nome)+'</div>'+
+      '<div style="font-size:12px;color:var(--text3);margin-top:2px;">'+escapeHtml(d.prod)+' · '+escapeHtml(d.seg)+'</div></div>'+
       '<div style="text-align:right;flex-shrink:0;"><div style="font-size:13px;font-weight:600;color:var(--text);font-family:\'Inter\',sans-serif;">'+brl(d.premio)+'</div>'+
       '<div style="font-size:11px;color:var(--text3);">'+d.parc+'</div></div>'+
       '<i class=\"ti ti-chevron-right\" style=\"font-size:14px;color:var(--text3);flex-shrink:0;margin-left:4px;\"></i></div>';
@@ -1305,8 +1305,8 @@ function buildPainelVencendo() {
     var cor=dias<=3?'var(--red)':dias<=7?'var(--amber)':'var(--text3)';
     return '<div class="list-item" onclick="goScreen(\'renovacoes\')" style="gap:10px;">'+
       '<div style="width:6px;height:6px;border-radius:50%;background:'+cor+';flex-shrink:0;"></div>'+
-      '<div style="flex:1;min-width:0;"><div style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.nome+'</div>'+
-      '<div style="font-size:10px;color:var(--text3);">'+a.prod+' · '+a.seg+'</div></div>'+
+      '<div style="flex:1;min-width:0;"><div style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escapeHtml(c.nome)+'</div>'+
+      '<div style="font-size:10px;color:var(--text3);">'+escapeHtml(a.prod)+' · '+escapeHtml(a.seg)+'</div></div>'+
       '<span style="font-size:11px;color:'+cor+';flex-shrink:0;">'+dias+'d</span></div>';
   }).join('');
 }
@@ -1338,8 +1338,8 @@ function buildApList(filtro) {
       '<div class="ap-item-head">'+
         '<div class="ap-item-ico"><i class="ti '+ic+'"></i></div>'+
         '<div style="flex:1;min-width:0;">'+
-          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span class="ap-item-name">'+c.nome+'</span>'+stBadge(a.st)+'</div>'+
-          '<div class="ap-item-sub">'+a.prod+' · '+a.seg+(a.ap?' · #'+a.ap:a.proposta?' · '+a.proposta:'')+'</div>'+
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span class="ap-item-name">'+escapeHtml(c.nome)+'</span>'+stBadge(a.st)+'</div>'+
+          '<div class="ap-item-sub">'+escapeHtml(a.prod)+' · '+escapeHtml(a.seg)+(a.ap?' · #'+escapeHtml(a.ap):a.proposta?' · '+escapeHtml(a.proposta):'')+'</div>'+
         '</div>'+
         '<div class="ap-item-right">'+
           '<div class="ap-item-val">'+brl(a.premio)+'</div>'+
@@ -1366,18 +1366,18 @@ function buildApDetail(ap, c) {
     '</div>';
   }
   rows+='<div class="ap-drow"><span class="ap-dlabel">'+(ap.st==='Proposta'?'Nº proposta':'Apólice')+'</span><span class="ap-dval">'+(ap.st==='Proposta'?(ap.proposta||'—'):'#'+ap.ap)+'</span></div>';
-  rows+='<div class="ap-drow"><span class="ap-dlabel">Ramo</span><span class="ap-dval">'+(ap.ramo||ap.prod||'—')+'</span></div>';
-  if(ap.obj)rows+='<div class="ap-drow"><span class="ap-dlabel">'+(OBJ_LABEL[ap.prod]||'Objeto')+'</span><span class="ap-dval">'+ap.obj+'</span></div>';
-  if(ap.iv)rows+='<div class="ap-drow"><span class="ap-dlabel">Vigência</span><span class="ap-dval">'+ap.iv+' a '+ap.fv+'</span></div>';
-  rows+='<div class="ap-drow"><span class="ap-dlabel">Parcelas</span><span class="ap-dval">'+ap.parc+'</span></div>';
-  rows+='<div class="ap-drow"><span class="ap-dlabel">Comissão</span><span class="ap-dval" style="color:var(--green);">'+ap.com+'% · '+brl(cv)+'</span></div>';
-  if(ap.obs)rows+='<div class="ap-drow"><span class="ap-dlabel">Obs</span><span class="ap-dval">'+ap.obs+'</span></div>';
-  if(ap.cancelamento)rows+='<div class="ap-drow"><span class="ap-dlabel">Cancelamento</span><span class="ap-dval" style="color:var(--red);">'+ap.cancelamento.motivo+' · '+ap.cancelamento.data+'</span></div>';
+  rows+='<div class="ap-drow"><span class="ap-dlabel">Ramo</span><span class="ap-dval">'+escapeHtml(ap.ramo||ap.prod||'—')+'</span></div>';
+  if(ap.obj)rows+='<div class="ap-drow"><span class="ap-dlabel">'+escapeHtml(OBJ_LABEL[ap.prod]||'Objeto')+'</span><span class="ap-dval">'+escapeHtml(ap.obj)+'</span></div>';
+  if(ap.iv)rows+='<div class="ap-drow"><span class="ap-dlabel">Vigência</span><span class="ap-dval">'+escapeHtml(ap.iv)+' a '+escapeHtml(ap.fv)+'</span></div>';
+  rows+='<div class="ap-drow"><span class="ap-dlabel">Parcelas</span><span class="ap-dval">'+escapeHtml(ap.parc)+'</span></div>';
+  rows+='<div class="ap-drow"><span class="ap-dlabel">Comissão</span><span class="ap-dval" style="color:var(--green);">'+escapeHtml(ap.com)+'% · '+brl(cv)+'</span></div>';
+  if(ap.obs)rows+='<div class="ap-drow"><span class="ap-dlabel">Obs</span><span class="ap-dval">'+escapeHtml(ap.obs)+'</span></div>';
+  if(ap.cancelamento)rows+='<div class="ap-drow"><span class="ap-dlabel">Cancelamento</span><span class="ap-dval" style="color:var(--red);">'+escapeHtml(ap.cancelamento.motivo)+' · '+escapeHtml(ap.cancelamento.data)+'</span></div>';
   // endossos
   if((ap.endossos||[]).length){
     rows+='<div style="border-top:1px solid var(--border);background:var(--surface2);">'+
     '<div style="padding:8px 14px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;">Endossos · '+(ap.endossos||[]).length+'</div>'+
-    (ap.endossos||[]).map(e=>'<div class="ap-drow"><span class="ap-dlabel">'+e.tipo+'</span><span class="ap-dval">'+e.num+' · '+e.data+(e.campos?' · '+e.campos:'')+'</span></div>').join('')+
+    (ap.endossos||[]).map(e=>'<div class="ap-drow"><span class="ap-dlabel">'+escapeHtml(e.tipo)+'</span><span class="ap-dval">'+escapeHtml(e.num)+' · '+escapeHtml(e.data)+(e.campos?' · '+escapeHtml(e.campos):'')+'</span></div>').join('')+
     '</div>';
   }
 
@@ -1682,9 +1682,9 @@ function openCl(id, backScreen) {
     return '<div class="ap-item" style="margin:0 0 10px;" onclick="if(!event.target.closest(\'.ap-item-actions\'))this.classList.toggle(\'open\')">'+
       '<div class="ap-item-head">'+
         '<div class="ap-item-ico"><i class="ti '+ic+'"></i></div>'+
-        '<div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:6px;">'+a.prod+' '+stBadge(a.st)+'</div>'+
-        '<div class="ap-item-sub">'+a.seg+(a.ap?' · #'+a.ap:a.proposta?' · '+a.proposta:'')+'</div></div>'+
-        '<div class="ap-item-right"><div class="ap-item-val">'+brl(a.premio)+'</div><div style="font-size:10px;color:var(--text3);">'+a.parc+'</div></div>'+
+        '<div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:6px;">'+escapeHtml(a.prod)+' '+stBadge(a.st)+'</div>'+
+        '<div class="ap-item-sub">'+escapeHtml(a.seg)+(a.ap?' · #'+escapeHtml(a.ap):a.proposta?' · '+escapeHtml(a.proposta):'')+'</div></div>'+
+        '<div class="ap-item-right"><div class="ap-item-val">'+brl(a.premio)+'</div><div style="font-size:10px;color:var(--text3);">'+escapeHtml(a.parc)+'</div></div>'+
         '<div class="ap-item-actions"><button class="icon-btn" style="width:30px;height:30px;" onclick="event.stopPropagation();abrirAcoesAp(\''+a.id+'\')"><i class="ti ti-dots-vertical" style="font-size:16px;"></i></button></div>'+
       '</div>'+
       '<div class="ap-item-detail">'+buildApDetail(a,c)+'</div>'+
@@ -1724,7 +1724,7 @@ function openCl(id, backScreen) {
   goScreen('cliente-detail');
   // update topbar manually for this sub-screen
   var tbLeft = document.getElementById('tb-left');
-  tbLeft.innerHTML = '<button class="topbar-back" onclick="goScreen(_clientBackScreen||\'clientes\')"><i class="ti ti-chevron-left"></i>'+c.nome+'</button>';
+  tbLeft.innerHTML = '<button class="topbar-back" onclick="goScreen(_clientBackScreen||\'clientes\')"><i class="ti ti-chevron-left"></i>'+escapeHtml(c.nome)+'</button>';
   var tbRight = document.getElementById('tb-right');
   tbRight.innerHTML = topbarThemeButton();
   tbRight.style.display = 'flex';
@@ -1908,11 +1908,11 @@ function buildRen() {
   el.innerHTML=REN.map(r=>{
     var pc=PC[r.d.prod]||PC['Outro'];
     return '<div class="ren-card">'+
-      '<div class="av" style="width:42px;height:42px;font-size:14px;flex-shrink:0;background:'+pc.bg+';color:'+pc.cor+';">'+r.d.ini+'</div>'+
+      '<div class="av" style="width:42px;height:42px;font-size:14px;flex-shrink:0;background:'+pc.bg+';color:'+pc.cor+';">'+escapeHtml(r.d.ini)+'</div>'+
       '<div style="flex:1;min-width:0;">'+
-        '<div style="font-size:14px;font-weight:300;color:var(--text);">'+r.d.nome+'</div>'+
-        '<div style="font-size:11px;color:var(--text3);margin-top:2px;">'+(r.d.ap||r.d.proposta||'—')+' · '+r.d.prod+'</div>'+
-        '<div style="font-size:11px;color:var(--text3);">'+r.d.iv+' a '+r.d.fv+'</div>'+
+        '<div style="font-size:14px;font-weight:300;color:var(--text);">'+escapeHtml(r.d.nome)+'</div>'+
+        '<div style="font-size:11px;color:var(--text3);margin-top:2px;">'+escapeHtml(r.d.ap||r.d.proposta||'—')+' · '+escapeHtml(r.d.prod)+'</div>'+
+        '<div style="font-size:11px;color:var(--text3);">'+escapeHtml(r.d.iv)+' a '+escapeHtml(r.d.fv)+'</div>'+
       '</div>'+
       '<div style="text-align:right;flex-shrink:0;">'+
         '<span class="bdg '+r.b+'">'+r.dias+'d</span>'+
@@ -1947,8 +1947,8 @@ function buildProdRows() {
     var c=CLIENTES.find(x=>String(x.id)===String(a.cid))||{nome:'—'};
     return '<div class="list-item">'+
       '<div style="flex:1;min-width:0;">'+
-        '<div style="font-size:13px;font-weight:300;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.nome+'</div>'+
-        '<div style="font-size:11px;color:var(--text3);">'+a.prod+' · '+a.seg+'</div>'+
+        '<div style="font-size:13px;font-weight:300;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escapeHtml(c.nome)+'</div>'+
+        '<div style="font-size:11px;color:var(--text3);">'+escapeHtml(a.prod)+' · '+escapeHtml(a.seg)+'</div>'+
       '</div>'+
       '<div style="text-align:right;flex-shrink:0;">'+
         '<div style="font-size:13px;font-weight:300;color:var(--text);font-family:\'Inter\',sans-serif;">'+brl(a.premio)+'</div>'+
@@ -2191,8 +2191,8 @@ function confirmarRenovacao(){
 function confirmarExcluir(apId){
   var ap=APOLICES.find(a=>String(a.id)===String(apId));
   var c=ap?CLIENTES.find(x=>String(x.id)===String(ap.cid)):null;
-  document.getElementById('excluir-msg').innerHTML='Excluir a apólice <strong>'+(ap?ap.prod:'')+' #'+(ap?ap.ap||ap.proposta:'')+
-    '</strong>'+(c?' de <strong>'+c.nome+'</strong>':'')+
+  document.getElementById('excluir-msg').innerHTML='Excluir a apólice <strong>'+escapeHtml(ap?ap.prod:'')+' #'+escapeHtml(ap?ap.ap||ap.proposta:'')+
+    '</strong>'+(c?' de <strong>'+escapeHtml(c.nome)+'</strong>':'')+
     '?<br><br><span style="font-size:12px;color:var(--text3);">Esta ação não pode ser desfeita.</span>';
   _excluirCallback=function(){
     APOLICES=APOLICES.filter(a=>String(a.id)!==String(apId));
@@ -2262,7 +2262,7 @@ function salvarEdicaoCliente(){
 }
 function confirmarExcluirCliente(id){
   var c=CLIENTES.find(x=>String(x.id)===String(id));
-  document.getElementById('excluir-msg').innerHTML='Excluir <strong>'+(c?c.nome:'cliente')+'</strong> e todas as suas apólices? Esta ação não pode ser desfeita.';
+  document.getElementById('excluir-msg').innerHTML='Excluir <strong>'+escapeHtml(c?c.nome:'cliente')+'</strong> e todas as suas apólices? Esta ação não pode ser desfeita.';
   _excluirCallback=function(){
     CLIENTES=CLIENTES.filter(x=>String(x.id)!==String(id));
     APOLICES=APOLICES.filter(a=>String(a.cid)!==String(id));
@@ -2282,7 +2282,7 @@ function confirmarExcluirCliente(id){
 // ── TAREFAS MODAL ─────────────────────────────────────────
 function abrirNovaTarefa(){
   var sel=document.getElementById('tf-cliente-sel');
-  sel.innerHTML='<option value="">— Nenhum —</option>'+CLIENTES.map(c=>'<option value="'+c.id+'">'+c.nome+'</option>').join('');
+  sel.innerHTML='<option value="">— Nenhum —</option>'+CLIENTES.map(c=>'<option value="'+escapeHtml(c.id)+'">'+escapeHtml(c.nome)+'</option>').join('');
   ['tf-texto','tf-obs'].forEach(id=>{var el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('tf-data').value=new Date().toISOString().split('T')[0];
   document.getElementById('tf-tipo').value='documento';
@@ -2311,7 +2311,7 @@ function salvarNovaTarefa(){
 function renderTags(lista, containerId, removeFn){
   var el=document.getElementById(containerId);
   if(!el)return;
-  el.innerHTML=lista.map((item,i)=>'<div class="cfg-tag">'+item+'<button onclick="'+removeFn+'('+i+')" title="Remover"><i class="ti ti-x" style="font-size:11px;"></i></button></div>').join('');
+  el.innerHTML=lista.map((item,i)=>'<div class="cfg-tag">'+escapeHtml(item)+'<button onclick="'+removeFn+'('+i+')" title="Remover"><i class="ti ti-x" style="font-size:11px;"></i></button></div>').join('');
 }
 function adicionarRamo(){
   var inp=document.getElementById('ramo-input');var val=inp.value.trim();if(!val)return;
