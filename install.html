@@ -139,7 +139,7 @@ body{
 
       <div class="safari-bar">
         <span class="safari-btn">‹</span>
-        <div class="url-pill">app-simpp.vercel.app</div>
+        <div class="url-pill">app.simpp.com.br</div>
         <span class="safari-btn">⟳</span>
         <div class="share-icon-wrap" id="share-icon-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="#1E4A8A" stroke-width="2.4"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
@@ -202,7 +202,7 @@ body{
     <div class="step-card-desc">Se estiver no Chrome ou outro navegador, copie a URL e abra no Safari.</div>
     <div class="step-card-tag">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      app-simpp.vercel.app
+      app.simpp.com.br
     </div>
   </div>
   <div class="step-card" data-step="2" style="display:none;">
@@ -225,7 +225,7 @@ body{
     <div class="step-card-desc">Acesse o endereço abaixo pelo Chrome.</div>
     <div class="step-card-tag">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      app-simpp.vercel.app
+      app.simpp.com.br
     </div>
   </div>
   <div class="step-card" data-step="2" style="display:none;">
@@ -298,6 +298,8 @@ function prevStep(){
 }
 
 (function(){
+  sessionStorage.setItem('simpp_skip_install','1');
+
   var ua = navigator.userAgent;
   var isIOS = /iPhone|iPad|iPod/.test(ua);
   var isAndroid = /Android/.test(ua);
