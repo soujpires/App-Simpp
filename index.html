@@ -986,6 +986,7 @@ const SUPA_URL = 'https://qqmfvpubrrdxakowpldv.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxbWZ2cHVicnJkeGFrb3dwbGR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NTczMjEsImV4cCI6MjA5NjMzMzMyMX0.XLh29w5Jsq-u27hYfiy_7dOMzm9Ifs9_glvWOoQP6G0';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 var _supaUser = null;
+var _workspaceId = null;
 
 // ── AUTH ──────────────────────────────────────────────────
 function isLocalPreview() {
@@ -1360,12 +1361,12 @@ function buildApDetail(ap, c) {
   if(ap.st==='Proposta'){
     rows+='<div style="background:rgba(91,79,217,.06);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">'+
       '<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;">Proposta</div>'+
-      '<div style="font-size:12px;color:var(--accent-t);">'+(ap.proposta||'—')+' · '+(ap.dataProposta||'—')+'</div>'+
+      '<div style="font-size:12px;color:var(--accent-t);">'+escapeHtml(ap.proposta||'—')+' · '+escapeHtml(ap.dataProposta||'—')+'</div>'+
       '<div style="font-size:11px;color:var(--text3);margin-top:2px;">Aguardando emissão da apólice</div></div>'+
       '<button class="btn btn-primary" style="font-size:11px;padding:7px 12px;white-space:nowrap;flex-shrink:0;" onclick="event.stopPropagation();abrirVincularApolice(\''+ap.id+'\')"><i class="ti ti-link"></i>Vincular</button>'+
     '</div>';
   }
-  rows+='<div class="ap-drow"><span class="ap-dlabel">'+(ap.st==='Proposta'?'Nº proposta':'Apólice')+'</span><span class="ap-dval">'+(ap.st==='Proposta'?(ap.proposta||'—'):'#'+ap.ap)+'</span></div>';
+  rows+='<div class="ap-drow"><span class="ap-dlabel">'+(ap.st==='Proposta'?'Nº proposta':'Apólice')+'</span><span class="ap-dval">'+(ap.st==='Proposta'?escapeHtml(ap.proposta||'—'):(ap.ap?'#'+escapeHtml(ap.ap):'—'))+'</span></div>';
   rows+='<div class="ap-drow"><span class="ap-dlabel">Ramo</span><span class="ap-dval">'+escapeHtml(ap.ramo||ap.prod||'—')+'</span></div>';
   if(ap.obj)rows+='<div class="ap-drow"><span class="ap-dlabel">'+escapeHtml(OBJ_LABEL[ap.prod]||'Objeto')+'</span><span class="ap-dval">'+escapeHtml(ap.obj)+'</span></div>';
   if(ap.iv)rows+='<div class="ap-drow"><span class="ap-dlabel">Vigência</span><span class="ap-dval">'+escapeHtml(ap.iv)+' a '+escapeHtml(ap.fv)+'</span></div>';
@@ -2366,9 +2367,25 @@ function initConfiguracoes(){
 }
 
 // ── CARREGAR DADOS ────────────────────────────────────────
+// No banco a visibilidade é por corretora (workspace), não por usuário:
+// o user_id só guarda quem cadastrou. Filtrar por user_id escondia as
+// apólices cadastradas por outros integrantes da equipe. Se o workspace não
+// puder ser resolvido, cai no user_id (mesmo comportamento da versão web).
+async function obterWorkspaceId(){
+  try{
+    const r=await supa.rpc('meu_workspace_atual').maybeSingle();
+    if(!r.error&&r.data&&r.data.workspace_id)return r.data.workspace_id;
+  }catch(e){console.error('workspace:',e);}
+  return null;
+}
+function escopoWorkspace(userId){
+  return _workspaceId?{workspace_id:_workspaceId}:{user_id:userId||(_supaUser&&_supaUser.id)};
+}
+
 async function carregarDados(){
   const uid=_supaUser.id;
-  const {data:cls}=await supa.from('clientes').select('*').eq('user_id',uid).order('nome');
+  _workspaceId=await obterWorkspaceId();
+  const {data:cls,error:errCl}=await supa.from('clientes').select('*').match(escopoWorkspace(uid)).order('nome');
   CLIENTES=(cls||[]).map(c=>({
     id:c.id,nome:c.nome,
     ini:c.ini||(c.nome.split(' ').map(p=>p[0]).join('').toUpperCase().slice(0,2)),
@@ -2376,7 +2393,8 @@ async function carregarDados(){
     cort:{dark:c.cort_dark||'#C4B5FD',light:c.cort_light||'#4C1D95'},
     cpf:c.cpf||'',nasc:c.nasc||'',tel:c.tel||'—',email:c.email||'—',end:c.endereco||'—',obs:c.obs||''
   }));
-  const {data:aps}=await supa.from('apolices').select('*, endossos(*)').eq('user_id',uid);
+  const {data:aps,error:errAp}=await supa.from('apolices').select('*, endossos(*)').match(escopoWorkspace(uid));
+  if(errCl||errAp){console.error('carregarDados:',errCl||errAp);toast('Não foi possível carregar todos os seus dados. Verifique a conexão e abra o app de novo.',true);}
   APOLICES=(aps||[]).map(a=>({
     id:a.id,cid:a.cliente_id,prod:a.prod,ramo:a.ramo,seg:a.seg,
     ap:a.ap||'',proposta:a.proposta||'',dataProposta:a.data_proposta||'',
@@ -2394,7 +2412,7 @@ async function carregarDados(){
     const {data:clf}=await supa.from('clientes').select('*').in('id',faltantes);
     (clf||[]).forEach(c=>{CLIENTES.push({id:c.id,nome:c.nome,ini:c.ini||(c.nome||'?').split(' ').map(p=>p[0]).join('').toUpperCase().slice(0,2),cor:{dark:c.cor_dark||'#26184A',light:c.cor_light||'#EDE9FF'},cort:{dark:c.cort_dark||'#C4B5FD',light:c.cort_light||'#4C1D95'},cpf:c.cpf||'',nasc:c.nasc||'',tel:c.tel||'—',email:c.email||'—',end:c.endereco||'—',obs:c.obs||''});});
   }
-  const {data:tfs}=await supa.from('tarefas').select('*').eq('user_id',uid).order('data');
+  const {data:tfs}=await supa.from('tarefas').select('*').match(escopoWorkspace(uid)).order('data');
   TAREFAS=(tfs||[]).map(t=>({
     id:t.id,texto:t.texto,tipo:t.tipo,data:t.data,feita:t.feita,
     cliente:(CLIENTES.find(c=>String(c.id)===String(t.cliente_id))||{}).nome||'Geral',
@@ -2403,10 +2421,10 @@ async function carregarDados(){
   const extras=await Promise.all([
     supa.from('seguradoras').select('id,nome,logo_url').order('nome'),
     supa.from('assistencias').select('*').order('ordem'),
-    supa.from('atendimentos').select('*').eq('user_id',uid).order('created_at',{ascending:false})
+    supa.from('atendimentos').select('*').match(escopoWorkspace(uid)).order('created_at',{ascending:false})
   ]);
   SEGURADORAS=extras[0].data||[];
-  ASSISTENCIAS=(extras[1].data||[]).filter(a=>!a.user_id||String(a.user_id)===String(uid));
+  ASSISTENCIAS=(extras[1].data||[]).filter(a=>(!a.workspace_id&&!a.user_id)||(_workspaceId?String(a.workspace_id)===String(_workspaceId):String(a.user_id)===String(uid)));
   ATENDIMENTOS=(extras[2].data||[]).map(mapAtendimentoApp);
   D=APOLICES.map(a=>{
     var c=CLIENTES.find(x=>String(x.id)===String(a.cid))||{nome:'—',ini:'?',cor:{dark:'#222',light:'#eee'},cort:{dark:'#fff',light:'#000'},tel:'—',email:'—'};
