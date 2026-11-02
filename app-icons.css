@@ -112,3 +112,4 @@
 .ti-calendar-event::before { content: "calendar_month"; }
 .ti-cloud-off::before { content: "cloud_off"; }
 .ti-lock::before { content: "lock"; }
+.ti-user-shield::before { content: "shield_person"; }

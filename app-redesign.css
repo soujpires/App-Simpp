@@ -2059,3 +2059,26 @@ a:focus-visible,
 .bloqueio-caixa p { font-size: 14px; line-height: 1.5; color: var(--text3); }
 .bloqueio-caixa small { font-size: 12px; color: var(--text3); }
 
+/* Cards de apólice/proposta enxutos: nome, nº e seguradora. O nome pode ocupar até 2 linhas. */
+.ap-item-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  min-width: 0;
+}
+.ap-item-top .ap-item-name {
+  min-width: 0;
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.ap-item-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
