@@ -107,3 +107,7 @@
 .ti-file-upload::before { content: "upload_file"; }
 .ti-tool::before { content: "build"; }
 .ti-x::before { content: "close"; }
+.ti-alert-circle::before { content: "error"; }
+.ti-bell::before { content: "notifications"; }
+.ti-calendar-event::before { content: "calendar_month"; }
+.ti-cloud-off::before { content: "cloud_off"; }
