@@ -1882,7 +1882,7 @@ a:focus-visible,
   .home-metrics .metric-card .mico, .home-section-icon,
   .ap-item-ico, .policy-search-icon, .task-filter-icon, .task-card-icon,
   .atendimento-intro-icon, .atendimento-card-icon, .assistencia-card-head > span,
-  .collection-empty > span, .search-empty-icon, .client-card-arrow,
+  .collection-empty > span, .search-empty-icon,
   .support-intro > span
 ) {
   background: linear-gradient(145deg, var(--simpp-brand-hi), var(--simpp-brand));
@@ -2010,3 +2010,10 @@ a:focus-visible,
 :root[data-theme="dark"] .screen:not(#s-mais):not(#s-configuracoes) {
   --text3: #A0AEC0;
 }
+
+/* Menu "Mais": mesmos quadrados azuis (o "Sair" mantém o vermelho, que tem estilo próprio). */
+.cfg-item .cfg-ico:not([style]) {
+  border-radius: 12px;
+  background: linear-gradient(145deg, var(--simpp-brand-hi), var(--simpp-brand));
+}
+.cfg-item .cfg-ico:not([style]) i { color: #fff; }
