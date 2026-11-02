@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1E4A8A" id="theme-meta">
+<meta name="theme-color" content="#17396F" id="theme-meta">
 <meta name="apple-mobile-web-app-title" content="Simpp">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="manifest" href="/manifest.json">
@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
-<link rel="stylesheet" href="./app-icons.css?v=20260725-4">
+<link rel="stylesheet" href="./app-icons.css?v=20261102-1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.documentElement.setAttribute('data-theme','light');
@@ -192,7 +192,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeSlideUp .2s ease;}
 </style>
-<link rel="stylesheet" href="./app-redesign.css?v=20260725-4">
+<link rel="stylesheet" href="./app-redesign.css?v=20261102-1">
 <!-- Estilos críticos mantidos no index para o app não perder o layout
      quando uma atualização móvel publicar apenas este arquivo. -->
 <style id="simpp-critical-mobile-layout">
@@ -282,12 +282,12 @@ button,input,select,textarea{font:inherit}
   .theme-toggle-label{display:none}
 }
 </style>
+<link rel="stylesheet" href="./app-agenda.css?v=20261102-1">
 </head>
 <body>
 <div id="loading" style="position:fixed;inset:0;background:linear-gradient(180deg,#1E4A8A 0%,#163B72 100%);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:28px;">
   <svg width="68" height="68" viewBox="0 0 36 36" style="animation:pulse 1.8s ease-in-out infinite;">
-    <rect x="2" y="2" width="22" height="14" rx="5" fill="#FFFFFF"/>
-    <rect x="12" y="20" width="22" height="14" rx="5" fill="rgba(255,255,255,0.4)"/>
+    <rect x="2" y="3.8" width="22" height="14" rx="4" fill="#8FA9D2"/><rect x="2" y="2" width="22" height="14" rx="4" fill="#FFFFFF"/><rect x="12" y="21.8" width="22" height="14" rx="4" fill="#5B80B8"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#C3D8F4"/><rect x="13" y="20.8" width="20" height="5.5" rx="2.6" fill="#FFFFFF" opacity=".45"/>
   </svg>
   <div style="text-align:center;">
     <div style="font-size:24px;font-weight:300;color:#fff;letter-spacing:-.5px;font-family:'Plus Jakarta Sans',sans-serif;">simpp</div>
@@ -300,7 +300,7 @@ button,input,select,textarea{font:inherit}
   <!-- TOPBAR -->
   <div class="topbar" id="topbar">
     <div class="tb-left" id="tb-left">
-      <svg width="28" height="28" viewBox="0 0 36 36"><rect x="2" y="2" width="22" height="14" rx="4" fill="#3D6FB0"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#8AAFD6"/></svg>
+      <svg width="28" height="28" viewBox="0 0 36 36"><rect x="2" y="3.8" width="22" height="14" rx="4" fill="#8FA9D2"/><rect x="2" y="2" width="22" height="14" rx="4" fill="#FFFFFF"/><rect x="12" y="21.8" width="22" height="14" rx="4" fill="#5B80B8"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#C3D8F4"/><rect x="13" y="20.8" width="20" height="5.5" rx="2.6" fill="#FFFFFF" opacity=".45"/></svg>
       <span class="tb-logo-name" id="tb-logo-name">simpp</span>
     </div>
     <div class="tb-right" id="tb-right">
@@ -316,7 +316,7 @@ button,input,select,textarea{font:inherit}
     <div class="screen-body">
       <div class="panel-content">
         <div class="home-search-wrap">
-          <button class="home-search-action" onclick="openUniversalSearch()" aria-label="Encontrar uma apólice">
+          <button class="home-search-action" onclick="openUniversalSearch()" aria-label="Buscar">
             <span class="home-search-icon"><i class="ti ti-search" aria-hidden="true"></i></span>
             <span class="home-search-copy">
               <strong>Encontrar uma apólice</strong>
@@ -398,7 +398,7 @@ button,input,select,textarea{font:inherit}
   <!-- APÓLICES -->
   <div class="screen" id="s-apolices">
     <div class="screen-body">
-      <div class="searchbar"><i class="ti ti-search"></i>
+      <div class="screen-search-field"><i class="ti ti-search" aria-hidden="true"></i>
         <input type="search" placeholder="Buscar cliente ou nº apólice…" id="ap-srch" oninput="filterAp(this.value)" autocomplete="off">
       </div>
       <div class="filter-strip" id="ap-filter-strip"></div>
@@ -497,6 +497,13 @@ button,input,select,textarea{font:inherit}
     <div class="screen-body">
       <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-chart-bar"></i>Recursos</div></div>
       <div class="card" style="margin:0 16px 16px;">
+        <div class="cfg-item" onclick="goScreen('atendimentos')">
+          <div class="cfg-ico"><i class="ti ti-clipboard-list"></i></div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:400;color:var(--text);">Atendimentos</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">Registros e acompanhamentos</div></div>
+          <span class="mais-count" id="mais-at-count" hidden>0</span>
+          <i class="ti ti-chevron-right" style="color:var(--text3);font-size:15px;"></i>
+        </div>
         <div class="cfg-item" onclick="goScreen('assistencias')">
           <div class="cfg-ico"><i class="ti ti-headset"></i></div>
           <div style="flex:1;"><div style="font-size:14px;font-weight:400;color:var(--text);">Assistências</div>
@@ -518,12 +525,6 @@ button,input,select,textarea{font:inherit}
       </div>
       <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-user"></i>Conta</div></div>
       <div class="card" style="margin:0 16px 16px;">
-        <div class="cfg-item" onclick="goScreen('configuracoes')">
-          <div class="cfg-ico"><i class="ti ti-settings"></i></div>
-          <div style="flex:1;"><div style="font-size:14px;font-weight:300;color:var(--text);">Configurações</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px;">Ramos, motivos, logo</div></div>
-          <i class="ti ti-chevron-right" style="color:var(--text3);font-size:15px;"></i>
-        </div>
         <div class="cfg-item" onclick="goScreen('suporte')">
           <div class="cfg-ico"><i class="ti ti-lifebuoy"></i></div>
           <div style="flex:1;"><div style="font-size:14px;font-weight:400;color:var(--text);">Suporte</div>
@@ -605,44 +606,22 @@ button,input,select,textarea{font:inherit}
     </div>
   </div>
 
-  <!-- CONFIGURAÇÕES -->
-  <div class="screen" id="s-configuracoes">
-    <div class="screen-body" style="padding:8px 16px 24px;">
-      <div class="sec-head" style="padding:16px 0 8px;"><div class="sec-head-pill"><i class="ti ti-tag"></i>Ramos</div></div>
-      <div class="card" style="margin-bottom:12px;">
-        <div style="padding:14px 16px;">
-          <div style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px;" id="ramos-lista"></div>
-          <div style="display:flex;gap:8px;margin-top:12px;">
-            <input class="form-input" type="text" id="ramo-input" placeholder="Novo ramo…" style="flex:1;">
-            <button class="btn btn-primary" onclick="adicionarRamo()" style="padding:11px 14px;"><i class="ti ti-plus"></i></button>
-          </div>
+  <!-- AGENDA -->
+  <div class="screen" id="s-agenda">
+    <div class="screen-body">
+      <div class="agenda-shell">
+        <div class="agenda-week">
+          <button class="agenda-week-nav" onclick="agendaSemana(-1)" aria-label="Semana anterior"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+          <strong id="agenda-week-label">—</strong>
+          <button class="agenda-week-nav" onclick="agendaSemana(1)" aria-label="Próxima semana"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
         </div>
-      </div>
-      <div class="sec-head" style="padding:8px 0;"><div class="sec-head-pill"><i class="ti ti-x"></i>Motivos de cancelamento</div></div>
-      <div class="card" style="margin-bottom:12px;">
-        <div style="padding:14px 16px;">
-          <div style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px;" id="motivos-lista"></div>
-          <div style="display:flex;gap:8px;margin-top:12px;">
-            <input class="form-input" type="text" id="motivo-input" placeholder="Novo motivo…" style="flex:1;">
-            <button class="btn btn-primary" onclick="adicionarMotivo()" style="padding:11px 14px;"><i class="ti ti-plus"></i></button>
-          </div>
-        </div>
-      </div>
-      <div class="sec-head" style="padding:8px 0;"><div class="sec-head-pill"><i class="ti ti-photo"></i>Logo da corretora</div></div>
-      <div class="card" style="margin-bottom:12px;">
-        <div style="padding:14px 16px;">
-          <div onclick="document.getElementById('cfg-logo-input').click()" style="height:70px;border:1.5px dashed var(--border2);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;">
-            <img id="cfg-logo-img" src="" style="max-height:60px;object-fit:contain;display:none;">
-            <div id="cfg-logo-placeholder" style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:12px;"><i class="ti ti-upload" style="font-size:18px;"></i>Selecionar imagem</div>
-          </div>
-          <input type="file" id="cfg-logo-input" accept="image/*" style="display:none;" onchange="previewLogoCorretora(this)">
-          <div style="display:flex;gap:8px;margin-top:10px;">
-            <button class="btn btn-primary" onclick="salvarLogoCorretora()" style="flex:1;"><i class="ti ti-check"></i>Aplicar</button>
-            <button class="btn btn-ghost" onclick="removerLogoCorretora()"><i class="ti ti-x"></i></button>
-          </div>
-        </div>
+        <div class="agenda-days" id="agenda-days"></div>
+        <button class="agenda-overdue" id="agenda-overdue" onclick="agendaVerAtrasados()" hidden></button>
+        <div class="agenda-day-title" id="agenda-day-title"></div>
+        <div class="agenda-list" id="agenda-list"></div>
       </div>
     </div>
+    <button class="fab" onclick="abrirNovoCompromisso()" aria-label="Novo compromisso"><i class="ti ti-plus"></i></button>
   </div>
 
   <!-- BOTTOM NAV -->
@@ -656,9 +635,9 @@ button,input,select,textarea{font:inherit}
     <button class="bnav-item" data-screen="clientes" onclick="goScreen('clientes',this)">
       <i class="ti ti-users-group" aria-hidden="true"></i><span>Clientes</span>
     </button>
-    <button class="bnav-item" data-screen="atendimentos" onclick="goScreen('atendimentos',this)">
-      <i class="ti ti-clipboard-list" aria-hidden="true"></i><span>Atendimentos</span>
-      <span class="bnav-dot" id="tf-dot" style="display:none;" aria-hidden="true"></span>
+    <button class="bnav-item" data-screen="agenda" onclick="goScreen('agenda',this)">
+      <i class="ti ti-calendar-event" aria-hidden="true"></i><span>Agenda</span>
+      <span class="bnav-dot" id="ag-dot" style="display:none;" aria-hidden="true"></span>
     </button>
     <button class="bnav-item" data-screen="mais" onclick="goScreen('mais',this)">
       <i class="ti ti-dots-circle-horizontal" aria-hidden="true"></i><span>Mais</span>
@@ -860,6 +839,56 @@ button,input,select,textarea{font:inherit}
   </div>
 </div>
 
+<!-- SHEET: COMPROMISSO (detalhe) -->
+<div class="sheet-overlay" id="sheet-compromisso" onclick="if(event.target===this)fecharCompromisso()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" id="cp-titulo">Compromisso</div>
+      <button class="sheet-close" onclick="fecharCompromisso()" aria-label="Fechar"><i class="ti ti-x" style="font-size:15px;"></i></button>
+    </div>
+    <div class="sheet-body" id="cp-corpo"></div>
+    <div class="sheet-foot" id="cp-acoes"></div>
+  </div>
+</div>
+
+<!-- SHEET: NOVO COMPROMISSO -->
+<div class="sheet-overlay" id="sheet-compromisso-novo" onclick="if(event.target===this)fecharNovoCompromisso()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">Novo compromisso</div>
+      <button class="sheet-close" onclick="fecharNovoCompromisso()" aria-label="Fechar"><i class="ti ti-x" style="font-size:15px;"></i></button>
+    </div>
+    <div class="sheet-body">
+      <div class="form-group"><label for="ag-titulo">Título *</label><input class="form-input" type="text" id="ag-titulo" maxlength="180" autocomplete="off"></div>
+      <div class="form-row2" style="margin-bottom:12px;">
+        <div class="form-group" style="margin-bottom:0;"><label for="ag-data">Data</label><input class="form-input" type="date" id="ag-data"></div>
+        <div class="form-group" style="margin-bottom:0;"><label for="ag-tipo">Tipo</label>
+          <select class="form-select" id="ag-tipo">
+            <option value="contato">Contato</option><option value="reuniao">Reunião</option>
+            <option value="renovacao">Renovação</option><option value="documento">Documento</option>
+            <option value="lembrete">Lembrete</option><option value="outro">Outro</option>
+          </select>
+        </div>
+      </div>
+      <label class="agenda-check"><input type="checkbox" id="ag-dia" onchange="agendaDiaInteiro()"><span>Dia inteiro</span></label>
+      <div class="form-row2" style="margin-bottom:12px;" id="ag-horas">
+        <div class="form-group" style="margin-bottom:0;"><label for="ag-ini">Início</label><input class="form-input" type="time" id="ag-ini"></div>
+        <div class="form-group" style="margin-bottom:0;"><label for="ag-fim">Término</label><input class="form-input" type="time" id="ag-fim"></div>
+      </div>
+      <div class="form-group"><label for="ag-cliente">Cliente (opcional)</label>
+        <select class="form-select" id="ag-cliente"><option value="">— Nenhum —</option></select>
+      </div>
+      <div class="form-group"><label for="ag-obs">Observação</label><input class="form-input" type="text" id="ag-obs" placeholder="Opcional" autocomplete="off"></div>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn btn-ghost" onclick="fecharNovoCompromisso()">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1;" id="ag-salvar" onclick="salvarNovoCompromisso()"><i class="ti ti-check"></i>Criar compromisso</button>
+    </div>
+  </div>
+</div>
+
 <!-- SHEET: NOVA TAREFA -->
 <div class="sheet-overlay" id="sheet-tarefa" onclick="if(event.target===this)fecharNovaTarefa()">
   <div class="sheet">
@@ -1034,12 +1063,8 @@ var PICOC = {
   dark:  {"Auto":{bg:"#0B2030",cor:"#67E8F9"},"Vida":{bg:"#26184A",cor:"#C4B5FD"},"Residência":{bg:"#0C2A1E",cor:"#6EE7B7"},"Empresarial":{bg:"#2C1A05",cor:"#FCD34D"},"Outro":{bg:"#1A1A2E",cor:"#A0AEC0"}},
   light: {"Auto":{bg:"#CFFAFE",cor:"#164E63"},"Vida":{bg:"#EDE9FF",cor:"#4C1D95"},"Residência":{bg:"#D1FAE5",cor:"#065F46"},"Empresarial":{bg:"#FEF3C7",cor:"#92400E"},"Outro":{bg:"#F1F5F9",cor:"#475569"}}
 };
-var RAMOS_PADRAO = ["Automóvel","Moto","Frota","Transportes","Seguro de Vida","Residencial","Empresarial","Vida em Grupo","Responsabilidade Civil","Seguro de Obras","Saúde"];
 var TF_ICONES = {ligacao:"ti-phone",proposta:"ti-file-text",endosso:"ti-file-plus",renovacao:"ti-refresh",documento:"ti-paperclip",financeiro:"ti-coins"};
-var _ramosLista = (function(){var s=localStorage.getItem('simpp_ramos');return s?JSON.parse(s):RAMOS_PADRAO.slice();})();
-var _motivosLista = JSON.parse(localStorage.getItem('simpp_motivos')||'["Preço","Perfil de risco","Cobertura insuficiente","Prazo","Outro"]');
-var _logoCorretorB64 = localStorage.getItem('simpp_logo_corretor')||null;
-var _logoCorretorPendente = null;
+
 
 // Dados exclusivamente visuais para desenvolvimento local (?preview=1).
 function carregarPreviewLocal() {
@@ -1084,6 +1109,17 @@ function carregarPreviewLocal() {
     {id:'at-1',clienteId:'cl-2',apoliceId:'ap-2',clienteNome:'Ricardo Nogueira',apoliceLabel:'Seguro Residencial · RES-2026-18442',tipo:'contato',status:'Aberto',descricao:'Cliente pediu contato sobre a renovação.',dataAcompanhamento:iso(1),createdAt:new Date().toISOString()},
     {id:'at-2',clienteId:'cl-1',apoliceId:'ap-1',clienteNome:'Mariana Almeida',apoliceLabel:'Seguro Auto · 0531 778924',tipo:'assistencia',status:'Em andamento',descricao:'Orientação sobre assistência 24 horas.',dataAcompanhamento:null,createdAt:new Date().toISOString()}
   ];
+  function agPrev(offDias,hIni,hFim,extra){
+    var a=new Date();a.setDate(a.getDate()+offDias);a.setHours(hIni,0,0,0);
+    var b=new Date(a);b.setHours(hFim,0,0,0);
+    return mapAgenda(Object.assign({id:'ag-p'+offDias+hIni,inicio_em:a.toISOString(),fim_em:b.toISOString(),status:'agendado'},extra));
+  }
+  AGENDA = [
+    agPrev(-1,10,11,{titulo:'Retorno sobre a renovação',tipo:'contato',cliente_id:'cl-2'}),
+    agPrev(0,9,10,{titulo:'Enviar proposta revisada',tipo:'documento',cliente_id:'cl-4'}),
+    agPrev(0,15,16,{titulo:'Reunião de alinhamento',tipo:'reuniao'}),
+    agPrev(1,11,12,{titulo:'Conferir documentação da empresa',tipo:'documento',cliente_id:'cl-3',status:'concluido'})
+  ];
   D = APOLICES.map(function(a) {
     var c = CLIENTES.find(function(x){return x.id===a.cid;});
     return Object.assign({},a,{nome:c.nome,ini:c.ini,cor:c.cor,cort:c.cort,tel:c.tel,email:c.email});
@@ -1098,6 +1134,7 @@ function carregarPreviewLocal() {
   buildApList('');
   buildClList(CLIENTES);
   buildRen();
+  buildAgenda();
   atualizarMetricas();
   document.getElementById('loading').style.display='none';
 }
@@ -1128,7 +1165,7 @@ function setTheme(th) {
   var isDark = th === 'dark';
   var icon = isDark ? 'ti-moon' : 'ti-sun';
   document.querySelectorAll('#theme-icon,#cfg-theme-ico').forEach(el=>el.className='ti '+icon);
-  var tmeta=document.getElementById('theme-meta');if(tmeta)tmeta.content=isDark?'#0D1A2E':'#1E4A8A';
+  var tmeta=document.getElementById('theme-meta');if(tmeta)tmeta.content=isDark?'#0D1A2E':'#17396F';
   var topbarEl=document.querySelector('.topbar');if(topbarEl)topbarEl.style.background=isDark?'linear-gradient(180deg,#162236 0%,#0F1A2E 100%)':'linear-gradient(180deg,#1E4A8A 0%,#163B72 100%)';
   var lbl = document.getElementById('cfg-theme-label');
   if(lbl) lbl.textContent = isDark ? 'Escuro' : 'Claro';
@@ -1145,7 +1182,7 @@ function toggleTheme(){setTheme(curTheme==='dark'?'light':'dark');}
 var _prevScreen = null;
 var _curScreen = 'painel';
 var _clientBackScreen = 'clientes';
-var _subScreens = ['s-cliente-detail','s-assistencias','s-producao','s-configuracoes','s-suporte'];
+var _subScreens = ['s-cliente-detail','s-assistencias','s-producao','s-suporte'];
 
 function topbarThemeButton() {
   var icon = curTheme === 'dark' ? 'ti-moon' : 'ti-sun';
@@ -1170,7 +1207,7 @@ function goScreen(name, btn) {
   // Update bottom nav (not for sub-screens)
   if (!_subScreens.includes(screenId)) {
     _curScreen = name;
-    var navMap = {buscar:'painel',renovacoes:'mais',assistencias:'mais',producao:'mais',configuracoes:'mais',suporte:'mais'};
+    var navMap = {buscar:'painel',renovacoes:'mais',atendimentos:'mais',tarefas:'mais',assistencias:'mais',producao:'mais',suporte:'mais'};
     var navName = navMap[name] || name;
     document.querySelectorAll('.bnav-item').forEach(b=>{
       b.classList.remove('active');
@@ -1186,25 +1223,25 @@ function goScreen(name, btn) {
   if (name === 'buscar') prepareUniversalSearch();
   if (name === 'producao') buildProdRows();
   if (name === 'renovacoes') buildRen();
-  if (name === 'configuracoes') initConfiguracoes();
+  if (name === 'agenda') buildAgenda();
   if (name === 'tarefas') buildTarefas();
   if (name === 'atendimentos') buildAtendimentos();
   if (name === 'assistencias') buildAssistencias(document.getElementById('ast-srch')?.value || '');
 }
 
 function updateTopbar(name) {
-  var titles = {painel:'simpp',buscar:'Buscar',apolices:'Apólices',clientes:'Clientes',tarefas:'Tarefas',atendimentos:'Atendimentos',assistencias:'Assistências',renovacoes:'Renovações',mais:'Mais',producao:'Produção',configuracoes:'Configurações',suporte:'Central de Suporte'};
+  var titles = {painel:'simpp',buscar:'Buscar',apolices:'Apólices',clientes:'Clientes',tarefas:'Tarefas',atendimentos:'Atendimentos',assistencias:'Assistências',renovacoes:'Renovações',mais:'Mais',producao:'Produção',agenda:'Agenda',suporte:'Central de Suporte'};
   var isLogo = (name === 'painel');
   var tbLeft = document.getElementById('tb-left');
   var tbRight = document.getElementById('tb-right');
   if (isLogo) {
-    tbLeft.innerHTML = '<svg width="28" height="28" viewBox="0 0 36 36"><rect x="2" y="2" width="22" height="14" rx="4" fill="#3D6FB0"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#8AAFD6"/></svg><span class="tb-logo-name">simpp</span>';
+    tbLeft.innerHTML = '<svg width="28" height="28" viewBox="0 0 36 36"><rect x="2" y="3.8" width="22" height="14" rx="4" fill="#8FA9D2"/><rect x="2" y="2" width="22" height="14" rx="4" fill="#FFFFFF"/><rect x="12" y="21.8" width="22" height="14" rx="4" fill="#5B80B8"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#C3D8F4"/><rect x="13" y="20.8" width="20" height="5.5" rx="2.6" fill="#FFFFFF" opacity=".45"/></svg><span class="tb-logo-name">simpp</span>';
     tbRight.innerHTML = topbarThemeButton();
     tbRight.style.display = 'flex';
     return;
   }
   var isSubScreen = _subScreens.includes('s-'+name) || name === 'cliente-detail';
-  if (isSubScreen || name === 'producao' || name === 'configuracoes') {
+  if (isSubScreen || name === 'producao') {
     tbLeft.innerHTML = '<button class="topbar-back" onclick="goBack()"><i class="ti ti-chevron-left"></i>'+titles[name]+'</button>';
     tbRight.innerHTML = topbarThemeButton();
     tbRight.style.display = 'flex';
@@ -1222,7 +1259,7 @@ function goBack() {
   if (!cur) return;
   var id = cur.id;
   if (id === 's-cliente-detail') { goScreen(_clientBackScreen||'clientes'); return; }
-  if (id === 's-assistencias' || id === 's-producao' || id === 's-configuracoes' || id === 's-suporte') { goScreen('mais'); return; }
+  if (id === 's-assistencias' || id === 's-producao' || id === 's-suporte') { goScreen('mais'); return; }
   goScreen('painel');
 }
 
@@ -1242,6 +1279,7 @@ function atualizarMetricas() {
   // dots
   var atPend=ATENDIMENTOS.filter(a=>a.status!=='Concluído').length;
   var tfDot=document.getElementById('tf-dot');if(tfDot)tfDot.style.display=atPend>0?'block':'none';
+  var maisAt=document.getElementById('mais-at-count');if(maisAt){maisAt.textContent=atPend;maisAt.hidden=!(atPend>0);}
   var renDot=document.getElementById('ren-dot');if(renDot)renDot.style.display=nRen>0?'block':'none';
 }
 
@@ -2308,62 +2346,185 @@ function salvarNovaTarefa(){
   toast('Tarefa criada!');
 }
 
-// ── CONFIGURAÇÕES ─────────────────────────────────────────
-function renderTags(lista, containerId, removeFn){
-  var el=document.getElementById(containerId);
-  if(!el)return;
-  el.innerHTML=lista.map((item,i)=>'<div class="cfg-tag">'+escapeHtml(item)+'<button onclick="'+removeFn+'('+i+')" title="Remover"><i class="ti ti-x" style="font-size:11px;"></i></button></div>').join('');
+// ── AGENDA ────────────────────────────────────────────────
+// Mesma tabela e regras da Agenda da versão web (agenda_compromissos).
+// No celular: ver a semana, concluir/cancelar e criar compromisso simples.
+var AGENDA = [], _agendaErro = false, _agendaModo = 'dia', _agendaDia = null, _agendaSemana = null, _agendaAbertoId = null, _agendaCancelando = false;
+var AG_TIPOS = {
+  contato:{n:'Contato',i:'ti-phone'}, reuniao:{n:'Reunião',i:'ti-users'}, renovacao:{n:'Renovação',i:'ti-refresh'},
+  documento:{n:'Documento',i:'ti-file-text'}, lembrete:{n:'Lembrete',i:'ti-bell'}, outro:{n:'Outro',i:'ti-calendar-event'}
+};
+function agDesde(){var d=new Date();d.setDate(d.getDate()-60);d.setHours(0,0,0,0);return d.toISOString();}
+function agIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function agHora(d){return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+function agDia(iso){var p=iso.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+function agSomar(d,n){var r=new Date(d.getFullYear(),d.getMonth(),d.getDate());r.setDate(r.getDate()+n);return r;}
+function agSegunda(d){var r=new Date(d.getFullYear(),d.getMonth(),d.getDate());r.setDate(r.getDate()+(r.getDay()===0?-6:1-r.getDay()));return r;}
+function agCap(t){return t.charAt(0).toUpperCase()+t.slice(1);}
+function agCurto(d){return d.toLocaleDateString('pt-BR',{day:'numeric',month:'short'}).replace('.','');}
+function mapAgenda(r){
+  return {id:String(r.id),titulo:r.titulo||'',tipo:AG_TIPOS[r.tipo]?r.tipo:'outro',inicio:new Date(r.inicio_em),fim:new Date(r.fim_em),
+    diaInteiro:!!r.dia_inteiro,cid:r.cliente_id||null,apId:r.apolice_id||null,obs:r.descricao||'',status:r.status||'agendado'};
 }
-function adicionarRamo(){
-  var inp=document.getElementById('ramo-input');var val=inp.value.trim();if(!val)return;
-  _ramosLista.push(val);localStorage.setItem('simpp_ramos',JSON.stringify(_ramosLista));
-  inp.value='';renderTags(_ramosLista,'ramos-lista','removerRamo');toast('Ramo adicionado!');
+function agStatus(e){return e.status==='concluido'?'concluido':(e.fim<new Date()?'atrasado':'agendado');}
+function agQuando(e,comData){
+  var q=e.diaInteiro?'Dia inteiro':agHora(e.inicio)+' – '+agHora(e.fim);
+  return comData?agCurto(e.inicio)+' · '+q:q;
 }
-function removerRamo(i){
-  _ramosLista.splice(i,1);localStorage.setItem('simpp_ramos',JSON.stringify(_ramosLista));
-  renderTags(_ramosLista,'ramos-lista','removerRamo');
+function agCliente(e){return e.cid?(CLIENTES.find(c=>String(c.id)===String(e.cid))||null):null;}
+function agCard(e,comData){
+  var t=AG_TIPOS[e.tipo], st=agStatus(e), cli=agCliente(e);
+  var chip=st==='concluido'?'<span class="atendimento-status done">Concluído</span>':st==='atrasado'?'<span class="atendimento-status agenda-atrasado">Atrasado</span>':'';
+  return '<button class="atendimento-card agenda-card'+(st==='concluido'?' is-done':'')+'" data-id="'+escapeHtml(e.id)+'" onclick="abrirCompromisso(this.dataset.id)">'+
+    '<span class="atendimento-card-icon"><i class="ti '+escapeHtml(t.i)+'" aria-hidden="true"></i></span>'+
+    '<span class="atendimento-card-copy"><strong>'+escapeHtml(e.titulo)+'</strong><span>'+escapeHtml(agQuando(e,comData))+'</span>'+
+    '<small>'+escapeHtml(t.n)+(cli?' · '+escapeHtml(cli.nome):'')+'</small></span>'+chip+'</button>';
 }
-function adicionarMotivo(){
-  var inp=document.getElementById('motivo-input');var val=inp.value.trim();if(!val)return;
-  _motivosLista.push(val);localStorage.setItem('simpp_motivos',JSON.stringify(_motivosLista));
-  inp.value='';renderTags(_motivosLista,'motivos-lista','removerMotivo');toast('Motivo adicionado!');
-}
-function removerMotivo(i){
-  _motivosLista.splice(i,1);localStorage.setItem('simpp_motivos',JSON.stringify(_motivosLista));
-  renderTags(_motivosLista,'motivos-lista','removerMotivo');
-}
-function previewLogoCorretora(input){
-  var file=input.files[0];if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    _logoCorretorPendente=e.target.result;
-    document.getElementById('cfg-logo-img').src=_logoCorretorPendente;
-    document.getElementById('cfg-logo-img').style.display='block';
-    document.getElementById('cfg-logo-placeholder').style.display='none';
-  };
-  reader.readAsDataURL(file);
-}
-function salvarLogoCorretora(){
-  if(!_logoCorretorPendente){toast('Selecione uma imagem');return;}
-  _logoCorretorB64=_logoCorretorPendente;
-  localStorage.setItem('simpp_logo_corretor',_logoCorretorB64);
-  toast('Logo aplicado!');
-}
-function removerLogoCorretora(){
-  _logoCorretorB64=null;_logoCorretorPendente=null;
-  localStorage.removeItem('simpp_logo_corretor');
-  document.getElementById('cfg-logo-img').style.display='none';
-  document.getElementById('cfg-logo-placeholder').style.display='flex';
-  toast('Logo removido.');
-}
-function initConfiguracoes(){
-  renderTags(_ramosLista,'ramos-lista','removerRamo');
-  renderTags(_motivosLista,'motivos-lista','removerMotivo');
-  if(_logoCorretorB64){
-    document.getElementById('cfg-logo-img').src=_logoCorretorB64;
-    document.getElementById('cfg-logo-img').style.display='block';
-    document.getElementById('cfg-logo-placeholder').style.display='none';
+function buildAgenda(){
+  var elDias=document.getElementById('agenda-days');
+  if(!elDias)return;
+  var hoje=new Date();hoje.setHours(0,0,0,0);
+  if(!_agendaDia)_agendaDia=agIso(hoje);
+  if(!_agendaSemana)_agendaSemana=agSegunda(agDia(_agendaDia));
+  var nomes=['seg','ter','qua','qui','sex','sáb','dom'], hojeIso=agIso(hoje);
+  var dias=[];for(var i=0;i<7;i++)dias.push(agSomar(_agendaSemana,i));
+  document.getElementById('agenda-week-label').textContent=agCurto(dias[0])+' – '+agCurto(dias[6]);
+  elDias.innerHTML=dias.map(function(d,i){
+    var iso=agIso(d), qtd=AGENDA.filter(e=>agIso(e.inicio)===iso).length;
+    var sel=_agendaModo==='dia'&&iso===_agendaDia;
+    return '<button class="agenda-day'+(sel?' sel':'')+(iso===hojeIso?' today':'')+'" data-dia="'+iso+'" onclick="agendaSelecionar(this.dataset.dia)" aria-pressed="'+sel+'" aria-label="'+escapeHtml(d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}))+(qtd?', '+qtd+' compromisso'+(qtd===1?'':'s'):'')+'">'+
+      '<span>'+nomes[i]+'</span><strong>'+d.getDate()+'</strong><i class="agenda-dot'+(qtd?' on':'')+'" aria-hidden="true"></i></button>';
+  }).join('');
+  var atr=AGENDA.filter(e=>agStatus(e)==='atrasado').sort((a,b)=>b.inicio-a.inicio);
+  var btnAtr=document.getElementById('agenda-overdue');
+  btnAtr.hidden=!atr.length;
+  btnAtr.classList.toggle('on',_agendaModo==='atrasados');
+  btnAtr.innerHTML='<i class="ti ti-alert-circle" aria-hidden="true"></i><span>'+(_agendaModo==='atrasados'?'Voltar para o dia':atr.length+(atr.length===1?' compromisso atrasado':' compromissos atrasados'))+'</span>';
+  var agDot=document.getElementById('ag-dot');if(agDot)agDot.style.display=atr.length?'block':'none';
+  var elLista=document.getElementById('agenda-list'), elTitulo=document.getElementById('agenda-day-title');
+  if(_agendaErro){
+    elTitulo.textContent='';
+    elLista.innerHTML='<div class="collection-empty"><span><i class="ti ti-cloud-off"></i></span><strong>Não foi possível carregar a agenda</strong><small>Verifique a conexão e abra o app de novo.</small></div>';
+    return;
   }
+  if(_agendaModo==='atrasados'){
+    elTitulo.textContent='Atrasados';
+    elLista.innerHTML=atr.map(e=>agCard(e,true)).join('');
+    return;
+  }
+  var d=agDia(_agendaDia);
+  elTitulo.textContent=(_agendaDia===hojeIso?'Hoje · ':'')+agCap(d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}));
+  var doDia=AGENDA.filter(e=>agIso(e.inicio)===_agendaDia).sort((a,b)=>a.inicio-b.inicio);
+  elLista.innerHTML=doDia.length?doDia.map(e=>agCard(e,false)).join('')
+    :'<div class="collection-empty"><span><i class="ti ti-calendar-event"></i></span><strong>Nada agendado</strong><small>Toque em + para criar um compromisso.</small></div>';
+}
+function agendaSelecionar(iso){_agendaDia=iso;_agendaModo='dia';buildAgenda();}
+function agendaSemana(delta){
+  _agendaSemana=agSomar(_agendaSemana||agSegunda(new Date()),7*delta);
+  var hoje=new Date();hoje.setHours(0,0,0,0);
+  var fimSemana=agSomar(_agendaSemana,6);
+  _agendaDia=(hoje>=_agendaSemana&&hoje<=fimSemana)?agIso(hoje):agIso(_agendaSemana);
+  _agendaModo='dia';
+  buildAgenda();
+}
+function agendaVerAtrasados(){_agendaModo=_agendaModo==='atrasados'?'dia':'atrasados';buildAgenda();}
+
+// detalhe do compromisso
+function abrirCompromisso(id){
+  var e=AGENDA.find(x=>x.id===String(id));
+  if(!e)return;
+  _agendaAbertoId=e.id;_agendaCancelando=false;
+  var t=AG_TIPOS[e.tipo], st=agStatus(e), cli=agCliente(e);
+  var ap=e.apId?APOLICES.find(a=>String(a.id)===String(e.apId)):null;
+  var linha=function(rot,val){return '<div class="ap-drow"><span class="ap-dlabel">'+rot+'</span><span class="ap-dval">'+val+'</span></div>';};
+  var dataTxt=e.inicio.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('cp-titulo').textContent=e.titulo;
+  document.getElementById('cp-corpo').innerHTML=
+    linha('Quando',escapeHtml(agCap(dataTxt)+' · '+agQuando(e,false)))+
+    linha('Tipo',escapeHtml(t.n))+
+    (st==='concluido'?linha('Situação','Concluído'):st==='atrasado'?linha('Situação','Atrasado'):'')+
+    (cli?linha('Cliente','<button class="agenda-link" onclick="agendaAbrirCliente()">'+escapeHtml(cli.nome)+' <i class="ti ti-chevron-right" aria-hidden="true"></i></button>'):'')+
+    (ap?linha('Apólice',escapeHtml(ap.ap?'#'+ap.ap:(ap.proposta||'Sem número'))+(ap.ramo?' · '+escapeHtml(ap.ramo):'')):'')+
+    (e.obs?linha('Observação',escapeHtml(e.obs)):'');
+  document.getElementById('cp-acoes').innerHTML=st==='concluido'
+    ?'<button class="btn btn-ghost btn-full" onclick="fecharCompromisso()">Fechar</button>'
+    :'<button class="btn btn-ghost agenda-cancelar" id="cp-cancelar" onclick="agendaCancelar()">Cancelar compromisso</button>'+
+     '<button class="btn btn-primary" style="flex:1;" onclick="agendaConcluir()"><i class="ti ti-check"></i>Concluir</button>';
+  document.getElementById('sheet-compromisso').classList.add('on');
+}
+function fecharCompromisso(){document.getElementById('sheet-compromisso').classList.remove('on');_agendaAbertoId=null;}
+function agendaAbrirCliente(){
+  var e=AGENDA.find(x=>x.id===_agendaAbertoId);
+  if(!e||!e.cid)return;
+  fecharCompromisso();
+  openCl(e.cid,'agenda');
+}
+async function agAtualizar(id,patch){
+  if(isLocalPreview())return {error:null};
+  var r=await supa.from('agenda_compromissos').update(patch).eq('id',id).match(escopoWorkspace(_supaUser.id)).select('id').single();
+  return {error:r.error};
+}
+async function agendaConcluir(){
+  var e=AGENDA.find(x=>x.id===_agendaAbertoId);
+  if(!e)return;
+  var r=await agAtualizar(e.id,{status:'concluido',concluido_em:new Date().toISOString()});
+  if(r.error){console.error('agenda concluir:',r.error);toast('Não foi possível concluir o compromisso.',true);return;}
+  e.status='concluido';
+  fecharCompromisso();buildAgenda();toast('Compromisso concluído!');
+}
+async function agendaCancelar(){
+  var e=AGENDA.find(x=>x.id===_agendaAbertoId);
+  if(!e)return;
+  var btn=document.getElementById('cp-cancelar');
+  if(!_agendaCancelando){_agendaCancelando=true;if(btn){btn.textContent='Toque de novo para cancelar';btn.classList.add('confirmar');}return;}
+  var r=await agAtualizar(e.id,{status:'cancelado',cancelado_em:new Date().toISOString()});
+  if(r.error){console.error('agenda cancelar:',r.error);toast('Não foi possível cancelar o compromisso.',true);return;}
+  AGENDA=AGENDA.filter(x=>x.id!==e.id);
+  fecharCompromisso();buildAgenda();toast('Compromisso cancelado.');
+}
+
+// novo compromisso
+function abrirNovoCompromisso(){
+  document.getElementById('ag-cliente').innerHTML='<option value="">— Nenhum —</option>'+CLIENTES.map(c=>'<option value="'+escapeHtml(c.id)+'">'+escapeHtml(c.nome)+'</option>').join('');
+  document.getElementById('ag-titulo').value='';
+  document.getElementById('ag-obs').value='';
+  document.getElementById('ag-tipo').value='contato';
+  document.getElementById('ag-data').value=_agendaModo==='dia'&&_agendaDia?_agendaDia:agIso(new Date());
+  var h=new Date().getHours()+1;if(h<8||h>21)h=9;
+  document.getElementById('ag-ini').value=String(h).padStart(2,'0')+':00';
+  document.getElementById('ag-fim').value=String(h+1).padStart(2,'0')+':00';
+  document.getElementById('ag-dia').checked=false;agendaDiaInteiro();
+  document.getElementById('sheet-compromisso-novo').classList.add('on');
+  setTimeout(()=>document.getElementById('ag-titulo').focus(),300);
+}
+function fecharNovoCompromisso(){document.getElementById('sheet-compromisso-novo').classList.remove('on');}
+function agendaDiaInteiro(){document.getElementById('ag-horas').hidden=document.getElementById('ag-dia').checked;}
+async function salvarNovoCompromisso(){
+  var titulo=document.getElementById('ag-titulo').value.trim();
+  if(titulo.length<3){toast('Informe um título com pelo menos 3 letras.',true);document.getElementById('ag-titulo').focus();return;}
+  var dia=document.getElementById('ag-data').value;
+  if(!dia){toast('Informe a data.',true);return;}
+  var inteiro=document.getElementById('ag-dia').checked;
+  var ini=new Date(dia+'T'+(inteiro?'00:00':document.getElementById('ag-ini').value||'09:00')+':00');
+  var fim=new Date(dia+'T'+(inteiro?'23:59':document.getElementById('ag-fim').value||'10:00')+':00');
+  if(isNaN(ini)||isNaN(fim)||fim<=ini){toast('O término deve ser depois do início.',true);return;}
+  var tipo=document.getElementById('ag-tipo').value, cid=document.getElementById('ag-cliente').value||null;
+  var obs=document.getElementById('ag-obs').value.trim();
+  var btn=document.getElementById('ag-salvar');btn.disabled=true;
+  var linha={user_id:_supaUser.id,cliente_id:cid,titulo:titulo,tipo:tipo,descricao:obs||null,inicio_em:ini.toISOString(),fim_em:fim.toISOString(),
+    dia_inteiro:inteiro,responsavel:_supaUser.id,status:'agendado',origem:'manual'};
+  if(_workspaceId)linha.workspace_id=_workspaceId;
+  var salvo;
+  if(isLocalPreview()){salvo=Object.assign({id:'ag-'+Date.now()},linha);}
+  else{
+    var r=await supa.from('agenda_compromissos').insert(linha).select('*').single();
+    if(r.error){btn.disabled=false;console.error('agenda criar:',r.error);toast('Não foi possível criar o compromisso.',true);return;}
+    salvo=r.data;
+  }
+  btn.disabled=false;
+  AGENDA.push(mapAgenda(salvo));
+  _agendaDia=dia;_agendaSemana=agSegunda(agDia(dia));_agendaModo='dia';
+  fecharNovoCompromisso();buildAgenda();toast('Compromisso criado!');
 }
 
 // ── CARREGAR DADOS ────────────────────────────────────────
@@ -2421,11 +2582,15 @@ async function carregarDados(){
   const extras=await Promise.all([
     supa.from('seguradoras').select('id,nome,logo_url').order('nome'),
     supa.from('assistencias').select('*').order('ordem'),
-    supa.from('atendimentos').select('*').match(escopoWorkspace(uid)).order('created_at',{ascending:false})
+    supa.from('atendimentos').select('*').match(escopoWorkspace(uid)).order('created_at',{ascending:false}),
+    supa.from('agenda_compromissos').select('*').match(escopoWorkspace(uid)).neq('status','cancelado').gte('inicio_em',agDesde()).order('inicio_em',{ascending:true}).limit(1000)
   ]);
   SEGURADORAS=extras[0].data||[];
   ASSISTENCIAS=(extras[1].data||[]).filter(a=>(!a.workspace_id&&!a.user_id)||(_workspaceId?String(a.workspace_id)===String(_workspaceId):String(a.user_id)===String(uid)));
   ATENDIMENTOS=(extras[2].data||[]).map(mapAtendimentoApp);
+  _agendaErro=!!extras[3].error;
+  if(_agendaErro)console.error('agenda:',extras[3].error);
+  AGENDA=(extras[3].data||[]).map(mapAgenda);
   D=APOLICES.map(a=>{
     var c=CLIENTES.find(x=>String(x.id)===String(a.cid))||{nome:'—',ini:'?',cor:{dark:'#222',light:'#eee'},cort:{dark:'#fff',light:'#000'},tel:'—',email:'—'};
     return{...a,nome:c.nome,ini:c.ini,cor:c.cor,cort:c.cort,tel:c.tel,email:c.email};
@@ -2435,7 +2600,7 @@ async function carregarDados(){
   curTheme='light';
   // Build UI
   buildPainelList();buildPainelTarefas();buildPainelVencendo();
-  buildTarefas();buildAtendimentos();buildAssistencias('');buildApList('');buildClList(CLIENTES);buildRen();
+  buildTarefas();buildAtendimentos();buildAssistencias('');buildApList('');buildClList(CLIENTES);buildRen();buildAgenda();
   setTimeout(atualizarMetricas,200);
   // Expiration
   if(_supaUser&&_supaUser.created_at){
@@ -2499,6 +2664,56 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
 
 function setVH(){document.documentElement.style.setProperty('--vh',(window.innerHeight*0.01)+'px');}setVH();window.addEventListener('resize',setVH);
 initAuth();
+</script>
+
+<script>
+// Lupa: apresentação isolada; os inputs e seus filtros existentes são preservados.
+function lupaExpandir(lupaCampo) {
+  var lupaInput = lupaCampo.querySelector('input');
+  var lupaBotao = lupaCampo.querySelector('.lupa-toggle');
+  lupaCampo.classList.add('lupa-aberta');
+  lupaInput.hidden = false;
+  lupaBotao.setAttribute('aria-expanded', 'true');
+  lupaBotao.tabIndex = -1;
+  lupaInput.focus();
+}
+function lupaRecolher(lupaCampo) {
+  var lupaInput = lupaCampo.querySelector('input');
+  if (lupaInput.value || lupaCampo.contains(document.activeElement)) return;
+  lupaCampo.classList.remove('lupa-aberta');
+  lupaInput.hidden = true;
+  var lupaBotao = lupaCampo.querySelector('.lupa-toggle');
+  lupaBotao.setAttribute('aria-expanded', 'false');
+  lupaBotao.tabIndex = 0;
+}
+function lupaInicializar() {
+  document.querySelectorAll('.screen-search-field').forEach(function(lupaCampo) {
+    if (lupaCampo.closest('#s-buscar') || lupaCampo.classList.contains('lupa-campo')) return;
+    var lupaInput = lupaCampo.querySelector('input');
+    if (!lupaInput) return;
+    var lupaBotao = document.createElement('button');
+    lupaBotao.type = 'button';
+    lupaBotao.className = 'lupa-toggle';
+    lupaBotao.setAttribute('aria-label', lupaInput.getAttribute('aria-label') || 'Buscar');
+    lupaBotao.setAttribute('aria-controls', lupaInput.id);
+    lupaBotao.setAttribute('aria-expanded', String(Boolean(lupaInput.value)));
+    if (!lupaInput.hasAttribute('aria-label')) lupaInput.setAttribute('aria-label', 'Buscar');
+    var lupaIcone = lupaCampo.querySelector(':scope > i');
+    if (lupaIcone) lupaBotao.appendChild(lupaIcone);
+    lupaCampo.prepend(lupaBotao);
+    lupaCampo.classList.add('lupa-campo');
+    lupaCampo.classList.toggle('lupa-aberta', Boolean(lupaInput.value));
+    lupaInput.hidden = !lupaInput.value;
+    lupaBotao.tabIndex = lupaInput.value ? -1 : 0;
+    lupaBotao.addEventListener('click', function() { lupaExpandir(lupaCampo); });
+    lupaInput.addEventListener('focus', function() { lupaExpandir(lupaCampo); });
+    lupaCampo.addEventListener('focusout', function() {
+      // Aguarda o foco chegar ao próximo elemento, inclusive em toques fora do campo.
+      setTimeout(function() { lupaRecolher(lupaCampo); }, 0);
+    });
+  });
+}
+lupaInicializar();
 </script>
 </body>
 </html>

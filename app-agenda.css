@@ -1,0 +1,169 @@
+/* Agenda do App.
+   Reaproveita o card de atendimento (.atendimento-card) — o ícone em quadrado
+   azul e a sombra dos cards vêm do visual novo — e usa as mesmas variáveis de
+   marca (--simpp-brand*). Os fallbacks mantêm a tela correta mesmo sem elas. */
+
+.agenda-shell [hidden],
+.agenda-overdue[hidden],
+#ag-horas[hidden],
+.mais-count[hidden] { display: none !important; }
+
+.agenda-shell {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14px 16px 104px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.agenda-week {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.agenda-week strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.agenda-week-nav {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--simpp-brand, var(--accent));
+  font-size: 20px;
+}
+
+.agenda-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.agenda-day {
+  min-height: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+}
+.agenda-day span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.agenda-day strong {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.agenda-day.today { border-color: var(--simpp-brand, var(--accent)); }
+.agenda-day.today strong { color: var(--simpp-brand, var(--accent-t)); }
+.agenda-day.sel {
+  border-color: transparent;
+  background: linear-gradient(160deg, var(--simpp-brand-hi, #2D63AE), var(--simpp-brand, #17396F));
+}
+.agenda-day.sel span,
+.agenda-day.sel strong { color: #fff; }
+
+.agenda-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+}
+.agenda-dot.on { background: var(--simpp-brand-hi, #2D63AE); }
+.agenda-day.sel .agenda-dot.on { background: #fff; }
+
+.agenda-overdue {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--red-bg);
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+}
+.agenda-overdue i { font-size: 18px; }
+.agenda-overdue.on { background: var(--surface2); color: var(--text); }
+
+.agenda-day-title {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text3);
+}
+.agenda-list { display: grid; gap: 9px; }
+.agenda-card.is-done { opacity: .62; }
+.atendimento-status.agenda-atrasado { background: var(--red-bg); color: var(--red); }
+
+/* formulário / detalhe */
+.agenda-check {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--text);
+}
+.agenda-check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--simpp-brand, var(--accent));
+}
+.agenda-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--simpp-brand, var(--accent-t));
+  font: inherit;
+  font-weight: 600;
+  text-align: right;
+}
+.agenda-cancelar { color: var(--red); }
+.agenda-cancelar.confirmar { background: var(--red-bg); }
+
+/* contador de atendimentos no menu Mais */
+.mais-count {
+  min-width: 22px;
+  height: 22px;
+  margin-right: 6px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: var(--simpp-brand, var(--accent));
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agenda-day, .agenda-week-nav { transition: none; }
+}

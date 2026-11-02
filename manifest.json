@@ -4,27 +4,27 @@
   "description": "Gestão simples de apólices para corretores de seguros",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1E4A8A",
-  "theme_color": "#1E4A8A",
+  "background_color": "#17396F",
+  "theme_color": "#17396F",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icon.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/icon.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
