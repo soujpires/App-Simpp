@@ -2094,3 +2094,27 @@ a:focus-visible,
 /* A lupa recolhida rola junto com a lista (fixa, ela tapava o nome do primeiro card);
    aberta, o campo de busca continua fixo no topo. */
 .screen-search-field.lupa-campo:not(.lupa-aberta) { position: relative; }
+
+/* Painéis e formulários no iPhone:
+   - 16px evita o zoom automático do Safari ao tocar num campo (a página ficava ampliada);
+   - data/hora com largura própria (no iPhone estouravam a coluna);
+   - o painel acompanha a área visível (teclado) e respeita a barra inferior do iPhone. */
+.sheet-overlay .sheet { max-height: 93%; }
+.sheet .form-input, .sheet .form-select, .sheet textarea { font-size: 16px; }
+.form-row2 > * { min-width: 0; }
+.sheet input[type="date"], .sheet input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  line-height: 1.2;
+  text-align: left;
+}
+.sheet input[type="date"]::-webkit-date-and-time-value,
+.sheet input[type="time"]::-webkit-date-and-time-value { text-align: left; min-width: 0; margin: 0; }
+.sheet-foot { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+.sheet-body { overscroll-behavior: contain; }
+
