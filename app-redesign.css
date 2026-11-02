@@ -2059,26 +2059,38 @@ a:focus-visible,
 .bloqueio-caixa p { font-size: 14px; line-height: 1.5; color: var(--text3); }
 .bloqueio-caixa small { font-size: 12px; color: var(--text3); }
 
-/* Cards de apólice/proposta enxutos: nome, nº e seguradora. O nome pode ocupar até 2 linhas. */
+/* Card de apólice/proposta: [Nome][Situação] / [Apólice · Seguradora] / [Vigência].
+   O nome ocupa até 2 linhas; a situação fica sempre à direita da primeira linha. */
 .ap-item-top {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
   min-width: 0;
 }
 .ap-item-top .ap-item-name {
+  flex: 1 1 auto;
   min-width: 0;
-  max-width: 100%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   overflow-wrap: anywhere;
 }
+.ap-item-top .bdg { flex: 0 0 auto; margin-top: 2px; white-space: nowrap; }
+/* nº e seguradora quebram de linha em vez de serem cortados com "…" */
 .ap-item-sub {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+.ap-item-vig {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text3);
 }
 
+/* A lupa recolhida rola junto com a lista (fixa, ela tapava o nome do primeiro card);
+   aberta, o campo de busca continua fixo no topo. */
+.screen-search-field.lupa-campo:not(.lupa-aberta) { position: relative; }

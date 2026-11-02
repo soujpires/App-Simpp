@@ -192,7 +192,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeSlideUp .2s ease;}
 </style>
-<link rel="stylesheet" href="./app-redesign.css?v=20261102-3">
+<link rel="stylesheet" href="./app-redesign.css?v=20261102-4">
 <!-- Estilos críticos mantidos no index para o app não perder o layout
      quando uma atualização móvel publicar apenas este arquivo. -->
 <style id="simpp-critical-mobile-layout">
@@ -992,7 +992,7 @@ function dc(d,k){return d[k][curTheme];}
 function getPicoIcon(ramo){return PICO_RAMOS[ramo]||'ti-shield';}
 function stBadge(st){
   var map={'Vigente':'<span class="bdg bdg-g">Vigente</span>','Proposta':'<span class="bdg bdg-b">Proposta</span>','A renovar':'<span class="bdg bdg-a">A renovar</span>','Renovada':'<span class="bdg" style="background:var(--surface2);color:var(--text3);">Renovada</span>','Cancelada':'<span class="bdg bdg-r">Cancelada</span>','Recusada':'<span class="bdg bdg-r">Recusada</span>','Não renovada':'<span class="bdg" style="background:var(--surface2);color:var(--text3);">Não renovada</span>'};
-  return map[st]||'<span class="bdg">'+st+'</span>';
+  return map[st]||'<span class="bdg">'+escapeHtml(st)+'</span>';
 }
 
 function toast(msg, isError) {
@@ -1224,8 +1224,7 @@ function buildApList(filtro) {
       '<div class="ap-item-head">'+
         '<div class="ap-item-ico"><i class="ti '+ic+'"></i></div>'+
         '<div style="flex:1;min-width:0;">'+
-          '<div class="ap-item-top"><span class="ap-item-name">'+escapeHtml(c.nome)+'</span>'+stBadge(a.st)+'</div>'+
-          '<div class="ap-item-sub">'+escapeHtml(apIdentificacao(a))+'</div>'+
+          apCardMain(a, c.nome)+
         '</div>'+
       '</div>'+
       '<div class="ap-item-detail">'+buildApDetail(a, c)+'</div>'+
@@ -1504,6 +1503,14 @@ function apIdentificacao(a) {
   return num + (a.seg ? ' · ' + a.seg : '');
 }
 
+// Miolo do card de apólice/proposta: linha 1 nome + situação, linha 2 nº + seguradora, linha 3 vigência.
+function apCardMain(a, titulo) {
+  var vig = (a.iv || a.fv) ? 'Vigência ' + (a.iv || '—') + ' a ' + (a.fv || '—') : '';
+  return '<div class="ap-item-top"><span class="ap-item-name">' + escapeHtml(titulo) + '</span>' + stBadge(a.st) + '</div>' +
+    '<div class="ap-item-sub">' + escapeHtml(apIdentificacao(a)) + '</div>' +
+    (vig ? '<div class="ap-item-vig">' + escapeHtml(vig) + '</div>' : '');
+}
+
 // ── CLIENTES ──────────────────────────────────────────────
 function buildClList(data) {
   var el = document.getElementById('cl-list');
@@ -1547,8 +1554,7 @@ function openCl(id, backScreen) {
       '<div class="ap-item-head">'+
         '<div class="ap-item-ico"><i class="ti '+ic+'"></i></div>'+
         '<div style="flex:1;min-width:0;">'+
-          '<div class="ap-item-top"><span class="ap-item-name">'+escapeHtml(a.prod)+'</span>'+stBadge(a.st)+'</div>'+
-          '<div class="ap-item-sub">'+escapeHtml(apIdentificacao(a))+'</div>'+
+          apCardMain(a, a.prod)+
         '</div>'+
       '</div>'+
       '<div class="ap-item-detail">'+buildApDetail(a,c)+'</div>'+
