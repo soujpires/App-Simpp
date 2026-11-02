@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
-<link rel="stylesheet" href="./app-icons.css?v=20261102-3">
+<link rel="stylesheet" href="./app-icons.css?v=20261102-4">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.documentElement.setAttribute('data-theme','light');
@@ -283,6 +283,7 @@ button,input,select,textarea{font:inherit}
 }
 </style>
 <link rel="stylesheet" href="./app-agenda.css?v=20261102-1">
+<link rel="stylesheet" href="./app-recursos.css?v=20261102-3">
 </head>
 <body>
 <div class="bloqueio-app" id="bloqueio-app" role="alertdialog" aria-modal="true" aria-labelledby="bloqueio-titulo" hidden>
@@ -505,6 +506,18 @@ button,input,select,textarea{font:inherit}
     <div class="screen-body">
       <div class="sec-head"><div class="sec-head-pill"><i class="ti ti-chart-bar"></i>Recursos</div></div>
       <div class="card" style="margin:0 16px 16px;">
+        <div class="cfg-item" onclick="goScreen('oportunidades')">
+          <div class="cfg-ico"><i class="ti ti-target-arrow"></i></div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:400;color:var(--text);">Oportunidades</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">Criar e acompanhar na rua</div></div>
+          <i class="ti ti-chevron-right" style="color:var(--text3);font-size:15px;"></i>
+        </div>
+        <div class="cfg-item" onclick="goScreen('formularios')">
+          <div class="cfg-ico"><i class="ti ti-forms"></i></div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:400;color:var(--text);">Formulários</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">Links para enviar ao cliente</div></div>
+          <i class="ti ti-chevron-right" style="color:var(--text3);font-size:15px;"></i>
+        </div>
         <div class="cfg-item" onclick="goScreen('atendimentos')">
           <div class="cfg-ico"><i class="ti ti-clipboard-list"></i></div>
           <div style="flex:1;"><div style="font-size:14px;font-weight:400;color:var(--text);">Atendimentos</div>
@@ -614,6 +627,28 @@ button,input,select,textarea{font:inherit}
     </div>
   </div>
 
+  <!-- OPORTUNIDADES -->
+  <div class="screen" id="s-oportunidades">
+    <div class="screen-body">
+      <div class="collection-shell">
+        <div class="op-filtros" id="op-filtros"></div>
+        <div class="collection-summary" id="op-resumo"></div>
+        <div class="atendimento-list" id="op-lista"></div>
+      </div>
+    </div>
+    <button class="fab" onclick="abrirNovaOp()" aria-label="Nova oportunidade"><i class="ti ti-plus"></i></button>
+  </div>
+
+  <!-- FORMULÁRIOS -->
+  <div class="screen" id="s-formularios">
+    <div class="screen-body">
+      <div class="collection-shell">
+        <div class="collection-summary" id="fm-resumo"></div>
+        <div class="fm-lista" id="fm-lista"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- AGENDA -->
   <div class="screen" id="s-agenda">
     <div class="screen-body">
@@ -654,6 +689,55 @@ button,input,select,textarea{font:inherit}
   </nav>
 </div>
 
+<!-- SHEET: BUSCAR CLIENTE -->
+<div class="sheet-overlay" id="sheet-cli-pick" onclick="if(event.target===this)cliPickFechar()">
+  <div class="sheet sheet-alta">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" id="cli-pick-titulo">Buscar cliente</div>
+      <button class="sheet-close" onclick="cliPickFechar()" aria-label="Fechar"><i class="ti ti-x" style="font-size:15px;"></i></button>
+    </div>
+    <div class="cli-pick-busca"><input class="form-input" type="search" id="cli-pick-q" placeholder="Nome, CPF ou telefone" oninput="cliPickRender(this.value)" autocomplete="off" autocapitalize="off"></div>
+    <div class="sheet-body" id="cli-pick-lista"></div>
+  </div>
+</div>
+
+<!-- SHEET: NOVA OPORTUNIDADE -->
+<div class="sheet-overlay" id="sheet-op-nova" onclick="if(event.target===this)fecharNovaOp()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">Nova oportunidade</div>
+      <button class="sheet-close" onclick="fecharNovaOp()" aria-label="Fechar"><i class="ti ti-x" style="font-size:15px;"></i></button>
+    </div>
+    <div class="sheet-body">
+      <div class="form-group"><label>Cliente ou prospect *</label>
+        <div class="cli-pick">
+          <button type="button" class="cli-pick-btn" id="op-cli-btn" onclick="cliPickAbrir('op')"><i class="ti ti-search" aria-hidden="true"></i><span id="op-cli-txt">Buscar ou cadastrar</span></button>
+          <button type="button" class="cli-pick-clear" id="op-cli-clear" onclick="cliPickLimpar('op')" aria-label="Tirar seleção" hidden><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <input type="hidden" id="op-cliente" value=""><input type="hidden" id="op-cliente-novo" value="">
+      </div>
+      <div class="form-group" id="op-tel-wrap" hidden><label for="op-tel">Telefone do novo prospect</label><input class="form-input" type="tel" inputmode="tel" id="op-tel" autocomplete="off"></div>
+      <div class="form-row2" style="margin-bottom:12px;">
+        <div class="form-group" style="margin-bottom:0;"><label for="op-ramo">Ramo</label>
+          <select class="form-select" id="op-ramo"><option>Automóvel</option><option>Condomínio</option><option>Empresarial</option><option>Vida</option><option>Residencial</option><option>Outros</option></select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;"><label for="op-origem">Origem</label>
+          <select class="form-select" id="op-origem"><option>Prospecção</option><option>Indicação</option><option>Site</option><option>Renovação</option><option>Formulário</option><option>Outro</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label for="op-proxima">Próxima ação</label><input class="form-input" type="text" id="op-proxima" maxlength="120" placeholder="Opcional" autocomplete="off"></div>
+      <div class="form-group"><label for="op-quando">Quando</label><input class="form-input" type="date" id="op-quando"></div>
+      <div class="form-group"><label for="op-obs">Observações</label><input class="form-input" type="text" id="op-obs" placeholder="Opcional" autocomplete="off"></div>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn btn-ghost" onclick="fecharNovaOp()">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1;" id="op-salvar" onclick="salvarNovaOp()"><i class="ti ti-check"></i>Criar oportunidade</button>
+    </div>
+  </div>
+</div>
+
 <!-- SHEET: COMPROMISSO (detalhe) -->
 <div class="sheet-overlay" id="sheet-compromisso" onclick="if(event.target===this)fecharCompromisso()">
   <div class="sheet">
@@ -692,8 +776,12 @@ button,input,select,textarea{font:inherit}
         <div class="form-group" style="margin-bottom:0;"><label for="ag-ini">Início</label><input class="form-input" type="time" id="ag-ini"></div>
         <div class="form-group" style="margin-bottom:0;"><label for="ag-fim">Término</label><input class="form-input" type="time" id="ag-fim"></div>
       </div>
-      <div class="form-group"><label for="ag-cliente">Cliente (opcional)</label>
-        <select class="form-select" id="ag-cliente"><option value="">— Nenhum —</option></select>
+      <div class="form-group"><label>Cliente (opcional)</label>
+        <div class="cli-pick">
+          <button type="button" class="cli-pick-btn" id="ag-cli-btn" onclick="cliPickAbrir('ag')"><i class="ti ti-search" aria-hidden="true"></i><span id="ag-cli-txt">Buscar cliente</span></button>
+          <button type="button" class="cli-pick-clear" id="ag-cli-clear" onclick="cliPickLimpar('ag')" aria-label="Tirar cliente" hidden><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <input type="hidden" id="ag-cliente" value="">
       </div>
       <div class="form-group"><label for="ag-obs">Observação</label><input class="form-input" type="text" id="ag-obs" placeholder="Opcional" autocomplete="off"></div>
     </div>
@@ -980,6 +1068,16 @@ function carregarPreviewLocal() {
   buildClList(CLIENTES);
   buildRen();
   buildAgenda();
+  FORMULARIOS = [
+    {id:'f1', slug:'cotacao-auto', titulo:'Cotação de Automóvel', ativo:true, categoria:'comercial'},
+    {id:'f2', slug:'cotacao-residencial', titulo:'Cotação Residencial', ativo:true, categoria:'comercial'},
+    {id:'f3', slug:'pedido-de-boleto', titulo:'Pedido de segunda via de boleto', ativo:true, categoria:'operacional'},
+    {id:'f4', slug:'aviso-de-sinistro', titulo:'Aviso de sinistro', ativo:false, categoria:'operacional'}
+  ];
+  OPORTUNIDADES = [
+    {id:'o1', cid:'cl-1', nome:'Mariana Almeida', ramo:'Automóvel', origem:'Indicação', etapa:'contato', proxima:'Enviar cotação', proximaEm:iso(2), retomarEm:''},
+    {id:'o2', cid:null, nome:'Padaria Sol Nascente', ramo:'Empresarial', origem:'Prospecção', etapa:'lead', proxima:'', proximaEm:'', retomarEm:''}
+  ];
   _statusPlano = {is_paid:true, plano:'anual', ciclo_fim:new Date(Date.now()+200*864e5).toISOString()};
   renderPlanoCard();
   atualizarMetricas();
@@ -1054,7 +1152,7 @@ function goScreen(name, btn) {
   // Update bottom nav (not for sub-screens)
   if (!_subScreens.includes(screenId)) {
     _curScreen = name;
-    var navMap = {buscar:'painel',renovacoes:'mais',atendimentos:'mais',tarefas:'mais',assistencias:'mais',producao:'mais',suporte:'mais'};
+    var navMap = {buscar:'painel',oportunidades:'mais',formularios:'mais',renovacoes:'mais',atendimentos:'mais',tarefas:'mais',assistencias:'mais',producao:'mais',suporte:'mais'};
     var navName = navMap[name] || name;
     document.querySelectorAll('.bnav-item').forEach(b=>{
       b.classList.remove('active');
@@ -1071,13 +1169,15 @@ function goScreen(name, btn) {
   if (name === 'producao') buildProdRows();
   if (name === 'renovacoes') buildRen();
   if (name === 'agenda') buildAgenda();
+  if (name === 'oportunidades') abrirTelaOportunidades();
+  if (name === 'formularios') abrirTelaFormularios();
   if (name === 'tarefas') buildTarefas();
   if (name === 'atendimentos') buildAtendimentos();
   if (name === 'assistencias') buildAssistencias(document.getElementById('ast-srch')?.value || '');
 }
 
 function updateTopbar(name) {
-  var titles = {painel:'simpp',buscar:'Buscar',apolices:'Apólices',clientes:'Clientes',tarefas:'Tarefas',atendimentos:'Atendimentos',assistencias:'Assistências',renovacoes:'Renovações',mais:'Mais',producao:'Produção',agenda:'Agenda',suporte:'Central de Suporte'};
+  var titles = {painel:'simpp',buscar:'Buscar',apolices:'Apólices',clientes:'Clientes',tarefas:'Tarefas',atendimentos:'Atendimentos',assistencias:'Assistências',renovacoes:'Renovações',mais:'Mais',producao:'Produção',agenda:'Agenda',oportunidades:'Oportunidades',formularios:'Formulários',suporte:'Central de Suporte'};
   var isLogo = (name === 'painel');
   var tbLeft = document.getElementById('tb-left');
   var tbRight = document.getElementById('tb-right');
@@ -1527,7 +1627,7 @@ function buildClList(data) {
     return '<button class="client-card" data-client-id="'+escapeHtml(d.id)+'" onclick="openCl(this.dataset.clientId)">'+
       '<span class="client-card-avatar" style="background:'+escapeHtml(avatarBg)+';color:'+escapeHtml(avatarColor)+';">'+escapeHtml(d.ini||'?')+'</span>'+
       '<span class="client-card-content">'+
-        '<strong>'+escapeHtml(d.nome)+'</strong>'+
+        '<strong>'+escapeHtml(d.nome)+(d.estagio==='prospect'?' <span class="bdg bdg-b">Prospect</span>':'')+'</strong>'+
         '<span class="client-card-policy-count">'+nAps+' apólice'+(nAps===1?'':'s')+'</span>'+
         '<small>'+escapeHtml(contact)+'</small>'+
       '</span>'+
@@ -1986,7 +2086,7 @@ async function agendaCancelar(){
 
 // novo compromisso
 function abrirNovoCompromisso(){
-  document.getElementById('ag-cliente').innerHTML='<option value="">— Nenhum —</option>'+CLIENTES.map(c=>'<option value="'+escapeHtml(c.id)+'">'+escapeHtml(c.nome)+'</option>').join('');
+  cliPickAplicar('ag', null);
   document.getElementById('ag-titulo').value='';
   document.getElementById('ag-obs').value='';
   document.getElementById('ag-tipo').value='contato';
@@ -2028,6 +2128,252 @@ async function salvarNovoCompromisso(){
   fecharNovoCompromisso();buildAgenda();toast('Compromisso criado!');
 }
 
+// ── BUSCA DE CLIENTE (Agenda e Oportunidades) ─────────────────────────────
+// Lista de milhares de clientes não cabe num select: abre um painel com busca.
+var CLI_PICK = {
+  ag: {valor:'ag-cliente', btn:'ag-cli-btn', txt:'ag-cli-txt', limpar:'ag-cli-clear', vazio:'Buscar cliente', novo:false},
+  op: {valor:'op-cliente', btn:'op-cli-btn', txt:'op-cli-txt', limpar:'op-cli-clear', vazio:'Buscar ou cadastrar', novo:true}
+};
+var _cliPickCtx = null;
+function cliPickAplicar(ctx, id, nomeNovo) {
+  var c = CLI_PICK[ctx];
+  var cli = id ? CLIENTES.find(x => String(x.id) === String(id)) : null;
+  document.getElementById(c.valor).value = cli ? String(cli.id) : '';
+  if (c.novo) {
+    document.getElementById('op-cliente-novo').value = nomeNovo || '';
+    document.getElementById('op-tel-wrap').hidden = !nomeNovo;
+  }
+  var texto = cli ? cli.nome : (nomeNovo ? nomeNovo : c.vazio);
+  document.getElementById(c.txt).textContent = texto;
+  document.getElementById(c.btn).classList.toggle('tem-valor', !!(cli || nomeNovo));
+  document.getElementById(c.limpar).hidden = !(cli || nomeNovo);
+}
+function cliPickLimpar(ctx) { cliPickAplicar(ctx, null, null); }
+function cliPickAbrir(ctx) {
+  _cliPickCtx = ctx;
+  document.getElementById('cli-pick-titulo').textContent = CLI_PICK[ctx].novo ? 'Cliente ou prospect' : 'Buscar cliente';
+  var q = document.getElementById('cli-pick-q');
+  q.value = '';
+  cliPickRender('');
+  document.getElementById('sheet-cli-pick').classList.add('on');
+  sheetAjustarTeclado();
+  setTimeout(function () { q.focus(); }, 250);
+}
+function cliPickFechar() { sheetFechar('sheet-cli-pick'); }
+function cliPickRender(valor) {
+  var ctx = CLI_PICK[_cliPickCtx] || CLI_PICK.ag, el = document.getElementById('cli-pick-lista');
+  var q = normalizeSearch(valor), bruto = String(valor || '').trim();
+  var achados = CLIENTES.filter(c => !q || searchableIncludes([c.nome, c.cpf, c.tel, c.email], q))
+    .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  var MAX = 40, html = '';
+  if (!ctx.novo) html += '<button type="button" class="cli-pick-item nenhum" onclick="cliPickEscolher(\'\')"><span><strong>Nenhum cliente</strong></span></button>';
+  if (ctx.novo && bruto.length >= 2 && !achados.some(c => normalizeSearch(c.nome) === q)) {
+    html += '<button type="button" class="cli-pick-item novo" data-nome="' + escapeHtml(bruto) + '" onclick="cliPickNovo(this.dataset.nome)"><i class="ti ti-user-plus" aria-hidden="true"></i><span><strong>Cadastrar «' + escapeHtml(bruto) + '» como prospect</strong><small>Novo contato, ainda sem apólice</small></span></button>';
+  }
+  html += achados.slice(0, MAX).map(function (c) {
+    var sub = c.tel && c.tel !== '—' ? c.tel : (c.email && c.email !== '—' ? c.email : '');
+    return '<button type="button" class="cli-pick-item" data-id="' + escapeHtml(c.id) + '" onclick="cliPickEscolher(this.dataset.id)"><span><strong>' + escapeHtml(c.nome) + (c.estagio === 'prospect' ? ' <em>Prospect</em>' : '') + '</strong>' + (sub ? '<small>' + escapeHtml(sub) + '</small>' : '') + '</span></button>';
+  }).join('');
+  if (achados.length > MAX) html += '<div class="cli-pick-mais">Mostrando ' + MAX + ' de ' + achados.length + '. Digite mais para refinar.</div>';
+  if (!achados.length && !(ctx.novo && bruto.length >= 2)) html += '<div class="cli-pick-mais">Nenhum cliente encontrado.</div>';
+  el.innerHTML = html;
+  el.scrollTop = 0;
+}
+function cliPickEscolher(id) { cliPickAplicar(_cliPickCtx, id || null, null); cliPickFechar(); }
+function cliPickNovo(nome) { cliPickAplicar(_cliPickCtx, null, titleCasePt(nome)); cliPickFechar(); }
+function titleCasePt(t) {
+  var minus = {de:1, da:1, do:1, das:1, dos:1, e:1};
+  return String(t || '').trim().toLowerCase().split(/\s+/).map(function (p, i) {
+    return (i > 0 && minus[p]) ? p : p.charAt(0).toUpperCase() + p.slice(1);
+  }).join(' ');
+}
+
+// ── OPORTUNIDADES ─────────────────────────────────────────────────────────
+// Mesma tabela do funil da versão web. No celular: ver as abertas e criar uma
+// nova (cliente ou prospect) quando o corretor está na rua. Quem não é dono/admin
+// só enxerga as próprias (regra do banco).
+var OPORTUNIDADES = [], _opErro = false, _opFiltro = 'todas', _opCarregando = false;
+var OP_ETAPAS = [{id:'lead', nome:'Novo lead'}, {id:'contato', nome:'Em contato'}, {id:'cotacao', nome:'Cotação'}, {id:'proposta', nome:'Proposta enviada'}];
+async function abrirTelaOportunidades() {
+  _opFiltro = 'todas';
+  if (isLocalPreview()) { buildOportunidades(); return; }
+  if (_opCarregando) return;
+  _opCarregando = true; _opErro = false;
+  document.getElementById('op-lista').innerHTML = '<div class="collection-empty"><span><i class="ti ti-clock" aria-hidden="true"></i></span><strong>Carregando…</strong></div>';
+  try {
+    if (_workspaceId) {
+      var col = await supa.from('oportunidade_colunas').select('etapa_id, nome, ordem').eq('workspace_id', _workspaceId).order('ordem');
+      if (!col.error && col.data && col.data.length) OP_ETAPAS = col.data.map(l => ({id: l.etapa_id, nome: l.nome}));
+    }
+    var r = await supa.from('oportunidades').select('*').match(escopoWorkspace(_supaUser.id)).order('updated_at', {ascending: false}).limit(300);
+    if (r.error) throw r.error;
+    OPORTUNIDADES = (r.data || []).filter(o => o.status !== 'ganho' && o.status !== 'perdido').map(function (o) {
+      var cli = o.cliente_id ? CLIENTES.find(c => String(c.id) === String(o.cliente_id)) : null;
+      return {id: String(o.id), cid: o.cliente_id || null, nome: (cli && cli.nome) || o.cliente_nome || 'Prospect sem nome',
+        ramo: o.ramo || '', origem: o.origem || '', etapa: o.etapa, proxima: o.proxima_acao || '', proximaEm: o.proxima_acao_em || '', retomarEm: o.retomar_em || ''};
+    });
+  } catch (e) {
+    console.error('oportunidades:', e); _opErro = true; OPORTUNIDADES = [];
+  } finally { _opCarregando = false; }
+  buildOportunidades();
+}
+function opEtapaNome(id) { var e = OP_ETAPAS.find(x => x.id === id); return e ? e.nome : 'Novo lead'; }
+function opData(iso) { return iso ? iso.split('-').reverse().join('/') : ''; }
+function buildOportunidades() {
+  var elLista = document.getElementById('op-lista');
+  if (!elLista) return;
+  var filtros = [{id: 'todas', nome: 'Todas'}].concat(OP_ETAPAS);
+  document.getElementById('op-filtros').innerHTML = filtros.map(function (f) {
+    var n = f.id === 'todas' ? OPORTUNIDADES.length : OPORTUNIDADES.filter(o => o.etapa === f.id).length;
+    return '<button class="atendimento-filter' + (_opFiltro === f.id ? ' active' : '') + '" data-id="' + escapeHtml(f.id) + '" onclick="opFiltrar(this.dataset.id)">' + escapeHtml(f.nome) + ' <span>' + n + '</span></button>';
+  }).join('');
+  if (_opErro) {
+    document.getElementById('op-resumo').textContent = '';
+    elLista.innerHTML = '<div class="collection-empty"><span><i class="ti ti-cloud-off"></i></span><strong>Não foi possível carregar</strong><small>Verifique a conexão e tente de novo.</small></div>';
+    return;
+  }
+  var lista = _opFiltro === 'todas' ? OPORTUNIDADES : OPORTUNIDADES.filter(o => o.etapa === _opFiltro);
+  document.getElementById('op-resumo').textContent = lista.length + ' oportunidade' + (lista.length === 1 ? '' : 's');
+  elLista.innerHTML = lista.length ? lista.map(function (o) {
+    var linha3 = o.proxima ? 'Próxima ação: ' + o.proxima + (o.proximaEm ? ' · ' + opData(o.proximaEm) : '') : (o.retomarEm ? 'Retomar em ' + opData(o.retomarEm) : '');
+    return '<button class="atendimento-card" data-id="' + escapeHtml(o.id) + '" data-cid="' + escapeHtml(o.cid || '') + '" onclick="if(this.dataset.cid)openCl(this.dataset.cid,\'oportunidades\')">' +
+      '<span class="atendimento-card-icon"><i class="ti ti-target-arrow" aria-hidden="true"></i></span>' +
+      '<span class="atendimento-card-copy"><strong>' + escapeHtml(o.nome) + '</strong>' +
+      '<span>' + escapeHtml([o.ramo, o.origem].filter(Boolean).join(' · ') || 'Sem ramo') + '</span>' +
+      (linha3 ? '<small>' + escapeHtml(linha3) + '</small>' : '') + '</span>' +
+      '<span class="atendimento-status progress">' + escapeHtml(opEtapaNome(o.etapa)) + '</span></button>';
+  }).join('') : '<div class="collection-empty"><span><i class="ti ti-target-arrow"></i></span><strong>Nenhuma oportunidade</strong><small>Toque em + para criar uma.</small></div>';
+}
+function opFiltrar(id) { _opFiltro = id; buildOportunidades(); }
+function abrirNovaOp() {
+  cliPickAplicar('op', null, null);
+  ['op-tel', 'op-proxima', 'op-quando', 'op-obs'].forEach(i => { document.getElementById(i).value = ''; });
+  document.getElementById('op-ramo').value = 'Automóvel';
+  document.getElementById('op-origem').value = 'Prospecção';
+  document.getElementById('sheet-op-nova').classList.add('on');
+  sheetAjustarTeclado();
+}
+function fecharNovaOp() { sheetFechar('sheet-op-nova'); }
+async function salvarNovaOp() {
+  var cid = document.getElementById('op-cliente').value || null;
+  var novo = document.getElementById('op-cliente-novo').value.trim();
+  if (!cid && !novo) { toast('Escolha o cliente ou cadastre um prospect.', true); return; }
+  var tel = document.getElementById('op-tel').value.trim();
+  var btn = document.getElementById('op-salvar'); btn.disabled = true;
+  var etapa = (OP_ETAPAS[0] && OP_ETAPAS[0].id) || 'lead';
+  var linha = {
+    user_id: _supaUser.id, cliente_id: cid, cliente_nome: null,
+    ramo: document.getElementById('op-ramo').value, etapa: etapa, responsavel: _supaUser.id,
+    origem: document.getElementById('op-origem').value,
+    proxima_acao: document.getElementById('op-proxima').value.trim() || null,
+    proxima_acao_em: document.getElementById('op-quando').value || null,
+    observacoes: document.getElementById('op-obs').value.trim() || null,
+    status: 'aberta', updated_at: new Date().toISOString()
+  };
+  if (_workspaceId) linha.workspace_id = _workspaceId;
+  try {
+    if (isLocalPreview()) {
+      if (novo) { var pv = {id: 'cl-p' + Date.now(), nome: novo, ini: novo.slice(0, 2).toUpperCase(), cor: {dark: '#222', light: '#eee'}, cort: {dark: '#fff', light: '#000'}, cpf: '', nasc: '', tel: tel || '—', email: '—', end: '—', obs: '', estagio: 'prospect'}; CLIENTES.push(pv); cid = pv.id; }
+      OPORTUNIDADES.unshift({id: 'op-' + Date.now(), cid: cid, nome: (CLIENTES.find(c => c.id === cid) || {}).nome || 'Prospect', ramo: linha.ramo, origem: linha.origem, etapa: etapa, proxima: linha.proxima_acao || '', proximaEm: linha.proxima_acao_em || '', retomarEm: ''});
+    } else {
+      if (novo) cid = (await criarProspectApp(novo, tel, linha.origem)).id;
+      linha.cliente_id = cid;
+      var r = await supa.from('oportunidades').insert(linha).select('id').single();
+      if (r.error) throw r.error;
+      // histórico, como no web (não impede de salvar se falhar)
+      var h = await supa.from('oportunidade_followups').insert({user_id: _supaUser.id, oportunidade_id: r.data.id, descricao: 'Oportunidade criada.'});
+      if (h.error) console.warn('histórico da oportunidade:', h.error);
+    }
+  } catch (e) {
+    btn.disabled = false; console.error('nova oportunidade:', e);
+    toast('Não foi possível salvar a oportunidade' + (e && e.message ? ': ' + String(e.message).slice(0, 90) : '.'), true);
+    return;
+  }
+  btn.disabled = false;
+  fecharNovaOp();
+  _opFiltro = 'todas';
+  if (isLocalPreview()) buildOportunidades(); else await abrirTelaOportunidades();
+  buildClList(CLIENTES); atualizarMetricas();
+  toast('Oportunidade criada!');
+}
+// Prospect = cliente ainda sem apólice (mesmo cadastro rápido do web).
+async function criarProspectApp(nome, tel, origem) {
+  var paletas = [
+    {cor:{dark:'#26184A',light:'#EDE9FF'}, cort:{dark:'#C4B5FD',light:'#4C1D95'}},
+    {cor:{dark:'#0C2A1E',light:'#D1FAE5'}, cort:{dark:'#6EE7B7',light:'#065F46'}},
+    {cor:{dark:'#0B2030',light:'#CFFAFE'}, cort:{dark:'#67E8F9',light:'#164E63'}},
+    {cor:{dark:'#2C1A05',light:'#FEF3C7'}, cort:{dark:'#FCD34D',light:'#92400E'}},
+    {cor:{dark:'#1A0E38',light:'#F3E8FF'}, cort:{dark:'#DDD6FE',light:'#6D28D9'}}
+  ];
+  var pal = paletas[CLIENTES.length % paletas.length];
+  var ini = nome.split(' ').filter(p => p.length > 0).map(p => p[0]).join('').toUpperCase().slice(0, 2);
+  var linha = {user_id: _supaUser.id, nome: nome, ini: ini, cor_dark: pal.cor.dark, cor_light: pal.cor.light, cort_dark: pal.cort.dark, cort_light: pal.cort.light,
+    tel: tel || null, origem_lead: origem || null, estagio: 'prospect', convertido_em: null};
+  if (_workspaceId) linha.workspace_id = _workspaceId;
+  var r = await supa.from('clientes').insert(linha).select('id').single();
+  if (r.error) throw r.error;
+  var novo = {id: r.data.id, nome: nome, ini: ini, cor: pal.cor, cort: pal.cort, cpf: '', nasc: '', tel: tel || '—', email: '—', end: '—', obs: '', estagio: 'prospect'};
+  CLIENTES.push(novo);
+  return novo;
+}
+
+// ── FORMULÁRIOS ───────────────────────────────────────────────────────────
+// Só para pegar o link de cada formulário e enviar ao cliente; criar e editar é na versão web.
+var FORMULARIOS = [], _fmErro = false;
+async function abrirTelaFormularios() {
+  if (isLocalPreview()) { buildFormularios(); return; }
+  _fmErro = false;
+  document.getElementById('fm-lista').innerHTML = '<div class="collection-empty"><span><i class="ti ti-clock" aria-hidden="true"></i></span><strong>Carregando…</strong></div>';
+  try {
+    var r = await supa.from('formularios').select('id, slug, titulo, ativo, categoria').match(escopoWorkspace(_supaUser.id)).order('created_at');
+    if (r.error) throw r.error;
+    FORMULARIOS = r.data || [];
+  } catch (e) { console.error('formulários:', e); _fmErro = true; FORMULARIOS = []; }
+  buildFormularios();
+}
+function fmLink(f) { return WEB_SIMPP + '/f/' + f.slug; }
+function buildFormularios() {
+  var el = document.getElementById('fm-lista');
+  if (!el) return;
+  if (_fmErro) {
+    document.getElementById('fm-resumo').textContent = '';
+    el.innerHTML = '<div class="collection-empty"><span><i class="ti ti-cloud-off"></i></span><strong>Não foi possível carregar</strong><small>Verifique a conexão e tente de novo.</small></div>';
+    return;
+  }
+  document.getElementById('fm-resumo').textContent = FORMULARIOS.length + ' formulário' + (FORMULARIOS.length === 1 ? '' : 's');
+  el.innerHTML = FORMULARIOS.length ? FORMULARIOS.map(function (f) {
+    var tipo = f.categoria === 'operacional' ? 'Operacional' : 'Comercial';
+    var ativo = f.ativo !== false;
+    return '<article class="fm-card' + (ativo ? '' : ' inativo') + '">' +
+      '<div class="fm-topo"><span class="fm-ico"><i class="ti ti-forms" aria-hidden="true"></i></span>' +
+      '<div class="fm-copy"><strong>' + escapeHtml(f.titulo) + '</strong><small>' + tipo + ' · ' + (ativo ? 'Ativo' : 'Inativo') + '</small></div></div>' +
+      '<div class="fm-link">' + escapeHtml(fmLink(f).replace('https://', '')) + '</div>' +
+      '<div class="fm-acoes">' +
+        '<button class="btn btn-ghost" data-id="' + escapeHtml(f.id) + '" onclick="fmCopiar(this.dataset.id)"' + (ativo ? '' : ' disabled') + '><i class="ti ti-copy" aria-hidden="true"></i>Copiar link</button>' +
+        '<button class="btn btn-primary" data-id="' + escapeHtml(f.id) + '" onclick="fmCompartilhar(this.dataset.id)"' + (ativo ? '' : ' disabled') + '><i class="ti ti-share" aria-hidden="true"></i>Compartilhar</button>' +
+      '</div></article>';
+  }).join('') : '<div class="collection-empty"><span><i class="ti ti-forms"></i></span><strong>Nenhum formulário</strong><small>Os formulários são criados na versão web.</small></div>';
+}
+function fmPorId(id) { return FORMULARIOS.find(f => String(f.id) === String(id)); }
+function fmTexto(f) {
+  var url = fmLink(f);
+  return f.categoria === 'operacional'
+    ? 'Olá! Para registrar sua solicitação (' + f.titulo + '), preencha este formulário: ' + url
+    : 'Olá! Para prepararmos sua cotação de ' + f.titulo + ', preencha este formulário (leva poucos minutos): ' + url;
+}
+function fmCopiar(id) {
+  var f = fmPorId(id); if (!f) return;
+  var url = fmLink(f);
+  var ok = function () { toast('Link copiado!'); };
+  var falhou = function () { window.prompt('Copie o link:', url); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(ok, falhou); else falhou();
+}
+function fmCompartilhar(id) {
+  var f = fmPorId(id); if (!f) return;
+  if (navigator.share) { navigator.share({text: fmTexto(f)}).catch(function () {}); return; }
+  window.open('https://wa.me/?text=' + encodeURIComponent(fmTexto(f)), '_blank', 'noopener');
+}
+
 // ── CARREGAR DADOS ────────────────────────────────────────
 // No banco a visibilidade é por corretora (workspace), não por usuário:
 // o user_id só guarda quem cadastrou. Filtrar por user_id escondia as
@@ -2053,7 +2399,7 @@ async function carregarDados(){
     ini:c.ini||(c.nome.split(' ').map(p=>p[0]).join('').toUpperCase().slice(0,2)),
     cor:{dark:c.cor_dark||'#26184A',light:c.cor_light||'#EDE9FF'},
     cort:{dark:c.cort_dark||'#C4B5FD',light:c.cort_light||'#4C1D95'},
-    cpf:c.cpf||'',nasc:c.nasc||'',tel:c.tel||'—',email:c.email||'—',end:c.endereco||'—',obs:c.obs||''
+    cpf:c.cpf||'',nasc:c.nasc||'',tel:c.tel||'—',email:c.email||'—',end:c.endereco||'—',obs:c.obs||'',estagio:c.estagio||'cliente'
   }));
   const {data:aps,error:errAp}=await supa.from('apolices').select('*, endossos(*)').match(escopoWorkspace(uid));
   if(errCl||errAp){console.error('carregarDados:',errCl||errAp);toast('Não foi possível carregar todos os seus dados. Verifique a conexão e abra o app de novo.',true);}
@@ -2072,7 +2418,7 @@ async function carregarDados(){
   var faltantes=[...new Set(APOLICES.map(a=>a.cid).filter(cid=>cid&&!cidSet.has(cid)))];
   if(faltantes.length){
     const {data:clf}=await supa.from('clientes').select('*').in('id',faltantes);
-    (clf||[]).forEach(c=>{CLIENTES.push({id:c.id,nome:c.nome,ini:c.ini||(c.nome||'?').split(' ').map(p=>p[0]).join('').toUpperCase().slice(0,2),cor:{dark:c.cor_dark||'#26184A',light:c.cor_light||'#EDE9FF'},cort:{dark:c.cort_dark||'#C4B5FD',light:c.cort_light||'#4C1D95'},cpf:c.cpf||'',nasc:c.nasc||'',tel:c.tel||'—',email:c.email||'—',end:c.endereco||'—',obs:c.obs||''});});
+    (clf||[]).forEach(c=>{CLIENTES.push({id:c.id,nome:c.nome,ini:c.ini||(c.nome||'?').split(' ').map(p=>p[0]).join('').toUpperCase().slice(0,2),cor:{dark:c.cor_dark||'#26184A',light:c.cor_light||'#EDE9FF'},cort:{dark:c.cort_dark||'#C4B5FD',light:c.cort_light||'#4C1D95'},cpf:c.cpf||'',nasc:c.nasc||'',tel:c.tel||'—',email:c.email||'—',end:c.endereco||'—',obs:c.obs||'',estagio:c.estagio||'cliente'});});
   }
   const {data:tfs}=await supa.from('tarefas').select('*').match(escopoWorkspace(uid)).order('data');
   TAREFAS=(tfs||[]).map(t=>({
