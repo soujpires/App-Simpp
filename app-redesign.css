@@ -244,11 +244,6 @@ a:focus-visible,
   border-radius: 17px;
 }
 
-.home-metrics .metric-card::before {
-  left: 14px;
-  right: 14px;
-  height: 3px;
-}
 
 .metric-top {
   display: flex;
@@ -302,40 +297,11 @@ a:focus-visible,
   position: relative;
   margin: 14px 16px 0;
   overflow: hidden;
-  border: 1px solid var(--module-border);
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: var(--module-bg);
+  background: var(--surface);
 }
 
-.home-module::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: var(--module-accent);
-}
-
-.home-module-tasks {
-  --module-accent: #6b9fd4;
-  --module-border: rgba(30, 74, 138, 0.12);
-  --module-bg: rgba(30, 74, 138, 0.045);
-}
-
-.home-module-renewals {
-  --module-accent: #e3a33a;
-  --module-border: rgba(217, 119, 6, 0.15);
-  --module-bg: rgba(217, 119, 6, 0.055);
-}
-
-:root[data-theme="dark"] .home-module-tasks {
-  --module-border: rgba(107, 159, 212, 0.20);
-  --module-bg: rgba(107, 159, 212, 0.08);
-}
-
-:root[data-theme="dark"] .home-module-renewals {
-  --module-border: rgba(245, 158, 11, 0.22);
-  --module-bg: rgba(245, 158, 11, 0.08);
-}
 
 .home-section-icon {
   width: 36px;
@@ -351,11 +317,6 @@ a:focus-visible,
 
 .home-section-icon i {
   font-size: 20px;
-}
-
-.home-section-icon.warning {
-  background: var(--amber-bg);
-  color: var(--amber);
 }
 
 .home-section-copy {
@@ -1341,14 +1302,6 @@ a:focus-visible,
   box-shadow: var(--shadow-sm);
 }
 
-.task-card.is-overdue {
-  border-left: 4px solid var(--red);
-}
-
-.task-card.is-today {
-  border-left: 4px solid var(--amber);
-}
-
 .task-card.is-done {
   opacity: 0.62;
 }
@@ -1894,4 +1847,166 @@ a:focus-visible,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Novo visual v2 — Simpp App, 2026-11-02 */
+:root {
+  --simpp-brand: #17396F;
+  --simpp-brand-hi: #2D63AE;
+  --simpp-brand-hover: #1E4A8A;
+  --simpp-card-radius: 17px;
+  --simpp-card-border: rgba(15, 35, 70, .10);
+  --simpp-card-shadow: 0 1px 2px rgba(15, 35, 70, .06), 0 8px 22px rgba(15, 35, 70, .08);
+}
+:root[data-theme="dark"] {
+  --simpp-brand: #2B5BD9;
+  --simpp-brand-hi: #4A7BF0;
+  --simpp-brand-hover: #3A6AE6;
+  --simpp-card-border: rgba(255, 255, 255, .12);
+  --simpp-card-shadow: 0 1px 2px rgba(0, 0, 0, .12), 0 8px 22px rgba(0, 0, 0, .16);
+}
+/* O tema também escreve background inline; esta regra mantém a marca nos dois temas. */
+:root .topbar {
+  background: linear-gradient(120deg, var(--simpp-brand), var(--simpp-brand-hi)) !important;
+  padding-top: env(safe-area-inset-top);
+}
+.topbar .tb-title,
+.topbar .topbar-back { color: #fff; }
+.topbar .theme-toggle-btn {
+  min-width: 44px;
+  min-height: 44px;
+  background: rgba(0, 0, 0, .18);
+}
+/* Avatares com iniciais e selos de status não fazem parte destes seletores. */
+:root :is(
+  .home-metrics .metric-card .mico, .home-section-icon,
+  .ap-item-ico, .policy-search-icon, .task-filter-icon, .task-card-icon,
+  .atendimento-intro-icon, .atendimento-card-icon, .assistencia-card-head > span,
+  .collection-empty > span, .search-empty-icon, .client-card-arrow,
+  .support-intro > span
+) {
+  background: linear-gradient(145deg, var(--simpp-brand-hi), var(--simpp-brand));
+  color: #fff;
+  border-radius: 12px;
+  border: 0;
+  box-shadow: none;
+  filter: none;
+}
+:root :is(.metric-card .mico, .ap-item-ico) i { color: inherit; }
+/* Os quadrados das linhas do Painel são gerados com cores inline. */
+#s-painel :is(#p-list, #p-tarefas) div[style*="justify-content:center"] {
+  background: linear-gradient(145deg, var(--simpp-brand-hi), var(--simpp-brand)) !important;
+  color: #fff;
+  box-shadow: none;
+}
+#s-painel :is(#p-list, #p-tarefas) div[style*="justify-content:center"] > i {
+  color: #fff !important;
+}
+.screen:not(#s-mais):not(#s-configuracoes) .empty > i {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--simpp-brand-hi), var(--simpp-brand));
+  color: #fff;
+  font-size: 28px;
+  opacity: 1;
+}
+.home-metrics .metric-card::before,
+.home-module::before { content: none; }
+:root .home-module {
+  border-color: var(--simpp-card-border);
+  background: var(--surface);
+}
+:root :is(
+  .home-metrics .metric-card, .home-module, .ap-item, .policy-search-card,
+  .client-card, .client-profile-card, .client-info-card, .task-filter-panel,
+  .task-card, .atendimento-intro, .atendimento-card, .assistencia-card,
+  .ren-card, .support-card
+) {
+  border: 1px solid var(--simpp-card-border);
+  border-radius: var(--simpp-card-radius);
+  box-shadow: var(--simpp-card-shadow);
+}
+/* As divisórias entre linhas continuam; o módulo recebe uma única sombra. */
+.home-module .home-card { box-shadow: none; }
+:root .task-card:is(.is-overdue, .is-today) {
+  border-left: 1px solid var(--simpp-card-border);
+}
+:root :is(.home-section-link, .task-filter-tab, .atendimento-filter,
+  .task-check, .client-profile-actions button) { min-height: 44px; }
+.task-check { min-width: 44px; }
+#s-apolices .chip { min-height: 44px; }
+/* Painel: preserva os textos existentes, com uma ação compacta e nome acessível. */
+.home-search-wrap { display: flex; justify-content: flex-end; }
+.home-search-wrap .home-search-action {
+  width: 48px;
+  min-height: 48px;
+  padding: 0;
+  gap: 0;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--simpp-brand-hi), var(--simpp-brand));
+  box-shadow: none;
+}
+.home-search-action .home-search-icon {
+  width: 48px;
+  height: 48px;
+  flex-basis: 48px;
+  background: transparent;
+}
+.home-search-action :is(.home-search-copy, .home-search-arrow) { display: none; }
+.home-search-wrap .home-search-action:active {
+  background: var(--simpp-brand-hover);
+  box-shadow: none;
+}
+/* O campo cresce a partir da direita, sem deslocar filtros ou listas abaixo. */
+#s-apolices .screen-search-field { margin: 14px 16px 12px; }
+.screen-search-field.lupa-campo {
+  width: 48px;
+  height: 48px;
+  margin-left: auto;
+  border-radius: 14px;
+  transition: width .22s ease;
+}
+#s-apolices .screen-search-field.lupa-campo { width: 48px; margin-left: auto; }
+.screen-search-field.lupa-campo.lupa-aberta { width: 100%; }
+#s-apolices .screen-search-field.lupa-aberta { width: calc(100% - 32px); }
+.lupa-campo .lupa-toggle {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--simpp-brand-hi), var(--simpp-brand));
+  color: #fff;
+  cursor: pointer;
+}
+.lupa-toggle i { font-size: 24px; pointer-events: none; }
+.lupa-campo .lupa-toggle:active { background: var(--simpp-brand-hover); }
+.screen-search-field.lupa-campo input {
+  height: 48px;
+  padding: 0 12px 0 60px;
+  border-radius: 14px;
+  font-size: 16px;
+  box-shadow: none;
+}
+.lupa-campo input[hidden] { display: none; }
+.lupa-campo.lupa-aberta input:focus {
+  border-color: var(--simpp-brand);
+  box-shadow: inset 0 0 0 1px var(--simpp-brand);
+}
+.search-clear { width: 44px; height: 44px; right: 5px; }
+@media (prefers-reduced-motion: reduce) {
+  .screen-search-field.lupa-campo { transition: none; }
+}
+
+/* Texto secundário legível nas superfícies escuras das telas redesenhadas. */
+:root[data-theme="dark"] .screen:not(#s-mais):not(#s-configuracoes) {
+  --text3: #A0AEC0;
 }

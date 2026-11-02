@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
-<link rel="stylesheet" href="./app-icons.css?v=20260725-4">
+<link rel="stylesheet" href="./app-icons.css?v=20261102-1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.documentElement.setAttribute('data-theme','light');
@@ -192,7 +192,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeSlideUp .2s ease;}
 </style>
-<link rel="stylesheet" href="./app-redesign.css?v=20260725-4">
+<link rel="stylesheet" href="./app-redesign.css?v=20261102-1">
 <!-- Estilos críticos mantidos no index para o app não perder o layout
      quando uma atualização móvel publicar apenas este arquivo. -->
 <style id="simpp-critical-mobile-layout">
@@ -316,7 +316,7 @@ button,input,select,textarea{font:inherit}
     <div class="screen-body">
       <div class="panel-content">
         <div class="home-search-wrap">
-          <button class="home-search-action" onclick="openUniversalSearch()" aria-label="Encontrar uma apólice">
+          <button class="home-search-action" onclick="openUniversalSearch()" aria-label="Buscar">
             <span class="home-search-icon"><i class="ti ti-search" aria-hidden="true"></i></span>
             <span class="home-search-copy">
               <strong>Encontrar uma apólice</strong>
@@ -398,7 +398,7 @@ button,input,select,textarea{font:inherit}
   <!-- APÓLICES -->
   <div class="screen" id="s-apolices">
     <div class="screen-body">
-      <div class="searchbar"><i class="ti ti-search"></i>
+      <div class="screen-search-field"><i class="ti ti-search" aria-hidden="true"></i>
         <input type="search" placeholder="Buscar cliente ou nº apólice…" id="ap-srch" oninput="filterAp(this.value)" autocomplete="off">
       </div>
       <div class="filter-strip" id="ap-filter-strip"></div>
@@ -2499,6 +2499,56 @@ function abrirPdfApp(tipo, apId, endossoIdx) {
 
 function setVH(){document.documentElement.style.setProperty('--vh',(window.innerHeight*0.01)+'px');}setVH();window.addEventListener('resize',setVH);
 initAuth();
+</script>
+
+<script>
+// Lupa: apresentação isolada; os inputs e seus filtros existentes são preservados.
+function lupaExpandir(lupaCampo) {
+  var lupaInput = lupaCampo.querySelector('input');
+  var lupaBotao = lupaCampo.querySelector('.lupa-toggle');
+  lupaCampo.classList.add('lupa-aberta');
+  lupaInput.hidden = false;
+  lupaBotao.setAttribute('aria-expanded', 'true');
+  lupaBotao.tabIndex = -1;
+  lupaInput.focus();
+}
+function lupaRecolher(lupaCampo) {
+  var lupaInput = lupaCampo.querySelector('input');
+  if (lupaInput.value || lupaCampo.contains(document.activeElement)) return;
+  lupaCampo.classList.remove('lupa-aberta');
+  lupaInput.hidden = true;
+  var lupaBotao = lupaCampo.querySelector('.lupa-toggle');
+  lupaBotao.setAttribute('aria-expanded', 'false');
+  lupaBotao.tabIndex = 0;
+}
+function lupaInicializar() {
+  document.querySelectorAll('.screen-search-field').forEach(function(lupaCampo) {
+    if (lupaCampo.closest('#s-buscar') || lupaCampo.classList.contains('lupa-campo')) return;
+    var lupaInput = lupaCampo.querySelector('input');
+    if (!lupaInput) return;
+    var lupaBotao = document.createElement('button');
+    lupaBotao.type = 'button';
+    lupaBotao.className = 'lupa-toggle';
+    lupaBotao.setAttribute('aria-label', lupaInput.getAttribute('aria-label') || 'Buscar');
+    lupaBotao.setAttribute('aria-controls', lupaInput.id);
+    lupaBotao.setAttribute('aria-expanded', String(Boolean(lupaInput.value)));
+    if (!lupaInput.hasAttribute('aria-label')) lupaInput.setAttribute('aria-label', 'Buscar');
+    var lupaIcone = lupaCampo.querySelector(':scope > i');
+    if (lupaIcone) lupaBotao.appendChild(lupaIcone);
+    lupaCampo.prepend(lupaBotao);
+    lupaCampo.classList.add('lupa-campo');
+    lupaCampo.classList.toggle('lupa-aberta', Boolean(lupaInput.value));
+    lupaInput.hidden = !lupaInput.value;
+    lupaBotao.tabIndex = lupaInput.value ? -1 : 0;
+    lupaBotao.addEventListener('click', function() { lupaExpandir(lupaCampo); });
+    lupaInput.addEventListener('focus', function() { lupaExpandir(lupaCampo); });
+    lupaCampo.addEventListener('focusout', function() {
+      // Aguarda o foco chegar ao próximo elemento, inclusive em toques fora do campo.
+      setTimeout(function() { lupaRecolher(lupaCampo); }, 0);
+    });
+  });
+}
+lupaInicializar();
 </script>
 </body>
 </html>
