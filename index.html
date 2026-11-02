@@ -192,7 +192,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeSlideUp .2s ease;}
 </style>
-<link rel="stylesheet" href="./app-redesign.css?v=20261102-4">
+<link rel="stylesheet" href="./app-redesign.css?v=20261102-5">
 <!-- Estilos críticos mantidos no index para o app não perder o layout
      quando uma atualização móvel publicar apenas este arquivo. -->
 <style id="simpp-critical-mobile-layout">
@@ -1823,6 +1823,29 @@ function buildProdRows() {
   }).join('');
 }
 
+// ── PAINÉIS (sheets) NO CELULAR ───────────────────────────────────────────
+// No iPhone o teclado cobre a parte de baixo da tela sem encolher o layout; o
+// painel precisa caber na área realmente visível, senão o botão de salvar some.
+function sheetAjustarTeclado() {
+  var vv = window.visualViewport;
+  document.querySelectorAll('.sheet-overlay').forEach(function (o) {
+    if (vv && o.classList.contains('on')) {
+      o.style.top = vv.offsetTop + 'px'; o.style.bottom = 'auto'; o.style.height = vv.height + 'px';
+    } else { o.style.top = ''; o.style.bottom = ''; o.style.height = ''; }
+  });
+}
+function sheetFechar(id) {
+  // tira o foco do campo (fecha o teclado) antes de esconder o painel e volta a tela ao topo
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  document.getElementById(id).classList.remove('on');
+  sheetAjustarTeclado();
+  setTimeout(function () { window.scrollTo(0, 0); }, 60);
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', sheetAjustarTeclado);
+  window.visualViewport.addEventListener('scroll', sheetAjustarTeclado);
+}
+
 // ── AGENDA ────────────────────────────────────────────────
 // Mesma tabela e regras da Agenda da versão web (agenda_compromissos).
 // No celular: ver a semana, concluir/cancelar e criar compromisso simples.
@@ -1928,8 +1951,9 @@ function abrirCompromisso(id){
     :'<button class="btn btn-ghost agenda-cancelar" id="cp-cancelar" onclick="agendaCancelar()">Cancelar compromisso</button>'+
      '<button class="btn btn-primary" style="flex:1;" onclick="agendaConcluir()"><i class="ti ti-check"></i>Concluir</button>';
   document.getElementById('sheet-compromisso').classList.add('on');
+  sheetAjustarTeclado();
 }
-function fecharCompromisso(){document.getElementById('sheet-compromisso').classList.remove('on');_agendaAbertoId=null;}
+function fecharCompromisso(){sheetFechar('sheet-compromisso');_agendaAbertoId=null;}
 function agendaAbrirCliente(){
   var e=AGENDA.find(x=>x.id===_agendaAbertoId);
   if(!e||!e.cid)return;
@@ -1972,9 +1996,9 @@ function abrirNovoCompromisso(){
   document.getElementById('ag-fim').value=String(h+1).padStart(2,'0')+':00';
   document.getElementById('ag-dia').checked=false;agendaDiaInteiro();
   document.getElementById('sheet-compromisso-novo').classList.add('on');
-  setTimeout(()=>document.getElementById('ag-titulo').focus(),300);
+  sheetAjustarTeclado();
 }
-function fecharNovoCompromisso(){document.getElementById('sheet-compromisso-novo').classList.remove('on');}
+function fecharNovoCompromisso(){sheetFechar('sheet-compromisso-novo');}
 function agendaDiaInteiro(){document.getElementById('ag-horas').hidden=document.getElementById('ag-dia').checked;}
 async function salvarNovoCompromisso(){
   var titulo=document.getElementById('ag-titulo').value.trim();
@@ -1995,7 +2019,7 @@ async function salvarNovoCompromisso(){
   if(isLocalPreview()){salvo=Object.assign({id:'ag-'+Date.now()},linha);}
   else{
     var r=await supa.from('agenda_compromissos').insert(linha).select('*').single();
-    if(r.error){btn.disabled=false;console.error('agenda criar:',r.error);toast('Não foi possível criar o compromisso.',true);return;}
+    if(r.error){btn.disabled=false;console.error('agenda criar:',r.error);toast('Não foi possível criar o compromisso'+(r.error.message?': '+String(r.error.message).slice(0,90):'.'),true);return;}
     salvo=r.data;
   }
   btn.disabled=false;
