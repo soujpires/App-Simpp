@@ -113,3 +113,8 @@
 .ti-cloud-off::before { content: "cloud_off"; }
 .ti-lock::before { content: "lock"; }
 .ti-user-shield::before { content: "shield_person"; }
+.ti-copy::before { content: "content_copy"; }
+.ti-forms::before { content: "dynamic_form"; }
+.ti-share::before { content: "share"; }
+.ti-target-arrow::before { content: "track_changes"; }
+.ti-clock::before { content: "schedule"; }
