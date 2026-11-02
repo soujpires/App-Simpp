@@ -631,6 +631,10 @@ button,input,select,textarea{font:inherit}
   <div class="screen" id="s-oportunidades">
     <div class="screen-body">
       <div class="collection-shell">
+        <div class="screen-search-field">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input type="search" placeholder="Cliente, ramo, origem ou ação" id="op-srch" oninput="opBuscar(this.value)" autocomplete="off" aria-label="Buscar oportunidade">
+        </div>
         <div class="op-filtros" id="op-filtros"></div>
         <div class="collection-summary" id="op-resumo"></div>
         <div class="atendimento-list" id="op-lista"></div>
@@ -643,6 +647,10 @@ button,input,select,textarea{font:inherit}
   <div class="screen" id="s-formularios">
     <div class="screen-body">
       <div class="collection-shell">
+        <div class="screen-search-field">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input type="search" placeholder="Nome do formulário" id="fm-srch" oninput="fmBuscar(this.value)" autocomplete="off" aria-label="Buscar formulário">
+        </div>
         <div class="collection-summary" id="fm-resumo"></div>
         <div class="fm-lista" id="fm-lista"></div>
       </div>
@@ -2192,7 +2200,7 @@ function titleCasePt(t) {
 // Mesma tabela do funil da versão web. No celular: ver as abertas e criar uma
 // nova (cliente ou prospect) quando o corretor está na rua. Quem não é dono/admin
 // só enxerga as próprias (regra do banco).
-var OPORTUNIDADES = [], _opErro = false, _opFiltro = 'todas', _opCarregando = false;
+var OPORTUNIDADES = [], _opErro = false, _opFiltro = 'todas', _opCarregando = false, _opBusca = '';
 var OP_ETAPAS = [{id:'lead', nome:'Novo lead'}, {id:'contato', nome:'Em contato'}, {id:'cotacao', nome:'Cotação'}, {id:'proposta', nome:'Proposta enviada'}];
 async function abrirTelaOportunidades() {
   _opFiltro = 'todas';
@@ -2217,6 +2225,11 @@ async function abrirTelaOportunidades() {
   } finally { _opCarregando = false; }
   buildOportunidades();
 }
+function opCasa(o) {
+  var q = normalizeSearch(_opBusca);
+  return !q || searchableIncludes([o.nome, o.ramo, o.origem, o.proxima, opEtapaNome(o.etapa)], q);
+}
+function opBuscar(v) { _opBusca = v || ''; buildOportunidades(); }
 function opEtapaNome(id) { var e = OP_ETAPAS.find(x => x.id === id); return e ? e.nome : 'Novo lead'; }
 function opData(iso) { return iso ? iso.split('-').reverse().join('/') : ''; }
 function buildOportunidades() {
@@ -2224,7 +2237,7 @@ function buildOportunidades() {
   if (!elLista) return;
   var filtros = [{id: 'todas', nome: 'Todas'}].concat(OP_ETAPAS);
   document.getElementById('op-filtros').innerHTML = filtros.map(function (f) {
-    var n = f.id === 'todas' ? OPORTUNIDADES.length : OPORTUNIDADES.filter(o => o.etapa === f.id).length;
+    var n = OPORTUNIDADES.filter(o => opCasa(o) && (f.id === 'todas' || o.etapa === f.id)).length;
     return '<button class="atendimento-filter' + (_opFiltro === f.id ? ' active' : '') + '" data-id="' + escapeHtml(f.id) + '" onclick="opFiltrar(this.dataset.id)">' + escapeHtml(f.nome) + ' <span>' + n + '</span></button>';
   }).join('');
   if (_opErro) {
@@ -2232,7 +2245,7 @@ function buildOportunidades() {
     elLista.innerHTML = '<div class="collection-empty"><span><i class="ti ti-cloud-off"></i></span><strong>Não foi possível carregar</strong><small>Verifique a conexão e tente de novo.</small></div>';
     return;
   }
-  var lista = _opFiltro === 'todas' ? OPORTUNIDADES : OPORTUNIDADES.filter(o => o.etapa === _opFiltro);
+  var lista = OPORTUNIDADES.filter(o => opCasa(o) && (_opFiltro === 'todas' || o.etapa === _opFiltro));
   document.getElementById('op-resumo').textContent = lista.length + ' oportunidade' + (lista.length === 1 ? '' : 's');
   elLista.innerHTML = lista.length ? lista.map(function (o) {
     var linha3 = o.proxima ? 'Próxima ação: ' + o.proxima + (o.proximaEm ? ' · ' + opData(o.proximaEm) : '') : (o.retomarEm ? 'Retomar em ' + opData(o.retomarEm) : '');
@@ -2242,7 +2255,14 @@ function buildOportunidades() {
       '<span>' + escapeHtml([o.ramo, o.origem].filter(Boolean).join(' · ') || 'Sem ramo') + '</span>' +
       (linha3 ? '<small>' + escapeHtml(linha3) + '</small>' : '') + '</span>' +
       '<span class="atendimento-status progress">' + escapeHtml(opEtapaNome(o.etapa)) + '</span></button>';
-  }).join('') : '<div class="collection-empty"><span><i class="ti ti-target-arrow"></i></span><strong>Nenhuma oportunidade</strong><small>Toque em + para criar uma.</small></div>';
+  }).join('') : '<div class="collection-empty"><span><i class="ti ti-target-arrow"></i></span><strong>' + (_opBusca ? 'Nada encontrado' : 'Nenhuma oportunidade') + '</strong><small>' + (_opBusca ? 'Tente outro nome, ramo ou ação.' : 'Toque em + para criar uma.') + '</small></div>';
+}
+function limparBuscaTela(inputId) {
+  var i = document.getElementById(inputId);
+  if (!i) return;
+  i.value = '';
+  var campo = i.closest('.screen-search-field');
+  if (campo && typeof lupaRecolher === 'function') lupaRecolher(campo);
 }
 function opFiltrar(id) { _opFiltro = id; buildOportunidades(); }
 function abrirNovaOp() {
@@ -2291,7 +2311,7 @@ async function salvarNovaOp() {
   }
   btn.disabled = false;
   fecharNovaOp();
-  _opFiltro = 'todas';
+  _opFiltro = 'todas'; limparBuscaTela('op-srch'); _opBusca = '';
   if (isLocalPreview()) buildOportunidades(); else await abrirTelaOportunidades();
   buildClList(CLIENTES); atualizarMetricas();
   toast('Oportunidade criada!');
@@ -2319,7 +2339,7 @@ async function criarProspectApp(nome, tel, origem) {
 
 // ── FORMULÁRIOS ───────────────────────────────────────────────────────────
 // Só para pegar o link de cada formulário e enviar ao cliente; criar e editar é na versão web.
-var FORMULARIOS = [], _fmErro = false;
+var FORMULARIOS = [], _fmErro = false, _fmBusca = '';
 async function abrirTelaFormularios() {
   if (isLocalPreview()) { buildFormularios(); return; }
   _fmErro = false;
@@ -2331,6 +2351,7 @@ async function abrirTelaFormularios() {
   } catch (e) { console.error('formulários:', e); _fmErro = true; FORMULARIOS = []; }
   buildFormularios();
 }
+function fmBuscar(v) { _fmBusca = v || ''; buildFormularios(); }
 function fmLink(f) { return WEB_SIMPP + '/f/' + f.slug; }
 function buildFormularios() {
   var el = document.getElementById('fm-lista');
@@ -2340,8 +2361,10 @@ function buildFormularios() {
     el.innerHTML = '<div class="collection-empty"><span><i class="ti ti-cloud-off"></i></span><strong>Não foi possível carregar</strong><small>Verifique a conexão e tente de novo.</small></div>';
     return;
   }
-  document.getElementById('fm-resumo').textContent = FORMULARIOS.length + ' formulário' + (FORMULARIOS.length === 1 ? '' : 's');
-  el.innerHTML = FORMULARIOS.length ? FORMULARIOS.map(function (f) {
+  var qf = normalizeSearch(_fmBusca);
+  var lista = FORMULARIOS.filter(f => !qf || searchableIncludes([f.titulo, f.slug, f.categoria === 'operacional' ? 'operacional' : 'comercial'], qf));
+  document.getElementById('fm-resumo').textContent = lista.length + ' formulário' + (lista.length === 1 ? '' : 's');
+  el.innerHTML = lista.length ? lista.map(function (f) {
     var tipo = f.categoria === 'operacional' ? 'Operacional' : 'Comercial';
     var ativo = f.ativo !== false;
     return '<article class="fm-card' + (ativo ? '' : ' inativo') + '">' +
@@ -2352,7 +2375,7 @@ function buildFormularios() {
         '<button class="btn btn-ghost" data-id="' + escapeHtml(f.id) + '" onclick="fmCopiar(this.dataset.id)"' + (ativo ? '' : ' disabled') + '><i class="ti ti-copy" aria-hidden="true"></i>Copiar link</button>' +
         '<button class="btn btn-primary" data-id="' + escapeHtml(f.id) + '" onclick="fmCompartilhar(this.dataset.id)"' + (ativo ? '' : ' disabled') + '><i class="ti ti-share" aria-hidden="true"></i>Compartilhar</button>' +
       '</div></article>';
-  }).join('') : '<div class="collection-empty"><span><i class="ti ti-forms"></i></span><strong>Nenhum formulário</strong><small>Os formulários são criados na versão web.</small></div>';
+  }).join('') : '<div class="collection-empty"><span><i class="ti ti-forms"></i></span><strong>' + (_fmBusca ? 'Nada encontrado' : 'Nenhum formulário') + '</strong><small>' + (_fmBusca ? 'Tente outro nome.' : 'Os formulários são criados na versão web.') + '</small></div>';
 }
 function fmPorId(id) { return FORMULARIOS.find(f => String(f.id) === String(id)); }
 function fmTexto(f) {
