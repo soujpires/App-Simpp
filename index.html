@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
-<link rel="stylesheet" href="./app-icons.css?v=20261102-1">
+<link rel="stylesheet" href="./app-icons.css?v=20261102-2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.documentElement.setAttribute('data-theme','light');
@@ -192,7 +192,7 @@ body{background:var(--bg);color:var(--text);transition:background .3s,color .3s;
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeSlideUp .2s ease;}
 </style>
-<link rel="stylesheet" href="./app-redesign.css?v=20261102-1">
+<link rel="stylesheet" href="./app-redesign.css?v=20261102-2">
 <!-- Estilos críticos mantidos no index para o app não perder o layout
      quando uma atualização móvel publicar apenas este arquivo. -->
 <style id="simpp-critical-mobile-layout">
@@ -285,6 +285,17 @@ button,input,select,textarea{font:inherit}
 <link rel="stylesheet" href="./app-agenda.css?v=20261102-1">
 </head>
 <body>
+<div class="bloqueio-app" id="bloqueio-app" role="alertdialog" aria-modal="true" aria-labelledby="bloqueio-titulo" hidden>
+  <div class="bloqueio-caixa">
+    <span class="bloqueio-icone"><i class="ti ti-lock" aria-hidden="true"></i></span>
+    <h2 id="bloqueio-titulo"></h2>
+    <p id="bloqueio-texto"></p>
+    <button class="btn btn-primary btn-full" id="bloqueio-acao" type="button"></button>
+    <button class="btn btn-ghost btn-full" type="button" onclick="location.reload()">Já resolvi, atualizar</button>
+    <button class="btn btn-ghost btn-full" type="button" onclick="sairDoSimpp()">Sair</button>
+    <small id="bloqueio-nota"></small>
+  </div>
+</div>
 <div id="loading" style="position:fixed;inset:0;background:linear-gradient(180deg,#1E4A8A 0%,#163B72 100%);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:28px;">
   <svg width="68" height="68" viewBox="0 0 36 36" style="animation:pulse 1.8s ease-in-out infinite;">
     <rect x="2" y="3.8" width="22" height="14" rx="4" fill="#8FA9D2"/><rect x="2" y="2" width="22" height="14" rx="4" fill="#FFFFFF"/><rect x="12" y="21.8" width="22" height="14" rx="4" fill="#5B80B8"/><rect x="12" y="20" width="22" height="14" rx="4" fill="#C3D8F4"/><rect x="13" y="20.8" width="20" height="5.5" rx="2.6" fill="#FFFFFF" opacity=".45"/>
@@ -536,15 +547,15 @@ button,input,select,textarea{font:inherit}
           <div style="flex:1;"><div style="font-size:14px;font-weight:300;color:var(--red);">Sair</div></div>
         </div>
       </div>
-      <div class="card" style="margin:0 16px 16px;">
+      <div class="card" id="mais-plano" style="margin:0 16px 16px;" hidden>
         <div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
-          <div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;">Plano ativo até</div>
+          <div><div id="mais-plano-rotulo" style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;">Plano</div>
             <div style="font-size:14px;font-weight:300;color:var(--text);" id="mais-expira">—</div></div>
           <div style="text-align:right;"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;">Faltam</div>
-            <div style="font-size:14px;font-weight:300;color:var(--amber);" id="mais-faltam">—</div></div>
+            <div style="font-size:14px;font-weight:300;color:var(--text);" id="mais-faltam">—</div></div>
         </div>
       </div>
-      <div style="text-align:center;padding:8px 0 24px;font-size:10px;color:var(--text3);">Simpp · gestão simples · v20260607</div>
+      <div style="text-align:center;padding:8px 0 24px;font-size:10px;color:var(--text3);">Simpp · gestão simples · v20261102</div>
     </div>
   </div>
 
@@ -1030,8 +1041,162 @@ async function initAuth() {
   }
   const { data: { session } } = await supa.auth.getSession();
   if (!session) { window.location.replace('login.html'); return; }
+  if (!inatividadeChecarAoCarregar(session)) return; // sessão expirada por inatividade — já foi deslogado
   _supaUser = session.user;
+  // Mesmas travas da versão web, antes de carregar qualquer dado da carteira.
+  var trava = await verificarAcesso();
+  if (trava === 'saiu') return;
+  if (trava) { mostrarBloqueio(trava); return; }
+  inatividadeIniciar();
   await carregarDados();
+}
+
+// ── TRAVAS DE ACESSO (espelham a versão web) ──────────────────────────────
+// A regra de plano/contrato é a do banco (RPCs meu_status_plano,
+// contrato_aceite_pendente, meu_acesso_bloqueado); aqui só se decide o que
+// mostrar. Falha de rede nunca bloqueia ninguém.
+var WEB_SIMPP = 'https://crm.simpp.com.br';
+var CONTRATO_VERSAO = '1.0';
+var _statusPlano = null;
+
+async function verificarAcesso() {
+  // 1) colaborador desativado/removido não usa o Simpp
+  try {
+    var b = await supa.rpc('meu_acesso_bloqueado');
+    if (b.data === true) {
+      try { sessionStorage.setItem('simpp_motivo_saida', 'bloqueado'); } catch (_) {}
+      await supa.auth.signOut();
+      window.location.replace('login.html');
+      return 'saiu';
+    }
+  } catch (_) {}
+  // 2) conta criada só como produtor usa o portal do produtor, na web
+  var meta = _supaUser.user_metadata || {};
+  if (meta.portal_produtor) {
+    try {
+      var p = await supa.rpc('produtor_somente');
+      if (p.data === true) { window.location.replace(WEB_SIMPP + '/produtor'); return 'saiu'; }
+    } catch (_) {}
+  }
+  // 3) plano da corretora (segue o dono): assinatura suspensa ou teste encerrado
+  var plano = null;
+  try {
+    var r = await supa.rpc('meu_status_plano').maybeSingle();
+    if (!r.error && r.data) plano = r.data;
+  } catch (_) {}
+  if (!plano) {
+    try {
+      var pf = await supa.from('profiles').select('trial_expires_at, is_paid').eq('id', _supaUser.id).single();
+      if (pf.data) plano = pf.data;
+    } catch (_) {}
+  }
+  _statusPlano = plano;
+  if (plano && plano.suspenso) {
+    return {
+      titulo: 'Assinatura suspensa',
+      texto: 'Não identificamos o pagamento da sua assinatura, e o acesso fica suspenso até a regularização. Pague a cobrança em aberto enviada pelo Asaas ao seu e-mail ou escolha um plano. Com 60 dias de atraso a conta entra em cancelamento e, com 90 dias, os dados são excluídos.',
+      botao: 'Regularizar', nota: 'Dúvidas: suporte@simpp.com.br'
+    };
+  }
+  if (plano && !plano.is_paid) {
+    var porLimite = typeof plano.bloqueado === 'boolean' ? plano.bloqueado : null;
+    var expira = plano.trial_expires_at ? new Date(plano.trial_expires_at) : null;
+    var porData = expira ? expira < new Date() : false;
+    if (porLimite === true || (porLimite === null && porData)) {
+      return {
+        titulo: 'Seu período de teste encerrou',
+        texto: 'Você atingiu o limite do teste grátis (7 dias ou 25 documentos importados, o que veio primeiro). Para continuar usando o Simpp, assine um plano. Se você é colaborador, avise o responsável pela corretora.',
+        botao: 'Ver planos', nota: 'A partir de R$ 79,90/mês · até 5 usuários'
+      };
+    }
+  }
+  // 4) Contrato de Uso pendente (quem contratou aceita no primeiro acesso)
+  try {
+    var c = await supa.rpc('contrato_aceite_pendente', { p_versao: CONTRATO_VERSAO });
+    if (!c.error && c.data === true) {
+      return {
+        titulo: 'Contrato de Uso',
+        texto: 'Para continuar, o responsável pela corretora precisa aceitar o Contrato de Uso (versão ' + CONTRATO_VERSAO + ') no Simpp, pelo navegador.',
+        botao: 'Abrir o Simpp', nota: 'Depois do aceite, volte aqui e toque em "Já resolvi, atualizar".'
+      };
+    }
+  } catch (_) {}
+  return null;
+}
+
+function mostrarBloqueio(t) {
+  document.getElementById('bloqueio-titulo').textContent = t.titulo;
+  document.getElementById('bloqueio-texto').textContent = t.texto;
+  document.getElementById('bloqueio-nota').textContent = t.nota || '';
+  var acao = document.getElementById('bloqueio-acao');
+  acao.textContent = t.botao;
+  acao.onclick = function () { window.open(WEB_SIMPP, '_blank', 'noopener'); };
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('bloqueio-app').hidden = false;
+}
+
+// Cartão "Plano" do menu Mais, com o dado real da corretora (some se não houver).
+function renderPlanoCard() {
+  var card = document.getElementById('mais-plano');
+  if (!card) return;
+  var p = _statusPlano, fim = null, rotulo = '';
+  if (p && p.is_paid) { fim = p.ciclo_fim ? new Date(p.ciclo_fim) : null; rotulo = 'Plano ' + (p.plano === 'mensal' ? 'mensal' : 'anual') + ' · renova em'; }
+  else if (p) { fim = p.trial_expires_at ? new Date(p.trial_expires_at) : null; rotulo = 'Teste grátis até'; }
+  if (!fim || isNaN(fim)) { card.hidden = true; return; }
+  var meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  var dias = Math.max(0, Math.ceil((fim - Date.now()) / 86400000));
+  document.getElementById('mais-plano-rotulo').textContent = rotulo;
+  document.getElementById('mais-expira').textContent = fim.getDate() + '/' + meses[fim.getMonth()] + '/' + fim.getFullYear();
+  var f = document.getElementById('mais-faltam');
+  f.textContent = dias + (dias === 1 ? ' dia' : ' dias');
+  f.style.color = dias <= 7 ? 'var(--amber)' : 'var(--text)';
+  card.hidden = false;
+}
+
+// ── LOGOFF POR INATIVIDADE ────────────────────────────────────────────────
+// Igual ao web, mas com 8 horas (um dia de trabalho) em vez de 60 minutos:
+// no celular pedir a senha toda hora atrapalha. O horário da última atividade
+// fica no localStorage para valer também com o app fechado.
+var INATIVIDADE_TIMEOUT_MS = 8 * 60 * 60 * 1000;
+var INATIVIDADE_CHAVE = 'simpp_ultima_atividade';
+var _inatTimer = null, _inatUltimo = 0;
+function inatividadeRegistrar() { try { localStorage.setItem(INATIVIDADE_CHAVE, String(Date.now())); } catch (_) {} }
+function inatividadeUltima() {
+  try { var v = parseInt(localStorage.getItem(INATIVIDADE_CHAVE), 10); return isNaN(v) ? Date.now() : v; } catch (_) { return Date.now(); }
+}
+// login feito agora há pouco não pode ser derrubado por uma marca antiga
+function inatividadeLoginRecente(sessao) {
+  var q = sessao && sessao.user && Date.parse(sessao.user.last_sign_in_at || '');
+  return !isNaN(q) && q > 0 && (Date.now() - q) < 5 * 60 * 1000;
+}
+function inatividadeChecarAoCarregar(sessao) {
+  if (Date.now() - inatividadeUltima() >= INATIVIDADE_TIMEOUT_MS && !inatividadeLoginRecente(sessao)) {
+    inatividadeDeslogar();
+    return false;
+  }
+  inatividadeRegistrar();
+  return true;
+}
+function inatividadeIniciar() {
+  ['touchstart', 'click', 'scroll', 'keydown'].forEach(function (ev) {
+    document.addEventListener(ev, function () {
+      var agora = Date.now();
+      if (agora - _inatUltimo < 5000) return; // no máximo 1x a cada 5s
+      _inatUltimo = agora;
+      inatividadeRegistrar();
+    }, { passive: true });
+  });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') inatividadeChecar(); });
+  _inatTimer = setInterval(inatividadeChecar, 60000);
+}
+function inatividadeChecar() {
+  if (Date.now() - inatividadeUltima() >= INATIVIDADE_TIMEOUT_MS) inatividadeDeslogar();
+}
+function inatividadeDeslogar() {
+  if (_inatTimer) clearInterval(_inatTimer);
+  try { sessionStorage.setItem('simpp_motivo_saida', 'inatividade'); } catch (_) {}
+  try { localStorage.removeItem(INATIVIDADE_CHAVE); } catch (_) {}
+  supa.auth.signOut().then(function () { window.location.replace('login.html'); });
 }
 function sairDoSimpp() {
   supa.auth.signOut().then(() => window.location.replace('login.html'));
@@ -1135,6 +1300,8 @@ function carregarPreviewLocal() {
   buildClList(CLIENTES);
   buildRen();
   buildAgenda();
+  _statusPlano = {is_paid:true, plano:'anual', ciclo_fim:new Date(Date.now()+200*864e5).toISOString()};
+  renderPlanoCard();
   atualizarMetricas();
   document.getElementById('loading').style.display='none';
 }
@@ -2602,16 +2769,7 @@ async function carregarDados(){
   buildPainelList();buildPainelTarefas();buildPainelVencendo();
   buildTarefas();buildAtendimentos();buildAssistencias('');buildApList('');buildClList(CLIENTES);buildRen();buildAgenda();
   setTimeout(atualizarMetricas,200);
-  // Expiration
-  if(_supaUser&&_supaUser.created_at){
-    var criado=new Date(_supaUser.created_at);var expira=new Date(criado);expira.setFullYear(expira.getFullYear()+1);
-    var hoje=new Date();hoje.setHours(0,0,0,0);
-    var faltam=Math.max(0,Math.round((expira-hoje)/86400000));
-    var meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-    var expiraStr=expira.getDate()+'/'+meses[expira.getMonth()]+'/'+expira.getFullYear();
-    var elE=document.getElementById('mais-expira');if(elE)elE.textContent=expiraStr;
-    var elF=document.getElementById('mais-faltam');if(elF)elF.textContent=faltam+' dias';
-  }
+  renderPlanoCard();
   // Hide loading
   document.getElementById('loading').style.display='none';
 }

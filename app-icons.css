@@ -111,3 +111,4 @@
 .ti-bell::before { content: "notifications"; }
 .ti-calendar-event::before { content: "calendar_month"; }
 .ti-cloud-off::before { content: "cloud_off"; }
+.ti-lock::before { content: "lock"; }

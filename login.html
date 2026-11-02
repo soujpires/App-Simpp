@@ -125,6 +125,18 @@ async function tentarLogin() {
   window.location.replace('index.html');
 }
 
+// Motivo da saída deixado pelo app (acesso bloqueado / inatividade)
+(function () {
+  try {
+    var motivo = sessionStorage.getItem('simpp_motivo_saida');
+    if (!motivo) return;
+    sessionStorage.removeItem('simpp_motivo_saida');
+    var msg = motivo === 'bloqueado' ? 'Acesso bloqueado, contate o administrador.'
+      : motivo === 'inatividade' ? 'Sua sessão foi encerrada por inatividade. Faça login novamente.' : '';
+    if (msg) document.addEventListener('DOMContentLoaded', function () { mostrarErro(msg); });
+  } catch (_) {}
+})();
+
 function mostrarErro(msg) {
   var err = document.getElementById('err');
   err.textContent = msg;
